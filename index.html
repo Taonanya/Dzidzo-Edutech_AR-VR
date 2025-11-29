@@ -890,4 +890,188 @@
         // Sector Tabs Functionality
         document.addEventListener('DOMContentLoaded', function() {
             const tabs = document.querySelectorAll('.sector-tab');
-            const contents =
+            const contents = document.querySelectorAll('.sector-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(`${target}-content`).classList.add('active');
+                });
+            });
+            
+            // Enhanced 3D Parallax on Mouse Move
+            const image3dContainer = document.querySelector('.image-3d-container');
+            if (image3dContainer) {
+                image3dContainer.addEventListener('mousemove', (e) => {
+                    const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+                    const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                    document.querySelector('.image-3d-inner').style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+                });
+            }
+
+            // AI Assistant Functionality
+            const aiAssistantBtn = document.getElementById('aiAssistantBtn');
+            const aiChat = document.getElementById('aiChat');
+            const closeChat = document.getElementById('closeChat');
+            const chatForm = document.getElementById('chatForm');
+            const chatInput = document.getElementById('chatInput');
+            const chatMessages = document.getElementById('chatMessages');
+            const typingIndicator = document.getElementById('typingIndicator');
+            const quickQuestions = document.querySelectorAll('.quick-question');
+
+            // Toggle chat window
+            aiAssistantBtn.addEventListener('click', function() {
+                aiChat.classList.toggle('active');
+            });
+
+            // Close chat window
+            closeChat.addEventListener('click', function() {
+                aiChat.classList.remove('active');
+            });
+
+            // Quick question buttons
+            quickQuestions.forEach(button => {
+                button.addEventListener('click', function() {
+                    const question = this.getAttribute('data-question');
+                    chatInput.value = question;
+                    sendMessage();
+                });
+            });
+
+            // Handle form submission
+            chatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendMessage();
+            });
+
+            // AI Responses database
+            const aiResponses = {
+                'greeting': [
+                    "Hello! I'm your Dzidzo VR assistant. How can I help you today? 😊",
+                    "Hi there! Ready to explore immersive virtual environments?",
+                    "Welcome! I'm here to help you with Dzidzo VR solutions."
+                ],
+                'what is dzidzo vr': [
+                    "Dzidzo VR is an immersive virtual reality platform that transforms education and business collaboration through interactive 3D environments. We create virtual classrooms, meeting rooms, and training spaces that feel real!",
+                    "Dzidzo VR provides cutting-edge virtual reality solutions for education and business, offering immersive experiences that bridge physical distances and enhance learning and collaboration."
+                ],
+                'how much does it cost': [
+                    "We offer flexible pricing plans:\n• Education: $29/month\n• Business: $79/month\n• Enterprise: Custom pricing\nAll plans include different features and user capacities. Would you like more details about a specific plan?",
+                    "Our pricing starts at $29/month for educational institutions and goes up to enterprise-level custom solutions. Each plan is tailored to different needs and scales."
+                ],
+                'what features do you offer': [
+                    "Key features include:\n• Interactive virtual classrooms\n• Multi-user meeting rooms\n• 3D model integration\n• Real-time collaboration tools\n• Cross-platform compatibility\n• Session recording\n• Customizable environments",
+                    "We offer immersive features like virtual whiteboards, document sharing, interactive 3D models, multi-user support, and customizable virtual spaces for both education and business needs."
+                ],
+                'how do i get started': [
+                    "Getting started is easy!\n1. Choose your plan\n2. Create an account\n3. Set up your virtual spaces\n4. Invite users\n5. Start collaborating!\nWould you like me to guide you through any specific step?",
+                    "You can get started by signing up on our website, choosing a plan that fits your needs, and then customizing your virtual environments. We provide onboarding support to help you set up everything."
+                ],
+                'pricing': [
+                    "Here are our pricing options:\n\n🎓 EDUCATION - $29/month\n• 5 virtual classrooms\n• 50 simultaneous users\n• Basic features\n\n💼 BUSINESS - $79/month\n• 10 meeting rooms\n• 100 users\n• Advanced tools\n\n🏢 ENTERPRISE - Custom\n• Unlimited spaces\n• 500+ users\n• Full customization",
+                    "We have three main plans tailored for different needs. The Education plan is perfect for schools, Business for companies, and Enterprise for large organizations requiring custom solutions."
+                ],
+                'features': [
+                    "Our platform includes:\n\n🔄 Interactive Tools:\n• Virtual whiteboards\n• Document sharing\n• 3D model viewer\n• Screen sharing\n\n🌐 Multi-User Support:\n• Real-time collaboration\n• Voice and text chat\n• User management\n\n🎯 Customization:\n• Branded environments\n• Custom layouts\n• Integrated tools",
+                    "Dzidzo VR offers comprehensive features including interactive collaboration tools, multi-user support across devices, customizable environments, and integration capabilities with existing systems."
+                ],
+                'default': [
+                    "I'm not sure I understand. Could you rephrase your question? I can help with information about pricing, features, getting started, or our different solutions.",
+                    "That's an interesting question! I'm still learning, but I can definitely help you with information about Dzidzo VR's services, pricing, and features.",
+                    "I'm here to assist with Dzidzo VR related questions. You can ask me about our plans, features, or how to get started with virtual classrooms and meeting rooms."
+                ]
+            };
+
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                // Add user message to chat
+                addMessage(message, 'user');
+                chatInput.value = '';
+
+                // Show typing indicator
+                typingIndicator.classList.add('active');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                // Simulate AI thinking and response
+                setTimeout(() => {
+                    typingIndicator.classList.remove('active');
+                    const response = getAIResponse(message);
+                    addMessage(response, 'ai');
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1500);
+            }
+
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                if (sender === 'ai') {
+                    messageDiv.innerHTML = `<strong>Dzidzo AI:</strong> ${text}`;
+                } else {
+                    messageDiv.textContent = text;
+                }
+                
+                chatMessages.appendChild(messageDiv);
+            }
+
+            function getAIResponse(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Check for specific keywords and return appropriate response
+                if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+                    return getRandomResponse(aiResponses.greeting);
+                }
+                if (lowerMessage.includes('what is') || lowerMessage.includes('tell me about')) {
+                    return getRandomResponse(aiResponses['what is dzidzo vr']);
+                }
+                if (lowerMessage.includes('cost') || lowerMessage.includes('price') || lowerMessage.includes('how much')) {
+                    return getRandomResponse(aiResponses['how much does it cost']);
+                }
+                if (lowerMessage.includes('feature') || lowerMessage.includes('what can') || lowerMessage.includes('offer')) {
+                    return getRandomResponse(aiResponses['what features do you offer']);
+                }
+                if (lowerMessage.includes('start') || lowerMessage.includes('begin') || lowerMessage.includes('get started')) {
+                    return getRandomResponse(aiResponses['how do i get started']);
+                }
+                if (lowerMessage.includes('pricing')) {
+                    return getRandomResponse(aiResponses.pricing);
+                }
+                if (lowerMessage.includes('feature')) {
+                    return getRandomResponse(aiResponses.features);
+                }
+                
+                // Default response
+                return getRandomResponse(aiResponses.default);
+            }
+
+            function getRandomResponse(responses) {
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+
+            // Close chat when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!aiChat.contains(e.target) && !aiAssistantBtn.contains(e.target) && aiChat.classList.contains('active')) {
+                    aiChat.classList.remove('active');
+                }
+            });
+
+            // Handle Enter key in chat input
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    chatForm.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
