@@ -23,6 +23,97 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    
+    <style>
+        /* Services Section Styles */
+        .services-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 100px 0;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px 30px;
+            height: 100%;
+            transition: all 0.3s ease;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: #007bff;
+        }
+        
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+        }
+        
+        .service-icon i {
+            font-size: 36px;
+            color: white;
+        }
+        
+        .service-card h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .service-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .service-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 20px;
+        }
+        
+        .service-list li {
+            padding: 8px 0;
+            color: #555;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .service-list li:before {
+            content: "✓";
+            color: #007bff;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,123,255,0.3);
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -33,7 +124,7 @@
                 <div class="d-inline-flex align-items-center text-white">
                     <small><i class="fa fa-phone-alt mr-2"></i>+263 ** *** ****</small>
                     <small class="px-3">|</small>
-                    <small><i class="fa fa-envelope mr-2"></i>info@example.com</small>
+                    <small><i class="fa fa-envelope mr-2"></i>info@dzidzo.com</small>
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -79,6 +170,7 @@
                         <div class="dropdown-menu m-0">
                             <a href="course.html" class="dropdown-item">Class Detail</a>
                             <a href="feature.html" class="dropdown-item">Our Features</a>
+                            <a href="services.html" class="dropdown-item">Business Services</a>
                             <a href="team.html" class="dropdown-item">Team</a>
                             <a href="testimonial.html" class="dropdown-item">Testimonial</a>
                         </div>
@@ -135,67 +227,14 @@
             <div class="row">
                 <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
                     <div class="position-relative h-100">
-                        <!-- Replace your current image with this 3D container -->
-<div class="image-3d-container">
-  <div class="image-3d-inner">
-    <img src="img/feature-2.jpg" 
-         alt="Immersive AR Education" 
-         class="feature-image-3d">
-  </div>
-</div>
-
-<style>
-/* 3D Image Container */
-.image-3d-container {
-  perspective: 1500px;
-  margin: 2rem auto;
-  width: 100%;
-  max-width: 800px;
-}
-
-.image-3d-inner {
-  transition: transform 0.5s;
-  transform-style: preserve-3d;
-  position: relative;
-  width: 100%;
-  height: 450px;
-}
-
-.feature-image-3d {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  transform: translateZ(50px);
-  border: 3px solid rgba(0, 123, 255, 0.3);
-  filter: drop-shadow(0 10px 20px rgba(0, 91, 187, 0.3));
-}
-
-/* Mouse-tilt 3D Effect */
-.image-3d-container:hover .image-3d-inner {
-  transform: rotateY(10deg) rotateX(5deg);
-}
-
-/* Floating Animation */
-@keyframes float-3d {
-  0%, 100% { transform: translateZ(50px) translateY(0); }
-  50% { transform: translateZ(50px) translateY(-20px); }
-}
-
-.feature-image-3d {
-  animation: float-3d 6s ease-in-out infinite;
-}
-</style>
-
-<script>
-// Enhanced 3D Parallax on Mouse Move
-document.querySelector('.image-3d-container').addEventListener('mousemove', (e) => {
-  const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-  const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-  document.querySelector('.image-3d-inner').style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-});
-</script>
+                        <!-- 3D Image Container -->
+                        <div class="image-3d-container">
+                            <div class="image-3d-inner">
+                                <img src="img/feature-2.jpg" 
+                                     alt="Immersive AR Education" 
+                                     class="feature-image-3d">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -203,10 +242,10 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
                 <div class="col-lg-7">
                     <div class="section-title position-relative mb-4">
                         <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Welcome to the Future of Education</h6>
-                        <h1 class="display-4">First Choice For Argumentitive Argumentitive Reality Education Anywhere</h1>
+                        <h1 class="display-4">First Choice For Augmented Reality Education Anywhere</h1>
                     </div>
                     <p>Explore the exciting world of augmented reality in education. Our platform revolutionizes the learning process by bringing abstract concepts to life through immersive AR experiences.</p>
-            <p>With Dzidzo, students can interact with 3D models, explore virtual environments, and gain a deeper understanding of complex subjects through hands-on, visual learning.</p>
+                    <p>With Dzidzo, students can interact with 3D models, explore virtual environments, and gain a deeper understanding of complex subjects through hands-on, visual learning.</p>
                     <div class="row pt-3 mx-0">
                         <div class="col-3 px-0">
                             <div class="bg-success text-center p-4">
@@ -239,8 +278,129 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
     </div>
     <!-- About End -->
 
+    <!-- Business Services Section Start -->
+    <div class="container-fluid services-section">
+        <div class="container py-5">
+            <div class="section-title text-center position-relative mb-5">
+                <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Business Services</h6>
+                <h1 class="display-4">Enterprise Solutions & Business Partnerships</h1>
+                <p class="lead mb-5">We provide comprehensive AR/VR solutions for educational institutions, corporate training, and government organizations across Africa.</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h4>Institutional Licensing</h4>
+                        <p>Custom AR/VR platform licensing for schools, colleges, and universities with dedicated support and training.</p>
+                        <ul class="service-list">
+                            <li>Custom Branded Platforms</li>
+                            <li>Bulk Student Licensing</li>
+                            <li>Admin Dashboard Access</li>
+                            <li>Technical Support 24/7</li>
+                            <li>Custom Content Development</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h4>Corporate Training Solutions</h4>
+                        <p>Immersive training programs for corporate clients across various industries with measurable ROI.</p>
+                        <ul class="service-list">
+                            <li>Employee Onboarding VR</li>
+                            <li>Technical Skills Training</li>
+                            <li>Safety & Compliance Modules</li>
+                            <li>Soft Skills Development</li>
+                            <li>Performance Analytics</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h4>Government & NGO Partnerships</h4>
+                        <p>Large-scale educational initiatives for government bodies and non-profit organizations.</p>
+                        <ul class="service-list">
+                            <li>National Education Programs</li>
+                            <li>Rural Outreach Solutions</li>
+                            <li>Teacher Training Systems</li>
+                            <li>Curriculum Integration</li>
+                            <li>Impact Assessment Tools</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h4>Custom Development</h4>
+                        <p>Tailored AR/VR application development for specific educational or training needs.</p>
+                        <ul class="service-list">
+                            <li>3D Content Creation</li>
+                            <li>Interactive Simulations</li>
+                            <li>API Integration</li>
+                            <li>Multi-platform Deployment</li>
+                            <li>Ongoing Maintenance</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <h4>Certification Programs</h4>
+                        <p>Industry-recognized certification in AR/VR education technology implementation.</p>
+                        <ul class="service-list">
+                            <li>AR/VR Trainer Certification</li>
+                            <li>Content Developer Courses</li>
+                            <li>System Administrator Training</li>
+                            <li>Digital Badging System</li>
+                            <li>Global Recognition</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h4>Consulting Services</h4>
+                        <p>Strategic guidance for implementing immersive technology in educational settings.</p>
+                        <ul class="service-list">
+                            <li>Technology Assessment</li>
+                            <li>Implementation Strategy</li>
+                            <li>ROI Analysis</li>
+                            <li>Change Management</li>
+                            <li>Ongoing Advisory</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <h3 class="mb-4">Ready to Transform Your Organization?</h3>
+                <p class="mb-4">Contact our business solutions team for a custom proposal tailored to your needs.</p>
+                <a href="contact.html" class="cta-button">Request Business Proposal</a>
+            </div>
+        </div>
+    </div>
+    <!-- Business Services Section End -->
 
-<!-- Feature Start -->
+    <!-- Feature Start -->
     <div class="container-fluid bg-image" style="margin: 90px 0;">
         <div class="container">
             <div class="row">
@@ -315,7 +475,7 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
                     <img class="img-fluid w-100" src="img/team-3.jpg" alt="">
                     <div class="bg-light text-center p-4">
                         <h5 class="mb-3">Viola Mverechena</h5>
-                        <p class="mb-2"> Co-founder & <br> Chief information officer</p>
+                        <p class="mb-2"> Co-founder & <br> Chief information officer</p>
                         <div class="d-flex justify-content-center">
                             <a class="mx-1 p-1" href="#"><i class="fab fa-twitter"></i></a>
                             <a class="mx-1 p-1" href="#"><i class="fab fa-facebook-f"></i></a>
@@ -353,7 +513,6 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
         </div>
     </div>
@@ -371,7 +530,7 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
                     <p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible to everyone—especially in underserved communities across Africa. By combining modern web development with interactive 3D and augmented reality technologies, Dzidzo brings textbooks to life and transforms classrooms into engaging digital environments. Our mission is to empower students and educators with tools that are not only innovative but also affordable, culturally relevant, and easy to use on any device.</p>
                 </div>
                 <div class="col-md-6 mb-5">
-                    <h3 class="text-white mb-4">Education Made Simplier</h3>
+                    <h3 class="text-white mb-4">Education Made Simpler</h3>
                     <div class="w-100">
                         <div class="input-group">
                             <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Welcome to Dzidzo, please enter your email">
@@ -387,7 +546,7 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
                     <h3 class="text-white mb-4">Get In Touch</h3>
                     <p><i class="fa fa-map-marker-alt mr-2"></i>Virtual</p>
                     <p><i class="fa fa-phone-alt mr-2"></i>+263 ** *** ****</p>
-                    <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                    <p><i class="fa fa-envelope mr-2"></i>info@dzidzo.com</p>
                     <div class="d-flex justify-content-start mt-4">
                         <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-twitter"></i></a>
                         <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-facebook-f"></i></a>
@@ -396,13 +555,13 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
                     </div>
                 </div>
                 <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Our Classrooms</h3>
+                    <h3 class="text-white mb-4">Our Services</h3>
                     <div class="d-flex flex-column justify-content-start">
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 1</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 2</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 3</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Viverse</a>
-                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Free World</a>
+                        <a class="text-white-50 mb-2" href="services.html"><i class="fa fa-angle-right mr-2"></i>Institutional Licensing</a>
+                        <a class="text-white-50 mb-2" href="services.html"><i class="fa fa-angle-right mr-2"></i>Corporate Training</a>
+                        <a class="text-white-50 mb-2" href="services.html"><i class="fa fa-angle-right mr-2"></i>Government Partnerships</a>
+                        <a class="text-white-50 mb-2" href="services.html"><i class="fa fa-angle-right mr-2"></i>Custom Development</a>
+                        <a class="text-white-50" href="services.html"><i class="fa fa-angle-right mr-2"></i>Consulting Services</a>
                     </div>
                 </div>
                 <div class="col-md-4 mb-5">
@@ -410,9 +569,9 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
                     <div class="d-flex flex-column justify-content-start">
                         <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a>
                         <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Regular FAQs</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Business Inquiries</a>
                         <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help & Support</a>
-                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
+                        <a class="text-white-50" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact Sales</a>
                     </div>
                 </div>
             </div>
@@ -449,6 +608,4 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 </body>
-
-
 </html>
