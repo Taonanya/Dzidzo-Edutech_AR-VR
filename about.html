@@ -131,15 +131,24 @@
 
 
     <!-- About Start -->
-<!-- Replace this section in your About Start section -->
 <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
-    <div class="position-relative h-100 w-100">
-        <!-- 3D Image Container -->
+    <div class="position-relative h-100 w-100 d-flex align-items-center justify-content-center">
+        <!-- 3D Image Container with fallback -->
         <div class="image-3d-container">
             <div class="image-3d-inner">
+                <!-- Try multiple image paths -->
                 <img src="img/LOGO_home.png" 
-                     alt="Immersive AR Education" 
+                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80';"
+                     alt="Dzidzo EduTech AR Education" 
                      class="feature-image-3d">
+                <!-- Fallback text if image still doesn't load -->
+                <div class="image-fallback d-none">
+                    <div class="fallback-content">
+                        <i class="fas fa-graduation-cap fa-4x mb-3"></i>
+                        <h4>Dzidzo EduTech</h4>
+                        <p>Immersive AR Learning</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -163,14 +172,14 @@
     position: relative;
     width: 100%;
     height: 100%;
-    max-width: 500px; /* Controls the maximum size */
+    max-width: 500px;
     max-height: 500px;
 }
 
 .feature-image-3d {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Changed from cover to contain for perfect fit */
+    object-fit: contain;
     border-radius: 16px;
     box-shadow: 
         0 20px 60px rgba(0, 123, 255, 0.15),
@@ -186,9 +195,33 @@
         drop-shadow(0 15px 30px rgba(0, 91, 187, 0.2))
         contrast(1.05)
         saturate(1.1);
+    /* Debug border - remove after confirming image loads */
+    /* border: 2px solid red; */
 }
 
-/* Mouse-tilt 3D Effect - More subtle */
+/* Fallback styling if image fails to load */
+.image-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    transform: translateZ(50px);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.fallback-content {
+    z-index: 2;
+}
+
+/* Mouse-tilt 3D Effect */
 .image-3d-container:hover .image-3d-inner {
     transform: rotateY(8deg) rotateX(4deg) scale(1.02);
 }
@@ -205,33 +238,6 @@
 
 .feature-image-3d {
     animation: float-3d 8s ease-in-out infinite;
-}
-
-/* Responsive adjustments */
-@media (max-width: 992px) {
-    .image-3d-container {
-        perspective: 1200px;
-    }
-    
-    .image-3d-inner {
-        max-width: 400px;
-        max-height: 400px;
-    }
-}
-
-@media (max-width: 768px) {
-    .image-3d-container {
-        perspective: 1000px;
-    }
-    
-    .image-3d-inner {
-        max-width: 350px;
-        max-height: 350px;
-    }
-    
-    .feature-image-3d {
-        border-width: 3px;
-    }
 }
 
 /* Optional: Add a soft glow effect */
@@ -256,31 +262,91 @@
 .image-3d-container:hover .image-3d-inner::before {
     opacity: 1;
 }
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .image-3d-container {
+        perspective: 1200px;
+    }
+    
+    .image-3d-inner {
+        max-width: 400px;
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .image-3d-container {
+        perspective: 1000px;
+    }
+    
+    .image-3d-inner {
+        max-width: 300px;
+        max-height: 300px;
+    }
+    
+    .feature-image-3d {
+        border-width: 3px;
+    }
+}
 </style>
 
 <script>
-// Enhanced 3D Parallax with boundaries
-document.querySelector('.image-3d-container').addEventListener('mousemove', (e) => {
-    const container = e.currentTarget;
-    const rect = container.getBoundingClientRect();
+// Enhanced 3D Parallax with boundaries and image loading check
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.image-3d-container');
+    const image = document.querySelector('.feature-image-3d');
+    const fallback = document.querySelector('.image-fallback');
     
-    // Calculate mouse position relative to container center
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
+    // Check if image loaded successfully
+    if (image.complete && image.naturalHeight === 0) {
+        // Image failed to load
+        console.log('Image failed to load, showing fallback');
+        image.style.display = 'none';
+        fallback.classList.remove('d-none');
+    } else {
+        // Image loaded successfully
+        image.addEventListener('load', function() {
+            console.log('Image loaded successfully');
+        });
+        
+        image.addEventListener('error', function() {
+            console.log('Image error, showing fallback');
+            image.style.display = 'none';
+            fallback.classList.remove('d-none');
+        });
+    }
     
-    // Normalize values and limit rotation
-    const xAxis = -(y / (rect.height / 2)) * 5; // Reduced from 25 to 5 for subtle effect
-    const yAxis = (x / (rect.width / 2)) * 5; // Reduced from 25 to 5 for subtle effect
-    
-    // Apply transformation
-    document.querySelector('.image-3d-inner').style.transform = 
-        `rotateY(${yAxis}deg) rotateX(${xAxis}deg) translateZ(50px)`;
-});
-
-// Reset rotation when mouse leaves
-document.querySelector('.image-3d-container').addEventListener('mouseleave', () => {
-    document.querySelector('.image-3d-inner').style.transform = 
-        'rotateY(0deg) rotateX(0deg) translateZ(50px)';
+    // Only add 3D effect if container exists
+    if (container) {
+        container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            
+            // Calculate mouse position relative to container center
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            // Normalize values and limit rotation
+            const xAxis = -(y / (rect.height / 2)) * 5;
+            const yAxis = (x / (rect.width / 2)) * 5;
+            
+            // Apply transformation
+            const inner = container.querySelector('.image-3d-inner');
+            if (inner) {
+                inner.style.transform = 
+                    `rotateY(${yAxis}deg) rotateX(${xAxis}deg) translateZ(50px)`;
+            }
+        });
+        
+        // Reset rotation when mouse leaves
+        container.addEventListener('mouseleave', () => {
+            const inner = container.querySelector('.image-3d-inner');
+            if (inner) {
+                inner.style.transform = 
+                    'rotateY(0deg) rotateX(0deg) translateZ(50px)';
+            }
+        });
+    }
 });
 </script>
                 <!-- The text content for the "About" section --> 
@@ -535,4 +601,5 @@ document.querySelector('.image-3d-container').addEventListener('mouseleave', () 
 </body>
 
 </html>
+
 
