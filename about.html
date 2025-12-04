@@ -131,75 +131,158 @@
 
 
     <!-- About Start -->
-    <div class="container-fluid py-5">
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
-                    <div class="position-relative h-100">
-                        <!-- Replace your current image with this 3D container -->
-<div class="image-3d-container">
-    <div class="image-3d-inner">
-    <img src="img/LOGO_home.png" 
-        alt="Immersive AR Education" 
-        class="feature-image-3d">
+<!-- Replace this section in your About Start section -->
+<div class="col-lg-5 mb-5 mb-lg-0" style="min-height: 500px;">
+    <div class="position-relative h-100 w-100">
+        <!-- 3D Image Container -->
+        <div class="image-3d-container">
+            <div class="image-3d-inner">
+                <img src="img/LOGO_home.png" 
+                     alt="Immersive AR Education" 
+                     class="feature-image-3d">
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
-/* 3D Image Container */
+/* 3D Image Container - Perfectly fitted */
 .image-3d-container {
-  perspective: 1500px;
-  margin: 2rem auto;
-  width: 100%;
-  max-width: 800px;
+    perspective: 1500px;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .image-3d-inner {
-  transition: transform 0.5s;
-  transform-style: preserve-3d;
-  position: relative;
-  width: 100%;
-  height: 450px;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 500px; /* Controls the maximum size */
+    max-height: 500px;
 }
 
 .feature-image-3d {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  transform: translateZ(50px);
-  border: 3px solid rgba(0, 123, 255, 0.3);
-  filter: drop-shadow(0 10px 20px rgba(0, 91, 187, 0.3));
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Changed from cover to contain for perfect fit */
+    border-radius: 16px;
+    box-shadow: 
+        0 20px 60px rgba(0, 123, 255, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    transform: translateZ(50px);
+    border: 4px solid rgba(255, 255, 255, 0.8);
+    background: linear-gradient(135deg, 
+        rgba(0, 123, 255, 0.1) 0%, 
+        rgba(108, 99, 255, 0.1) 50%, 
+        rgba(255, 255, 255, 0.2) 100%);
+    backdrop-filter: blur(10px);
+    filter: 
+        drop-shadow(0 15px 30px rgba(0, 91, 187, 0.2))
+        contrast(1.05)
+        saturate(1.1);
 }
 
-/* Mouse-tilt 3D Effect */
+/* Mouse-tilt 3D Effect - More subtle */
 .image-3d-container:hover .image-3d-inner {
-  transform: rotateY(10deg) rotateX(5deg);
+    transform: rotateY(8deg) rotateX(4deg) scale(1.02);
 }
 
 /* Floating Animation */
 @keyframes float-3d {
-  0%, 100% { transform: translateZ(50px) translateY(0); }
-  50% { transform: translateZ(50px) translateY(-20px); }
+    0%, 100% { 
+        transform: translateZ(50px) translateY(0); 
+    }
+    50% { 
+        transform: translateZ(50px) translateY(-15px); 
+    }
 }
 
 .feature-image-3d {
-  animation: float-3d 6s ease-in-out infinite;
+    animation: float-3d 8s ease-in-out infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .image-3d-container {
+        perspective: 1200px;
+    }
+    
+    .image-3d-inner {
+        max-width: 400px;
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .image-3d-container {
+        perspective: 1000px;
+    }
+    
+    .image-3d-inner {
+        max-width: 350px;
+        max-height: 350px;
+    }
+    
+    .feature-image-3d {
+        border-width: 3px;
+    }
+}
+
+/* Optional: Add a soft glow effect */
+.image-3d-inner::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: radial-gradient(
+        circle at center,
+        rgba(0, 123, 255, 0.15) 0%,
+        transparent 70%
+    );
+    border-radius: 20px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.image-3d-container:hover .image-3d-inner::before {
+    opacity: 1;
 }
 </style>
 
 <script>
-// Enhanced 3D Parallax on Mouse Move
+// Enhanced 3D Parallax with boundaries
 document.querySelector('.image-3d-container').addEventListener('mousemove', (e) => {
-    const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-    const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-    document.querySelector('.image-3d-inner').style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+    const container = e.currentTarget;
+    const rect = container.getBoundingClientRect();
+    
+    // Calculate mouse position relative to container center
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    
+    // Normalize values and limit rotation
+    const xAxis = -(y / (rect.height / 2)) * 5; // Reduced from 25 to 5 for subtle effect
+    const yAxis = (x / (rect.width / 2)) * 5; // Reduced from 25 to 5 for subtle effect
+    
+    // Apply transformation
+    document.querySelector('.image-3d-inner').style.transform = 
+        `rotateY(${yAxis}deg) rotateX(${xAxis}deg) translateZ(50px)`;
+});
+
+// Reset rotation when mouse leaves
+document.querySelector('.image-3d-container').addEventListener('mouseleave', () => {
+    document.querySelector('.image-3d-inner').style.transform = 
+        'rotateY(0deg) rotateX(0deg) translateZ(50px)';
 });
 </script>
-                    </div>
-                </div>
-                
                 <!-- The text content for the "About" section --> 
                 <div class="col-lg-7">
                     <div class="section-title position-relative mb-4">
@@ -452,3 +535,4 @@ document.querySelector('.image-3d-container').addEventListener('mousemove', (e) 
 </body>
 
 </html>
+
