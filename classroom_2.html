@@ -23,99 +23,99 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 
-    <!-- holographic dzidzo (wake word + voice) styles -->
+    <!-- dzidzo with two-way voice (talks back) styles -->
     <style>
         .dzidzo-assistant {
             position: fixed;
             bottom: 30px;
             right: 30px;
             z-index: 999;
-            width: 350px;
-            background: rgba(10, 15, 30, 0.8);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 2px solid rgba(0, 230, 255, 0.7);
-            border-radius: 44px 44px 28px 44px;
-            box-shadow: 0 30px 50px rgba(0, 200, 255, 0.6), 0 0 0 2px rgba(120, 230, 255, 0.6) inset, 0 0 60px #00c3ff;
-            color: #f0fcff;
+            width: 360px;
+            background: rgba(8, 18, 38, 0.8);
+            backdrop-filter: blur(26px);
+            -webkit-backdrop-filter: blur(26px);
+            border: 2px solid rgba(0, 240, 255, 0.8);
+            border-radius: 46px 46px 30px 46px;
+            box-shadow: 0 30px 55px rgba(0, 210, 255, 0.7), 0 0 0 2px rgba(130, 240, 255, 0.7) inset, 0 0 70px #00eeff;
+            color: #efffff;
             font-family: 'Open Sans', sans-serif;
             cursor: grab;
             user-select: none;
             will-change: left, top;
             touch-action: none;
-            transition: box-shadow 0.2s, border-color 0.2s;
+            transition: box-shadow 0.3s, border-color 0.2s;
         }
-        .dzidzo-assistant.listening {
-            box-shadow: 0 0 80px cyan, 0 0 0 4px white inset;
+        .dzidzo-assistant.listening-mode {
+            box-shadow: 0 0 100px cyan, 0 0 0 5px white inset;
             border-color: white;
-            transition: 0.1s;
         }
         .dzidzo-assistant:active {
             cursor: grabbing;
         }
         .dzidzo-assistant:not(.dragging) {
-            animation: hoverGlow 5s infinite ease-in-out;
+            animation: floatWave 6s infinite ease-in-out;
         }
-        @keyframes hoverGlow {
-            0% { transform: translateY(0px) rotate(0deg); box-shadow: 0 20px 45px rgba(0,200,255,0.5); }
-            50% { transform: translateY(-7px) rotate(0.4deg); box-shadow: 0 35px 60px cyan; }
-            100% { transform: translateY(0px) rotate(0deg); box-shadow: 0 20px 45px rgba(0,200,255,0.5); }
+        @keyframes floatWave {
+            0% { transform: translateY(0px) rotate(0deg); }
+            45% { transform: translateY(-8px) rotate(0.5deg); }
+            55% { transform: translateY(-8px) rotate(0.5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
         }
         .dzidzo-header {
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 16px 20px 10px 20px;
+            padding: 18px 22px 10px 22px;
             border-bottom: 1px dashed rgba(0, 230, 255, 0.5);
             cursor: grab;
         }
         .dzidzo-avatar {
-            width: 54px;
-            height: 54px;
-            background: radial-gradient(circle at 30% 30%, #b2ebff, #0077be);
+            width: 58px;
+            height: 58px;
+            background: radial-gradient(circle at 30% 30%, #b5f0ff, #0077c5);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 34px;
-            box-shadow: 0 0 40px #0cf, 0 0 10px #fff inset;
-            border: 2px solid #d0f0ff;
-            color: #001c2b;
+            font-size: 36px;
+            box-shadow: 0 0 50px #0cf, 0 0 15px #fff inset;
+            border: 2px solid #dcf5ff;
+            color: #002b44;
         }
         .dzidzo-name {
             font-weight: 800;
-            font-size: 1.7rem;
-            background: linear-gradient(145deg, #e0f5ff, #aae0ff);
+            font-size: 1.9rem;
+            background: linear-gradient(145deg, #e3f8ff, #a8dcff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 25px cyan;
+            text-shadow: 0 0 30px cyan;
             line-height: 1.2;
         }
         .dzidzo-sub {
-            font-size: 0.75rem;
-            color: #b3ecff;
+            font-size: 0.8rem;
+            color: #b0f0ff;
             display: flex;
             gap: 10px;
         }
         .dzidzo-message {
             padding: 16px 22px;
-            background: rgba(0, 40, 60, 0.55);
-            border-radius: 30px 30px 30px 8px;
-            margin: 12px 16px 16px 16px;
-            border: 1px solid rgba(0, 240, 255, 0.5);
+            background: rgba(0, 40, 65, 0.6);
+            border-radius: 32px 32px 32px 8px;
+            margin: 12px 18px 16px 18px;
+            border: 1px solid rgba(0, 255, 255, 0.5);
             font-size: 1rem;
             line-height: 1.5;
-            box-shadow: 0 8px 20px #0000004d;
+            box-shadow: 0 8px 25px #00000066;
             backdrop-filter: blur(4px);
         }
         .dzidzo-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            padding: 0 16px 18px 16px;
+            padding: 0 18px 20px 18px;
         }
         .dzidzo-btn {
-            background: rgba(0, 80, 130, 0.8);
+            background: rgba(0, 90, 140, 0.8);
             border: 1px solid #2ad4ff;
             color: white;
             border-radius: 40px;
@@ -131,17 +131,17 @@
             backdrop-filter: blur(4px);
         }
         .dzidzo-btn:hover {
-            background: rgba(0, 140, 220, 0.95);
+            background: rgba(0, 150, 230, 0.95);
             border-color: #fff;
-            box-shadow: 0 0 30px #0cf;
+            box-shadow: 0 0 35px #0cf;
             transform: scale(1.05);
         }
         .voice-btn {
-            background: rgba(130, 0, 200, 0.8);
-            border-color: #d4a0ff;
+            background: rgba(130, 20, 200, 0.8);
+            border-color: #e1b0ff;
         }
         .voice-btn:hover {
-            background: #b45dff;
+            background: #c06aff;
         }
         .small-note {
             font-size: 0.7rem;
@@ -149,45 +149,31 @@
             padding-left: 22px;
             padding-bottom: 14px;
             display: flex;
-            gap: 20px;
-            color: #b0f0ff;
+            gap: 22px;
+            color: #b8f0ff;
         }
-        .pulse-glow {
-            animation: pulseSoft 3.5s infinite;
-        }
-        @keyframes pulseSoft {
-            0% { box-shadow: 0 0 25px #0cf, 0 0 25px #0cf inset; }
-            50% { box-shadow: 0 0 55px #6cf, 0 0 60px #3cf inset; }
-            100% { box-shadow: 0 0 25px #0cf, 0 0 25px #0cf inset; }
-        }
-        .dzidzo-assistant.dragging {
-            animation: none !important;
-            opacity: 0.96;
-            box-shadow: 0 30px 70px #0cf, 0 0 0 3px white;
-        }
-        .wake-glow {
-            box-shadow: 0 0 90px gold, 0 0 0 5px white !important;
+        .wake-active {
+            box-shadow: 0 0 120px gold, 0 0 0 6px white, 0 0 90px cyan !important;
             transition: 0.2s;
+            border-color: white;
         }
-        .listening-pulse {
-            animation: listeningAnim 1.2s infinite;
+        .speaking-pulse {
+            animation: speakPulse 0.8s infinite alternate;
         }
-        @keyframes listeningAnim {
-            0% { box-shadow: 0 0 30px cyan, 0 0 0 3px white; }
-            50% { box-shadow: 0 0 80px gold, 0 0 0 5px white; }
-            100% { box-shadow: 0 0 30px cyan, 0 0 0 3px white; }
+        @keyframes speakPulse {
+            from { box-shadow: 0 0 50px cyan, 0 0 0 3px white; }
+            to { box-shadow: 0 0 100px magenta, 0 0 0 6px white; }
         }
         .drag-handle {
             position: absolute;
             top: 8px; left: 25px;
             font-size: 10px;
-            color: #b3e6ff;
-            opacity: 0.5;
+            color: #b8f0ff;
+            opacity: 0.6;
             pointer-events: none;
         }
         @media (max-width: 600px) {
-            .dzidzo-assistant { width: 290px; }
-            .dzidzo-avatar { width: 46px; height: 46px; font-size: 28px; }
+            .dzidzo-assistant { width: 300px; }
         }
     </style>
 </head>
@@ -278,7 +264,7 @@
         </div>
     </div>
 
-    <!-- Main library content (same as before) -->
+    <!-- Main library content (unchanged, keep as before) -->
     <div class="container-fluid py-5">
         <div class="container py-5">
             <div class="row">
@@ -312,8 +298,6 @@
                         </a>
                     </div>
                 </div>
-
-                <!-- right sidebar features (unchanged) -->
                 <div class="col-lg-4 mt-5 mt-lg-0">
                     <div class="bg-primary mb-5 py-3">
                         <h3 class="text-white py-3 px-4 m-0">Class Features</h3>
@@ -327,7 +311,6 @@
                         <div class="py-3 px-4"><a class="btn btn-block btn-secondary py-3 px-5" href="">Enroll Now</a></div>
                         <div class="py-3 px-4"><a class="btn btn-block btn-secondary py-3 px-5" style="color: black;" onmouseover="this.style.background='red'" onmouseout="this.style.background='greenyellow'" href="https://sketchfab.com/models/2ad7f048f73c48fba9624bf62fb2d3bd/embed?autostart=1&cardboard=1&internal=1&tracking=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0">View/Enter Class Demo</a></div>
                     </div>
-                    <!-- categories etc -->
                     <div class="mb-5">
                         <h2 class="mb-3">Categories</h2>
                         <ul class="list-group list-group-flush">
@@ -344,29 +327,29 @@
         </div>
     </div>
 
-    <!-- ========== DZIDZO ASSISTANT WITH "HEY DZIDZO" WAKE WORD (LIKE SIRI) ========== -->
-    <div class="dzidzo-assistant pulse-glow" id="dzidzoHolo">
-        <div class="drag-handle"><i class="fas fa-microphone-alt"></i>  say "hey dzidzo"</div>
+    <!-- ========== DZIDZO WITH TWO-WAY VOICE (LISTENS AND TALKS BACK) ========== -->
+    <div class="dzidzo-assistant" id="dzidzoHolo">
+        <div class="drag-handle"><i class="fas fa-microphone-alt"></i>  "hey dzidzo" · talks back</div>
 
         <div class="dzidzo-header" id="dzidzoHeader">
             <div class="dzidzo-avatar"><i class="fas fa-user-astronaut"></i></div>
             <div>
                 <div class="dzidzo-name">dzidzo</div>
-                <div class="dzidzo-sub"><i class="fas fa-ear-listen"></i> listening for "hey dzidzo"</div>
+                <div class="dzidzo-sub"><i class="fas fa-waveform"></i> voice active · talks back</div>
             </div>
         </div>
         <div class="dzidzo-message" id="dzidzoMessage">
-            🧠 Say "Hey Dzidzo" or click a button. I can recommend books, give hours, and more.
+            🎤 Say <b>"Hey Dzidzo"</b> – I'll listen AND talk back, just like Siri.
         </div>
         <div class="dzidzo-actions">
             <div class="dzidzo-btn" onclick="dzidzoAction('hours')"><i class="far fa-clock"></i> hours</div>
             <div class="dzidzo-btn" onclick="dzidzoAction('books')"><i class="fas fa-book-open"></i> book picks</div>
             <div class="dzidzo-btn" onclick="dzidzoAction('info')"><i class="fas fa-info-circle"></i> library info</div>
-            <div class="dzidzo-btn voice-btn" onclick="dzidzoSpeakLatest()"><i class="fas fa-volume-up"></i> speak</div>
+            <div class="dzidzo-btn voice-btn" onclick="dzidzoRepeatMessage()"><i class="fas fa-volume-up"></i> repeat</div>
         </div>
         <div class="small-note">
             <span><i class="fas fa-arrows-alt"></i> drag</span>
-            <span><i class="fas fa-star"></i> "hey dzidzo" wake word</span>
+            <span><i class="fas fa-microphone"></i> says "hey dzidzo" → talks back</span>
         </div>
     </div>
 
@@ -446,10 +429,38 @@
                 document.removeEventListener('touchcancel', stopDrag);
             }
 
-            // ---------- DZIDZO CORE FUNCTIONS ----------
+            // ---------- DZIDZO VOICE + WAKE WORD (talks back) ----------
             const messageBox = document.getElementById('dzidzoMessage');
+            let recognition = null;
+            let isListening = false;
 
-            // main action responder (text + visual)
+            // function to speak any text (talks back)
+            function speakText(text, rate = 0.95) {
+                if (!window.speechSynthesis) {
+                    alert("Voice not supported");
+                    return;
+                }
+                window.speechSynthesis.cancel(); // stop any ongoing
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = rate;
+                utterance.pitch = 1.2;
+                utterance.volume = 1;
+                // choose a nice voice
+                const voices = speechSynthesis.getVoices();
+                const preferred = voices.find(v => v.lang.includes('en') && (v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Microsoft')));
+                if (preferred) utterance.voice = preferred;
+                speechSynthesis.speak(utterance);
+            }
+
+            // Update message and also speak it (if talkBack = true)
+            function setMessageAndSpeak(newText, speakIt = true) {
+                messageBox.innerHTML = `📖 <strong>Dzidzo:</strong> ${newText}`;
+                if (speakIt) {
+                    speakText(newText);
+                }
+            }
+
+            // Manual actions (buttons) – now they also speak
             window.dzidzoAction = function(topic) {
                 let response = '';
                 const now = new Date();
@@ -457,46 +468,30 @@
                 const isOpen = hrs >= 8 && hrs < 22;
 
                 if (topic === 'hours') {
-                    response = `⏰ Library open 8am – 10pm daily. Currently ${isOpen ? '🟢 open' : '🔴 closed'}.`;
+                    response = `Library is open from 8am to 10pm daily. Currently it is ${isOpen ? 'open' : 'closed'}.`;
                 } else if (topic === 'books') {
-                    const recs = ['"AR/VR for Beginners"', '"The Metaverse Library"', '"3D Biology"', '"Shona Folktales VR"'];
-                    response = `📖 Based on popular programs: ${recs.join(', ')}. Ask me for specific faculty.`;
+                    response = `For computer science students I recommend "AR/VR essentials", for medicine "Virtual anatomy", for business "Metaverse marketing". Which program are you in?`;
                 } else if (topic === 'info') {
-                    response = "ℹ️ Library: VR booths (floor 2), outdoor reading, AR reference cards. Librarian hours 9–6. WiFi: Dzidzo-Guest.";
+                    response = `Library facilities: VR headsets on floor two, outdoor AR reading garden, and quiet zones. Librarian available nine to six.`;
                 } else {
-                    response = "I'm Dzidzo. Try 'hours', 'book picks', or 'info'.";
+                    response = `I'm Dzidzo. You can ask about hours, book recommendations, or library info.`;
                 }
-                messageBox.innerHTML = `📖 <strong>Dzidzo:</strong> ${response}`;
-                // pulse effect
-                holo.classList.add('listening');
-                setTimeout(() => holo.classList.remove('listening'), 400);
+                setMessageAndSpeak(response, true);
+                // visual pulse
+                holo.classList.add('wake-active');
+                setTimeout(() => holo.classList.remove('wake-active'), 500);
             };
 
-            // speak the current message
-            window.dzidzoSpeakLatest = function() {
-                let txt = messageBox.innerText || messageBox.textContent;
-                txt = txt.replace(/.*Dzidzo:\s*/i, '');
-                if (!txt || txt.length < 3) txt = "Dzidzo assistant ready.";
-                if (!window.speechSynthesis) return alert('Voice unavailable');
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(txt);
-                utterance.rate = 0.95;
-                utterance.pitch = 1.1;
-                utterance.voice = speechSynthesis.getVoices().find(v => v.lang.includes('en')) || null;
-                speechSynthesis.speak(utterance);
-                // visual feedback
-                document.querySelector('.voice-btn').style.background = '#b77af2';
-                setTimeout(() => document.querySelector('.voice-btn').style.background = '', 300);
+            // repeat last message
+            window.dzidzoRepeatMessage = function() {
+                const currentMsg = messageBox.innerText.replace('📖 Dzidzo:', '').trim();
+                speakText(currentMsg);
             };
 
-            // wake word detection (simulated via SpeechRecognition)
-            let recognition = null;
-            let isListening = false;
-            const wakeWord = "hey dzidzo";
-
+            // ---------- WAKE WORD DETECTION (talks back immediately) ----------
             function initWakeWord() {
                 if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    messageBox.innerHTML = `🎤 <strong>Dzidzo:</strong> Voice wake not supported. Try Chrome.`;
+                    setMessageAndSpeak("Voice wake not supported. Try Chrome.", false);
                     return;
                 }
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -508,67 +503,61 @@
                 recognition.onresult = (event) => {
                     const last = event.results.length - 1;
                     const transcript = event.results[last][0].transcript.trim().toLowerCase();
-                    // show user what we heard (optional)
-                    // messageBox.innerHTML = `🎤 heard: "${transcript}"`; // debug
-                    if (transcript.includes(wakeWord) || transcript.includes('hey dzidzo') || transcript.includes('hai dzidzo')) {
-                        // wake word detected!
-                        holo.classList.add('wake-glow', 'listening-pulse');
-                        // respond with voice and visual
-                        const ack = "Yes, I'm listening. How can I help?";
-                        messageBox.innerHTML = `👂 <strong>Dzidzo:</strong> ${ack}`;
-                        // speak acknowledgment
-                        const utterance = new SpeechSynthesisUtterance("Yes, I'm listening.");
-                        utterance.rate = 0.9;
-                        speechSynthesis.speak(utterance);
-                        // remove glow after a few sec, keep subtle
+                    
+                    // check for wake word variations
+                    if (transcript.includes('hey dzidzo') || transcript.includes('hey dzido') || transcript.includes('hai dzidzo')) {
+                        // wake word detected! activate and talk back
+                        holo.classList.add('wake-active', 'speaking-pulse');
+
+                        // spoken and visual response
+                        const ack = "Yes, I'm listening. How can I help with the library?";
+                        setMessageAndSpeak(ack, true);  // this speaks it back
+
+                        // remove pulsing after a few seconds
                         setTimeout(() => {
-                            holo.classList.remove('wake-glow', 'listening-pulse');
-                        }, 4000);
+                            holo.classList.remove('wake-active', 'speaking-pulse');
+                        }, 5000);
                     }
                 };
 
                 recognition.onerror = (e) => {
                     console.log("recognition error", e.error);
                     if (e.error === 'no-speech') {
-                        // restart silently
                         try { recognition.start(); } catch {}
                     }
                 };
 
                 recognition.onend = () => {
-                    // restart to keep listening
                     if (isListening) {
                         try { recognition.start(); } catch {}
                     }
                 };
 
-                // start
+                // start listening
                 try {
                     recognition.start();
                     isListening = true;
-                    messageBox.innerHTML = `🎤 <strong>Dzidzo:</strong> I'm always listening for "Hey Dzidzo" (like Siri).`;
+                    setMessageAndSpeak("I'm always listening for 'Hey Dzidzo' – and I'll talk back!", false);
                 } catch (e) {
-                    console.warn("could not start recognition", e);
+                    console.warn("recognition start failed", e);
                 }
             }
 
-            // start listening after a short delay (ensure page loaded)
             window.addEventListener('load', () => {
-                setTimeout(initWakeWord, 1200);
+                // small delay to let voices load
+                setTimeout(initWakeWord, 1500);
             });
 
-            // make sure we stop on page unload
             window.addEventListener('beforeunload', () => {
                 if (recognition) recognition.stop();
             });
 
-            // also allow manual demo of wake effect via button
-            window.demoWake = function() {
-                holo.classList.add('wake-glow', 'listening-pulse');
-                messageBox.innerHTML = `👂 <strong>Dzidzo:</strong> Yes? (simulated wake)`;
-                setTimeout(() => holo.classList.remove('wake-glow', 'listening-pulse'), 3500);
+            // simulate wake for demo (can be triggered manually)
+            window.demoWakeWord = function() {
+                holo.classList.add('wake-active', 'speaking-pulse');
+                setMessageAndSpeak("Yes, I'm listening. How can I help with the library?", true);
+                setTimeout(() => holo.classList.remove('wake-active', 'speaking-pulse'), 5000);
             };
-
         })();
     </script>
     <!-- ========== END DZIDZO ========== -->
@@ -577,7 +566,7 @@
     <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
         <div class="container mt-5 pt-5">
             <div class="row">
-                <div class="col-md-6 mb-5"><a href="index.html" class="navbar-brand"><h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Dzidzo</h1></a><p class="m-0">Dzidzo is an open-source AR/VR-powered education platform...</p></div>
+                <div class="col-md-6 mb-5"><a href="index.html" class="navbar-brand"><h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Dzidzo</h1></a><p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible...</p></div>
                 <div class="col-md-6 mb-5"><h3 class="text-white mb-4">Education and business Made Simplier</h3><div class="w-100"><div class="input-group"><input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Welcome to Dzidzo, please enter your email"><div class="input-group-append"><button class="btn btn-primary px-4">Sign Up</button></div></div></div></div>
             </div>
             <div class="row">
