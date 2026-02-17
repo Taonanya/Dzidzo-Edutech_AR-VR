@@ -397,9 +397,77 @@
             }
 
             // ---------- VOICE & WAKE (requires user click) ----------
+          // Replace the entire script section from line 219 onwards with this improved version:
+
+    <script>
+        (function() {
+            // ---- drag logic (unchanged) ----
+            const holo = document.getElementById('dzidzoHolo');
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            holo.addEventListener('mousedown', startDrag);
+            holo.addEventListener('touchstart', startDrag, { passive: false });
+
+            function startDrag(e) {
+                if (e.target.classList.contains('dzidzo-btn') || e.target.closest('.dzidzo-btn')) return;
+                e.preventDefault();
+                isDragging = true;
+                holo.classList.add('dragging');
+
+                const rect = holo.getBoundingClientRect();
+                let clientX, clientY;
+                if (e.type === 'mousedown') { clientX = e.clientX; clientY = e.clientY; } 
+                else { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; }
+                offsetX = clientX - rect.left;
+                offsetY = clientY - rect.top;
+
+                holo.style.left = rect.left + 'px';
+                holo.style.top = rect.top + 'px';
+                holo.style.bottom = 'auto';
+                holo.style.right = 'auto';
+
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchmove', onDrag, { passive: false });
+                document.addEventListener('touchend', stopDrag);
+                document.addEventListener('touchcancel', stopDrag);
+            }
+
+            function onDrag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                let clientX, clientY;
+                if (e.type === 'mousemove') { clientX = e.clientX; clientY = e.clientY; } 
+                else { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; }
+                let newLeft = clientX - offsetX;
+                let newTop = clientY - offsetY;
+                const rect = holo.getBoundingClientRect();
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                newLeft = Math.max(10, Math.min(winW - rect.width - 10, newLeft));
+                newTop = Math.max(10, Math.min(winH - rect.height - 10, newTop));
+                holo.style.left = newLeft + 'px';
+                holo.style.top = newTop + 'px';
+            }
+
+            function stopDrag() {
+                if (isDragging) {
+                    isDragging = false;
+                    holo.classList.remove('dragging');
+                }
+                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchmove', onDrag);
+                document.removeEventListener('touchend', stopDrag);
+                document.removeEventListener('touchcancel', stopDrag);
+            }
+
+            // ---------- IMPROVED VOICE RECOGNITION ----------
             const messageBox = document.getElementById('dzidzoMessage');
             let recognition = null;
-            let isVoiceActive = false;   // becomes true after user clicks Start
+            let isVoiceActive = false;
+            let restartTimeout = null;
 
             function speakText(text) {
                 if (!window.speechSynthesis) return;
@@ -408,9 +476,14 @@
                 utterance.rate = 0.95;
                 utterance.pitch = 1.2;
                 utterance.volume = 1;
-                const voices = speechSynthesis.getVoices();
-                const preferred = voices.find(v => v.lang.includes('en') && (v.name.includes('Google') || v.name.includes('Samantha')));
-                if (preferred) utterance.voice = preferred;
+                
+                // Wait for voices to be loaded
+                if (speechSynthesis.getVoices().length > 0) {
+                    const voices = speechSynthesis.getVoices();
+                    const preferred = voices.find(v => v.lang.includes('en') && (v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Microsoft')));
+                    if (preferred) utterance.voice = preferred;
+                }
+                
                 speechSynthesis.speak(utterance);
             }
 
@@ -419,7 +492,7 @@
                 if (speakIt) speakText(newText);
             }
 
-            // Button actions (speak back)
+            // Button actions
             window.dzidzoAction = function(topic) {
                 let response = '';
                 const now = new Date();
@@ -440,68 +513,144 @@
                 if (currentMsg) speakText(currentMsg);
             };
 
-            // ---------- START VOICE (user must click due to browser policy) ----------
+            // FIXED: Start Voice Assistant with better recognition
             window.startVoiceAssistant = function() {
                 if (isVoiceActive) {
-                    setMessage("Voice already active. Try saying 'Hey Dzidzo'.", false);
+                    setMessage("Voice is already active. Try saying 'Hey Dzidzo'!", false);
                     return;
                 }
+                
+                // Check browser support
                 if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                    setMessage("Voice recognition not supported. Try Chrome.", false);
+                    setMessage("Voice recognition not supported. Please use Chrome, Edge, or Safari.", false);
                     return;
                 }
+                
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 recognition = new SpeechRecognition();
+                
+                // Important settings for better recognition
                 recognition.continuous = true;
                 recognition.interimResults = true;
                 recognition.lang = 'en-US';
+                recognition.maxAlternatives = 3; // Get multiple alternatives
+
+                recognition.onstart = function() {
+                    console.log("Voice recognition started");
+                    isVoiceActive = true;
+                    setMessage("✅ Voice active! Say 'Hey Dzidzo' and I'll respond.", false);
+                };
 
                 recognition.onresult = (event) => {
-                    const last = event.results.length - 1;
-                    const transcript = event.results[last][0].transcript.trim().toLowerCase();
-                    // debug (optional)
-                    // setMessage(`Heard: "${transcript}"`, false);
-                    
-                    if (transcript.includes('hey dzidzo') || transcript.includes('hai dzidzo') || transcript.includes('hey dzido')) {
-                        // Wake word detected: visual and voice response
-                        holo.classList.add('wake-active', 'speaking-pulse');
-                        const ack = "Yes, I'm listening. How can I help with the library?";
-                        setMessage(ack, true);  // speaks back!
-                        setTimeout(() => {
-                            holo.classList.remove('wake-active', 'speaking-pulse');
-                        }, 5000);
+                    // Get the most recent result
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            // Check all alternatives for the wake word
+                            for (let j = 0; j < event.results[i].length; j++) {
+                                const transcript = event.results[i][j].transcript.trim().toLowerCase();
+                                console.log("Heard:", transcript, "Confidence:", event.results[i][j].confidence);
+                                
+                                // More flexible wake word detection
+                                if (transcript.includes('hey dzidzo') || 
+                                    transcript.includes('hey dido') || 
+                                    transcript.includes('hai dzidzo') || 
+                                    transcript.includes('edzidzo') ||
+                                    transcript.includes('dzidzo')) {
+                                    
+                                    // Wake word detected!
+                                    holo.classList.add('wake-active', 'speaking-pulse');
+                                    
+                                    // Different responses based on what follows
+                                    if (transcript.includes('time') || transcript.includes('hour')) {
+                                        const response = "The library is open from 8 AM to 10 PM daily.";
+                                        setMessage(response, true);
+                                    } else if (transcript.includes('book')) {
+                                        const response = "We have books on AR/VR development, 3D modeling, and educational technology.";
+                                        setMessage(response, true);
+                                    } else {
+                                        const responses = [
+                                            "Yes, I'm here! How can I help you with the library?",
+                                            "Hello! I'm listening. What would you like to know?",
+                                            "Hi there! Ask me about library hours, books, or AR/VR resources."
+                                        ];
+                                        const response = responses[Math.floor(Math.random() * responses.length)];
+                                        setMessage(response, true);
+                                    }
+                                    
+                                    setTimeout(() => {
+                                        holo.classList.remove('wake-active', 'speaking-pulse');
+                                    }, 4000);
+                                    
+                                    break; // Found wake word, stop checking alternatives
+                                }
+                            }
+                        }
                     }
                 };
 
                 recognition.onerror = (e) => {
-                    console.log("Recognition error", e.error);
+                    console.log("Recognition error:", e.error);
                     if (e.error === 'not-allowed') {
-                        setMessage("Microphone permission denied. Please allow and click Start again.", false);
+                        setMessage("❌ Microphone permission denied. Please allow access and click Start again.", false);
                         isVoiceActive = false;
+                    } else if (e.error === 'no-speech') {
+                        // Silent - don't show error for no speech
+                    } else {
+                        setMessage(`Voice error: ${e.error}. Try restarting.`, false);
                     }
                 };
 
                 recognition.onend = () => {
+                    console.log("Recognition ended, isVoiceActive:", isVoiceActive);
+                    // Restart if still active
                     if (isVoiceActive) {
-                        try { recognition.start(); } catch {}
+                        if (restartTimeout) clearTimeout(restartTimeout);
+                        restartTimeout = setTimeout(() => {
+                            try {
+                                recognition.start();
+                                console.log("Restarted recognition");
+                            } catch (e) {
+                                console.log("Restart failed:", e);
+                                isVoiceActive = false;
+                            }
+                        }, 100);
                     }
                 };
 
-                // Start recognition
-                try {
-                    recognition.start();
-                    isVoiceActive = true;
-                    setMessage("✅ Voice active! Now say 'Hey Dzidzo' – I'll listen and talk back.", false);
-                } catch (e) {
-                    setMessage("Could not access microphone. Ensure permissions are granted.", false);
-                    console.error(e);
-                }
+                // Request microphone permission and start
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function(stream) {
+                        // Stop all tracks immediately - we just needed permission
+                        stream.getTracks().forEach(track => track.stop());
+                        
+                        // Now start recognition
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.error("Failed to start recognition:", e);
+                            setMessage("Failed to start voice recognition. Please try again.", false);
+                            isVoiceActive = false;
+                        }
+                    })
+                    .catch(function(err) {
+                        console.error("Microphone permission error:", err);
+                        setMessage("❌ Please allow microphone access to use voice features.", false);
+                        isVoiceActive = false;
+                    });
             };
 
-            // Optionally stop on unload
+            // Stop voice on page unload
             window.addEventListener('beforeunload', () => {
-                if (recognition) recognition.stop();
+                if (recognition) {
+                    try { recognition.stop(); } catch (e) {}
+                }
+                if (restartTimeout) clearTimeout(restartTimeout);
             });
+
+            // Pre-load voices
+            if (window.speechSynthesis) {
+                speechSynthesis.getVoices();
+            }
         })();
     </script>
     <!-- ========== END DZIDZO ========== -->
