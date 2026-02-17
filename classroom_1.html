@@ -23,7 +23,7 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 
-    <!-- inline style for holographic AI -->
+    <!-- holographic AI advanced style + drag logic -->
     <style>
         .ai-hologram {
             position: fixed;
@@ -31,47 +31,67 @@
             right: 30px;
             z-index: 999;
             max-width: 340px;
-            background: rgba(10, 20, 40, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 2px solid rgba(0, 255, 255, 0.5);
+            background: rgba(10, 20, 40, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(0, 255, 255, 0.6);
             border-radius: 32px 32px 20px 32px;
-            box-shadow: 0 20px 40px rgba(0, 180, 255, 0.3), 0 0 0 2px rgba(0, 255, 255, 0.2) inset;
+            box-shadow: 0 20px 40px rgba(0, 180, 255, 0.5), 0 0 0 2px rgba(0, 255, 255, 0.3) inset, 0 0 30px #00ccff88;
             color: #e0f0ff;
             font-family: 'Open Sans', sans-serif;
-            transition: transform 0.2s ease;
+            transition: box-shadow 0.2s, transform 0.1s; /* no transition for left/top to avoid lag during drag */
+            cursor: grab;
+            user-select: none; /* prevent accidental text selection while dragging */
+            will-change: left, top;
+            touch-action: none; /* better touch dragging */
         }
-        .ai-hologram:hover {
-            transform: scale(1.02);
+        .ai-hologram:active {
+            cursor: grabbing;
+            box-shadow: 0 20px 45px rgba(0, 220, 255, 0.8), 0 0 0 3px #ffffff80 inset;
+            transition: none; /* immediate feedback */
         }
+        /* subtle floating animation when NOT dragging — adds life */
+        .ai-hologram:not(.dragging) {
+            animation: floatHover 4s infinite ease-in-out;
+        }
+        @keyframes floatHover {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(0.5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
         .ai-header {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 16px 20px 8px 20px;
-            border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
+            border-bottom: 1px dashed rgba(0, 255, 255, 0.4);
+            cursor: grab;
+        }
+        .ai-header:active {
+            cursor: grabbing;
         }
         .ai-avatar {
             width: 48px;
             height: 48px;
-            background: radial-gradient(circle at 30% 30%, #a0f0ff, #1080c0);
+            background: radial-gradient(circle at 30% 30%, #b0f5ff, #0a6c9e);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 28px;
-            box-shadow: 0 0 20px cyan;
-            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 0 25px cyan, 0 0 8px white inset;
+            border: 1px solid rgba(255,255,255,0.8);
         }
         .ai-title {
             font-weight: 600;
             font-size: 1.1rem;
             letter-spacing: 1px;
-            text-shadow: 0 0 8px cyan;
+            text-shadow: 0 0 12px cyan;
         }
         .ai-sub {
             font-size: 0.75rem;
-            color: #aaccee;
+            color: #b0e0ff;
             display: flex;
             gap: 8px;
         }
@@ -86,7 +106,8 @@
             border: 1px solid rgba(0,255,255,0.2);
             font-size: 0.95rem;
             line-height: 1.5;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
         }
         .ai-actions {
             display: flex;
@@ -106,17 +127,15 @@
             align-items: center;
             gap: 6px;
             cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 2px 8px rgba(0,240,255,0.2);
+            transition: 0.15s;
+            box-shadow: 0 2px 10px rgba(0,240,255,0.3);
             backdrop-filter: blur(4px);
         }
         .ai-btn:hover {
-            background: rgba(0, 140, 200, 0.9);
+            background: rgba(0, 140, 210, 0.95);
             border-color: #fff;
-            box-shadow: 0 0 18px cyan;
-        }
-        .ai-btn i {
-            font-size: 0.9rem;
+            box-shadow: 0 0 25px cyan;
+            transform: scale(1.05);
         }
         .ai-assistant-small-note {
             font-size: 0.7rem;
@@ -126,28 +145,46 @@
             display: flex;
             gap: 10px;
         }
-        .pulse {
-            animation: pulseGlow 2s infinite;
+        .pulse-glow {
+            animation: glowPulse 3s infinite;
         }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 5px #0cf, 0 0 10px #0cf inset; }
-            50% { box-shadow: 0 0 20px #0cf, 0 0 30px #0cf inset; }
-            100% { box-shadow: 0 0 5px #0cf, 0 0 10px #0cf inset; }
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 15px #0cf, 0 0 20px #0cf inset; }
+            50% { box-shadow: 0 0 35px #3cf, 0 0 45px #1cf inset; }
+            100% { box-shadow: 0 0 15px #0cf, 0 0 20px #0cf inset; }
         }
-        /* make it responsive */
+        /* dragging state disables animation and makes it more "real" */
+        .ai-hologram.dragging {
+            animation: none !important;
+            transition: none;
+            opacity: 0.95;
+            box-shadow: 0 25px 50px rgba(0,200,255,0.9), 0 0 0 3px #ffffff, 0 0 40px cyan;
+            border-color: white;
+        }
+
+        /* responsive adjustment */
         @media (max-width: 600px) {
             .ai-hologram {
-                max-width: 260px;
+                max-width: 280px;
                 bottom: 15px;
                 right: 15px;
             }
-            .ai-avatar { width: 36px; height: 36px; font-size: 20px; }
+            .ai-avatar { width: 40px; height: 40px; font-size: 22px; }
+        }
+
+        /* tiny handle hint */
+        .drag-handle {
+            position: absolute;
+            top: 5px; left: 20px;
+            font-size: 10px;
+            color: cyan;
+            opacity: 0.4;
+            pointer-events: none;
         }
     </style>
 </head>
-
 <body>
-    <!-- Topbar Start -->
+    <!-- Topbar (unchanged) -->
     <div class="container-fluid bg-dark">
         <div class="row py-2 px-lg-5">
             <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
@@ -168,9 +205,8 @@
             </div>
         </div>
     </div>
-    <!-- Topbar End -->
 
-    <!-- Navbar Start (same as original, shortened for clarity) -->
+    <!-- Navbar (unchanged) -->
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
             <a href="index.html" class="navbar-brand ml-lg-3">
@@ -205,9 +241,8 @@
             </div>
         </nav>
     </div>
-    <!-- Navbar End -->
 
-    <!-- Header Start -->
+    <!-- Header (unchanged) -->
     <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
         <div class="container text-center py-5">
             <h1 class="text-white display-1">Classroom 1</h1>
@@ -216,11 +251,10 @@
                 <i class="fa fa-angle-double-right pt-1 px-3"></i>
                 <p class="m-0 text-uppercase">Classroom 1</p>
             </div>
-            <!-- search etc -->
             <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Classrooms</button>
+                        <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown">Classrooms</button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#">Classroom 1</a>
                             <a class="dropdown-item" href="#">Classroom 2</a>
@@ -235,9 +269,8 @@
             </div>
         </div>
     </div>
-    <!-- Header End -->
 
-    <!-- Detail Start (main content) -->
+    <!-- Main detail section (unchanged, but keep as is) -->
     <div class="container-fluid py-5">
         <div class="container py-5">
             <div class="row">
@@ -255,13 +288,10 @@
                         The metaverse is no longer a concept—it’s here, and it starts with you.
                         </p>
                     </div>
-
                     <h2 class="mb-3">Related Courses</h2>
                     <div class="owl-carousel related-carousel position-relative" style="padding: 0 30px;">
-                        <!-- items unchanged -->
                         <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="classroom_2.html">
-                            <img class="img-fluid" src="img/courses-1.jpg" alt="">
-                            <div class="courses-text"><h4 class="text-center text-white px-3">Classroom 2</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>Nature_</span><span class="text-white"><i class="fa fa-star mr-2"></i>4.4 <small>(38)</small></span></div></div></div>
+                            <img class="img-fluid" src="img/courses-1.jpg" alt=""><div class="courses-text"><h4 class="text-center text-white px-3">Classroom 2</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>Nature_</span><span class="text-white"><i class="fa fa-star mr-2"></i>4.4 <small>(38)</small></span></div></div></div>
                         </a>
                         <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="class-coming-soon.html">
                             <img class="img-fluid" src="img/courses-2.jpg" alt=""><div class="courses-text"><h4 class="text-center text-white px-3">Classroom 6</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span><span class="text-white"><i class="fa fa-star mr-2"></i>-.- <small>(**)</small></span></div></div></div>
@@ -298,7 +328,6 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">interactive Learning</a><span class="badge badge-primary badge-pill">100#</span></li>
                         </ul>
                     </div>
-
                     <div class="mb-5">
                         <h2 class="mb-4">Recent Classes</h2>
                         <a class="d-flex align-items-center text-decoration-none" href="#">
@@ -310,19 +339,21 @@
             </div>
         </div>
     </div>
-    <!-- Detail End -->
 
-    <!-- ========== HOLOGRAPHIC AI ASSISTANT ========== -->
-    <div class="ai-hologram pulse" id="holoAI">
-        <div class="ai-header">
-            <div class="ai-avatar"><i class="fas fa-robot" style="filter: drop-shadow(0 0 5px white);"></i></div>
+    <!-- ========== ADVANCED HOLOGRAPHIC AI ASSISTANT (draggable, hover, real feel) ========= -->
+    <div class="ai-hologram pulse-glow" id="holoAI">
+        <!-- subtle drag hint (only visual) -->
+        <div class="drag-handle"><i class="fas fa-grip-lines"></i> drag me</div>
+
+        <div class="ai-header" id="aiHeader">
+            <div class="ai-avatar"><i class="fas fa-robot" style="filter: drop-shadow(0 0 6px white);"></i></div>
             <div>
                 <div class="ai-title">AI Mentor · Nya<span style="color: #8cf;">⚡</span></div>
-                <div class="ai-sub"><i class="fas fa-microchip"></i> holographic assistant <i class="fas fa-circle" style="color: #0fa; font-size: 0.4rem;"></i> online</div>
+                <div class="ai-sub"><i class="fas fa-microchip"></i> holographic <i class="fas fa-circle" style="color: #0fa; font-size: 0.4rem;"></i> online</div>
             </div>
         </div>
         <div class="ai-message" id="aiMessage">
-            👋 Hi, I'm your holographic guide in Classroom 1. Ask me about class time, assignments, or anything AR/VR.
+            👋 I'm Nya, your living AI. You can <b>drag me anywhere</b> — I float and feel real. Ask about class time, assignments, or anything.
         </div>
         <div class="ai-actions">
             <div class="ai-btn" onclick="aiRespond('time')"><i class="far fa-clock"></i> class time</div>
@@ -331,42 +362,129 @@
             <div class="ai-btn" onclick="aiRespond('feature')"><i class="fas fa-star"></i> AR features</div>
         </div>
         <div class="ai-assistant-small-note">
-            <i class="fas fa-wave-square" style="color: #6cf;"></i> always here · just tap
+            <i class="fas fa-arrows-alt" style="color: #6cf;"></i> click & drag anywhere
         </div>
     </div>
 
+    <!-- Drag + AI response logic -->
     <script>
-        // simple AI response logic (simulates holographic assistance)
-        function aiRespond(topic) {
-            const msgBox = document.getElementById('aiMessage');
-            const assistantName = 'Nya';
-            const responses = {
-                time: `🕒 **Class time** for today: your VR session is open 24/7. However, a live guided tour starts in 10 minutes! Join the holographic lecture at HH:00 past the hour.`,
-                assignment: `📋 **Assignments**: 1) Explore the Sketchfab demo and leave a comment. 2) Complete the "AR basics" quiz in the classroom. Need help? I can guide you step by step.`,
-                help: `📚 **Class work support**: You're working on "Basic indoor AR/VR". Would you like me to explain how to navigate, or show you where the interactive 3D models are?`,
-                feature: `✨ **AR/VR features in this class**: object manipulation, spatial audio, 360° notes, and multi-user avatars. Point at any object and say "Nya, explain this" (voice beta).`
-            };
-            let reply = responses[topic] || `I'm here to help with your learning. You can ask about class time, assignments, or AR tools.`;
-            // add some holographic personality
-            if (topic === 'time') reply += ' 🌟 I’ll remind you 5 min before.';
-            if (topic === 'assignment') reply += ' ✨ Submit via the portal – I can check your progress.';
-            msgBox.innerHTML = `🤖 <strong>${assistantName}:</strong> ${reply}`;
-            // subtle pulse feedback
+        (function() {
             const holo = document.getElementById('holoAI');
-            holo.style.transform = 'scale(1.02)';
-            setTimeout(() => holo.style.transform = 'scale(1)', 200);
-        }
+            const header = document.getElementById('aiHeader'); // can also use whole holo, but header is fine
+            let isDragging = false;
+            let offsetX, offsetY;
 
-        // greet on load with dynamic message
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                document.getElementById('aiMessage').innerHTML = `🧠 <strong>Nya:</strong> Welcome to Classroom 1. I'm your holographic co-pilot. Feel free to ask about assignments, class schedule, or how to use AR tools.`;
-            }, 800);
-        });
+            // make the entire holo draggable from any point (but avoid interfering with button clicks)
+            holo.addEventListener('mousedown', startDrag);
+            holo.addEventListener('touchstart', startDrag, { passive: false });
+
+            function startDrag(e) {
+                // prevent drag if the target is a button or interactive element (ai-btn)
+                if (e.target.classList.contains('ai-btn') || e.target.closest('.ai-btn')) {
+                    return; // let button handle click
+                }
+
+                e.preventDefault(); // prevent text selection or image dragging
+                isDragging = true;
+                holo.classList.add('dragging');
+
+                // calculate offset: cursor relative to element's top-left
+                const rect = holo.getBoundingClientRect();
+                let clientX, clientY;
+
+                if (e.type === 'mousedown') {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                } else { // touchstart
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                }
+
+                offsetX = clientX - rect.left;
+                offsetY = clientY - rect.top;
+
+                // set position to fixed and update with new values
+                holo.style.left = rect.left + 'px';
+                holo.style.top = rect.top + 'px';
+                holo.style.bottom = 'auto';
+                holo.style.right = 'auto';
+
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchmove', onDrag, { passive: false });
+                document.addEventListener('touchend', stopDrag);
+                document.addEventListener('touchcancel', stopDrag);
+            }
+
+            function onDrag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+
+                let clientX, clientY;
+                if (e.type === 'mousemove') {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                } else {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                }
+
+                let newLeft = clientX - offsetX;
+                let newTop = clientY - offsetY;
+
+                // optional boundary constraints (keep inside viewport)
+                const rect = holo.getBoundingClientRect();
+                const winWidth = window.innerWidth;
+                const winHeight = window.innerHeight;
+
+                // soft boundary: prevent going completely off screen
+                newLeft = Math.max(10, Math.min(winWidth - rect.width - 10, newLeft));
+                newTop = Math.max(10, Math.min(winHeight - rect.height - 10, newTop));
+
+                holo.style.left = newLeft + 'px';
+                holo.style.top = newTop + 'px';
+            }
+
+            function stopDrag(e) {
+                if (isDragging) {
+                    isDragging = false;
+                    holo.classList.remove('dragging');
+                }
+                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchmove', onDrag);
+                document.removeEventListener('touchend', stopDrag);
+                document.removeEventListener('touchcancel', stopDrag);
+            }
+
+            // AI response function (enhanced)
+            window.aiRespond = function(topic) {
+                const msgBox = document.getElementById('aiMessage');
+                const assistantName = 'Nya';
+                const responses = {
+                    time: `🕒 **Class time**: Your VR session is always open. The next guided holographic tour starts in 12 minutes. I'll ping you!`,
+                    assignment: `📋 **Assignments**: 1) Demo exploration 2) AR quiz. Need a hint? Just ask. I can show you where to find 3D models.`,
+                    help: `📚 **Class work**: You're in "Basic indoor AR/VR". Try pointing at the floating atoms. I can explain each topic.`,
+                    feature: `✨ **AR/VR goodies**: object grab, voice commands (beta), 360° notes. Say "Nya, record note" to test.`
+                };
+                let reply = responses[topic] || `I'm here to assist. Drag me around, I feel real! Ask about class time, assignments, or tools.`;
+                msgBox.innerHTML = `🤖 <strong>${assistantName}:</strong> ${reply}`;
+                // little haptic feedback: subtle scale
+                holo.style.transform = 'scale(1.02)';
+                setTimeout(() => holo.style.transform = 'scale(1)', 150);
+            };
+
+            // initial greeting after load
+            window.addEventListener('load', function() {
+                setTimeout(() => {
+                    document.getElementById('aiMessage').innerHTML = `🧠 <strong>Nya:</strong> Welcome! I'm floating in your space. <b>Drag me anywhere</b> — I behave like a real hologram. Need help?`;
+                }, 800);
+            });
+        })();
     </script>
     <!-- ========== END AI ASSISTANT ========== -->
 
-    <!-- Footer Start (same as original, trimmed slightly) -->
+    <!-- Footer (unchanged) -->
     <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
         <div class="container mt-5 pt-5">
             <div class="row">
@@ -389,7 +507,6 @@
     <div class="container-fluid bg-dark text-white-50 border-top py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
         <div class="container"><div class="row"><div class="col-md-6 text-center text-md-left mb-3 mb-md-0"><p class="m-0">Copyright &copy; <a class="text-white" href="#">2025 Dzidzo AR/VR</a>. All Rights Reserved.</p></div><div class="col-md-6 text-center text-md-right"><p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a> Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> <br> Template Customization and Development <a href="https://github.com/marknature/" target="_blank">@marknature_</a></p></div></div></div>
     </div>
-    <!-- Footer End -->
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
@@ -401,7 +518,6 @@
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/counterup/counterup.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <!-- Template Javascript -->
     <script src="js/main.js"></script>
 </body>
 </html>
