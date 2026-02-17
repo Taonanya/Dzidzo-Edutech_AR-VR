@@ -23,40 +23,40 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 
-    <!-- holographic AI advanced style + drag logic -->
+    <!-- holographic person (dzidzo) with voice + drag -->
     <style>
         .ai-hologram {
             position: fixed;
             bottom: 30px;
             right: 30px;
             z-index: 999;
-            max-width: 340px;
-            background: rgba(10, 20, 40, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 2px solid rgba(0, 255, 255, 0.6);
-            border-radius: 32px 32px 20px 32px;
-            box-shadow: 0 20px 40px rgba(0, 180, 255, 0.5), 0 0 0 2px rgba(0, 255, 255, 0.3) inset, 0 0 30px #00ccff88;
-            color: #e0f0ff;
+            width: 340px;
+            background: rgba(20, 15, 35, 0.65);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 2px solid rgba(255, 215, 150, 0.7);
+            border-radius: 36px 36px 24px 36px;
+            box-shadow: 0 25px 45px rgba(255, 140, 200, 0.4), 0 0 0 2px rgba(255, 220, 160, 0.5) inset, 0 0 40px #ffb3ff99;
+            color: #fef0e0;
             font-family: 'Open Sans', sans-serif;
-            transition: box-shadow 0.2s, transform 0.1s; /* no transition for left/top to avoid lag during drag */
+            transition: box-shadow 0.2s, transform 0.1s;
             cursor: grab;
-            user-select: none; /* prevent accidental text selection while dragging */
+            user-select: none;
             will-change: left, top;
-            touch-action: none; /* better touch dragging */
+            touch-action: none;
         }
         .ai-hologram:active {
             cursor: grabbing;
-            box-shadow: 0 20px 45px rgba(0, 220, 255, 0.8), 0 0 0 3px #ffffff80 inset;
-            transition: none; /* immediate feedback */
+            box-shadow: 0 25px 55px #ffa0d0, 0 0 0 3px #fff6d0 inset;
+            transition: none;
         }
-        /* subtle floating animation when NOT dragging — adds life */
         .ai-hologram:not(.dragging) {
-            animation: floatHover 4s infinite ease-in-out;
+            animation: softFloat 5s infinite ease-in-out;
         }
-        @keyframes floatHover {
+        @keyframes softFloat {
             0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(0.5deg); }
+            45% { transform: translateY(-7px) rotate(0.3deg); }
+            55% { transform: translateY(-7px) rotate(0.3deg); }
             100% { transform: translateY(0px) rotate(0deg); }
         }
 
@@ -65,60 +65,69 @@
             align-items: center;
             gap: 12px;
             padding: 16px 20px 8px 20px;
-            border-bottom: 1px dashed rgba(0, 255, 255, 0.4);
+            border-bottom: 1px dashed rgba(255, 200, 130, 0.5);
             cursor: grab;
         }
         .ai-header:active {
             cursor: grabbing;
         }
+        /* human avatar — instead of robot */
         .ai-avatar {
-            width: 48px;
-            height: 48px;
-            background: radial-gradient(circle at 30% 30%, #b0f5ff, #0a6c9e);
+            width: 52px;
+            height: 52px;
+            background: radial-gradient(circle at 35% 30%, #ffcf9a, #b27a5b);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 0 25px cyan, 0 0 8px white inset;
-            border: 1px solid rgba(255,255,255,0.8);
+            font-size: 32px;
+            box-shadow: 0 0 30px #ffc085, 0 0 8px #fff2d0 inset;
+            border: 2px solid #fff1c1;
+            color: #2e1f12;
+            text-shadow: 0 2px 5px rgba(255,255,200,0.8);
         }
         .ai-title {
-            font-weight: 600;
-            font-size: 1.1rem;
+            font-weight: 700;
+            font-size: 1.3rem;
             letter-spacing: 1px;
-            text-shadow: 0 0 12px cyan;
+            color: #fff6e6;
+            text-shadow: 0 0 15px #ffc0cb, 0 0 30px #ffaa80;
+        }
+        .ai-title small {
+            font-size: 0.8rem;
+            color: #ffdb9f;
+            text-shadow: none;
         }
         .ai-sub {
-            font-size: 0.75rem;
-            color: #b0e0ff;
+            font-size: 0.8rem;
+            color: #ffdec2;
             display: flex;
             gap: 8px;
         }
         .ai-sub i {
-            color: cyan;
+            color: #ffb47b;
         }
         .ai-message {
             padding: 14px 20px;
-            background: rgba(0, 40, 60, 0.5);
-            border-radius: 24px 24px 24px 8px;
-            margin: 10px 16px 16px 16px;
-            border: 1px solid rgba(0,255,255,0.2);
-            font-size: 0.95rem;
+            background: rgba(45, 30, 50, 0.6);
+            border-radius: 28px 28px 28px 8px;
+            margin: 12px 16px 16px 16px;
+            border: 1px solid rgba(255, 200, 150, 0.4);
+            font-size: 0.96rem;
             line-height: 1.5;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
         }
         .ai-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            padding: 0 16px 18px 16px;
+            padding: 0 16px 14px 16px;
         }
         .ai-btn {
-            background: rgba(0, 80, 120, 0.7);
-            border: 1px solid #2ad4ff;
-            color: white;
+            background: rgba(70, 40, 60, 0.8);
+            border: 1px solid #ffb27a;
+            color: #fff5e5;
             border-radius: 40px;
             padding: 8px 16px;
             font-size: 0.8rem;
@@ -128,63 +137,62 @@
             gap: 6px;
             cursor: pointer;
             transition: 0.15s;
-            box-shadow: 0 2px 10px rgba(0,240,255,0.3);
+            box-shadow: 0 2px 12px rgba(255, 140, 100, 0.4);
             backdrop-filter: blur(4px);
         }
         .ai-btn:hover {
-            background: rgba(0, 140, 210, 0.95);
-            border-color: #fff;
-            box-shadow: 0 0 25px cyan;
+            background: rgba(140, 70, 100, 0.9);
+            border-color: #ffe0a0;
+            box-shadow: 0 0 28px #ffaa88;
             transform: scale(1.05);
+        }
+        .voice-btn {
+            background: rgba(140, 80, 140, 0.9);
+            border-color: #ffd0a0;
+        }
+        .voice-btn:hover {
+            background: #b35e8f;
         }
         .ai-assistant-small-note {
             font-size: 0.7rem;
             opacity: 0.7;
             padding-left: 20px;
-            padding-bottom: 10px;
+            padding-bottom: 12px;
             display: flex;
-            gap: 10px;
+            gap: 15px;
+            color: #ffcfb0;
         }
         .pulse-glow {
-            animation: glowPulse 3s infinite;
+            animation: glowHuman 3.5s infinite;
         }
-        @keyframes glowPulse {
-            0% { box-shadow: 0 0 15px #0cf, 0 0 20px #0cf inset; }
-            50% { box-shadow: 0 0 35px #3cf, 0 0 45px #1cf inset; }
-            100% { box-shadow: 0 0 15px #0cf, 0 0 20px #0cf inset; }
+        @keyframes glowHuman {
+            0% { box-shadow: 0 0 18px #ffb6c1, 0 0 20px #ffae80 inset; }
+            50% { box-shadow: 0 0 38px #ffb0a0, 0 0 45px #ffba90 inset; }
+            100% { box-shadow: 0 0 18px #ffb6c1, 0 0 20px #ffae80 inset; }
         }
-        /* dragging state disables animation and makes it more "real" */
         .ai-hologram.dragging {
             animation: none !important;
-            transition: none;
             opacity: 0.95;
-            box-shadow: 0 25px 50px rgba(0,200,255,0.9), 0 0 0 3px #ffffff, 0 0 40px cyan;
-            border-color: white;
+            box-shadow: 0 30px 60px #ffa8d0, 0 0 0 3px #fff2bb, 0 0 55px #ffa0a0;
+            border-color: #ffe8b0;
         }
-
-        /* responsive adjustment */
-        @media (max-width: 600px) {
-            .ai-hologram {
-                max-width: 280px;
-                bottom: 15px;
-                right: 15px;
-            }
-            .ai-avatar { width: 40px; height: 40px; font-size: 22px; }
-        }
-
-        /* tiny handle hint */
+        /* small handle */
         .drag-handle {
             position: absolute;
             top: 5px; left: 20px;
             font-size: 10px;
-            color: cyan;
-            opacity: 0.4;
+            color: #ffcfb0;
+            opacity: 0.5;
             pointer-events: none;
+        }
+        @media (max-width: 600px) {
+            .ai-hologram { width: 280px; bottom: 15px; right: 15px; }
+            .ai-avatar { width: 44px; height: 44px; font-size: 26px; }
         }
     </style>
 </head>
 <body>
-    <!-- Topbar (unchanged) -->
+    <!-- Topbar unchanged -->
     <div class="container-fluid bg-dark">
         <div class="row py-2 px-lg-5">
             <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
@@ -206,7 +214,7 @@
         </div>
     </div>
 
-    <!-- Navbar (unchanged) -->
+    <!-- Navbar -->
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
             <a href="index.html" class="navbar-brand ml-lg-3">
@@ -242,7 +250,7 @@
         </nav>
     </div>
 
-    <!-- Header (unchanged) -->
+    <!-- Header -->
     <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
         <div class="container text-center py-5">
             <h1 class="text-white display-1">Classroom 1</h1>
@@ -270,7 +278,7 @@
         </div>
     </div>
 
-    <!-- Main detail section (unchanged, but keep as is) -->
+    <!-- Main detail (unchanged) -->
     <div class="container-fluid py-5">
         <div class="container py-5">
             <div class="row">
@@ -340,70 +348,62 @@
         </div>
     </div>
 
-    <!-- ========== ADVANCED HOLOGRAPHIC AI ASSISTANT (draggable, hover, real feel) ========= -->
-    <div class="ai-hologram pulse-glow" id="holoAI">
-        <!-- subtle drag hint (only visual) -->
-        <div class="drag-handle"><i class="fas fa-grip-lines"></i> drag me</div>
+    <!-- ========== DZIDZO (human assistant with voice) ========== -->
+    <div class="ai-hologram pulse-glow" id="dzidzoHolo">
+        <div class="drag-handle"><i class="fas fa-fingerprint"></i>  dzidzo · drag</div>
 
-        <div class="ai-header" id="aiHeader">
-            <div class="ai-avatar"><i class="fas fa-robot" style="filter: drop-shadow(0 0 6px white);"></i></div>
+        <div class="ai-header" id="dzidzoHeader">
+            <div class="ai-avatar"><i class="fas fa-user-circle"></i></div> <!-- human icon -->
             <div>
-                <div class="ai-title">AI Mentor · Nya<span style="color: #8cf;">⚡</span></div>
-                <div class="ai-sub"><i class="fas fa-microchip"></i> holographic <i class="fas fa-circle" style="color: #0fa; font-size: 0.4rem;"></i> online</div>
+                <div class="ai-title">Dzidzo <small>⚘</small></div>
+                <div class="ai-sub"><i class="fas fa-heart" style="color: #ffaf9a;"></i> your learning companion · voice ready</div>
             </div>
         </div>
-        <div class="ai-message" id="aiMessage">
-            👋 I'm Nya, your living AI. You can <b>drag me anywhere</b> — I float and feel real. Ask about class time, assignments, or anything.
+        <div class="ai-message" id="dzidzoMessage">
+            👋🏾 Hi, I'm Dzidzo. I'm here to help you learn — ask me about class time, assignments, or anything. And yes, I can speak!
         </div>
         <div class="ai-actions">
-            <div class="ai-btn" onclick="aiRespond('time')"><i class="far fa-clock"></i> class time</div>
-            <div class="ai-btn" onclick="aiRespond('assignment')"><i class="fas fa-pencil-alt"></i> assignments</div>
-            <div class="ai-btn" onclick="aiRespond('help')"><i class="fas fa-question-circle"></i> class work</div>
-            <div class="ai-btn" onclick="aiRespond('feature')"><i class="fas fa-star"></i> AR features</div>
+            <div class="ai-btn" onclick="dzidzoRespond('time')"><i class="far fa-clock"></i> class time</div>
+            <div class="ai-btn" onclick="dzidzoRespond('assignment')"><i class="fas fa-pencil-alt"></i> assignments</div>
+            <div class="ai-btn" onclick="dzidzoRespond('help')"><i class="fas fa-question-circle"></i> class work</div>
+            <div class="ai-btn voice-btn" onclick="dzidzoSpeak()"><i class="fas fa-volume-up"></i> speak</div>
         </div>
         <div class="ai-assistant-small-note">
-            <i class="fas fa-arrows-alt" style="color: #6cf;"></i> click & drag anywhere
+            <span><i class="fas fa-arrows-alt"></i> drag anywhere</span>
+            <span><i class="fas fa-microphone-alt"></i> voice click</span>
         </div>
     </div>
 
-    <!-- Drag + AI response logic -->
+    <!-- Drag + voice + human responses -->
     <script>
         (function() {
-            const holo = document.getElementById('holoAI');
-            const header = document.getElementById('aiHeader'); // can also use whole holo, but header is fine
+            const holo = document.getElementById('dzidzoHolo');
+            const header = document.getElementById('dzidzoHeader');
             let isDragging = false;
             let offsetX, offsetY;
 
-            // make the entire holo draggable from any point (but avoid interfering with button clicks)
+            // Drag start (whole panel but not if button)
             holo.addEventListener('mousedown', startDrag);
             holo.addEventListener('touchstart', startDrag, { passive: false });
 
             function startDrag(e) {
-                // prevent drag if the target is a button or interactive element (ai-btn)
-                if (e.target.classList.contains('ai-btn') || e.target.closest('.ai-btn')) {
-                    return; // let button handle click
-                }
-
-                e.preventDefault(); // prevent text selection or image dragging
+                if (e.target.classList.contains('ai-btn') || e.target.closest('.ai-btn')) return;
+                e.preventDefault();
                 isDragging = true;
                 holo.classList.add('dragging');
 
-                // calculate offset: cursor relative to element's top-left
                 const rect = holo.getBoundingClientRect();
                 let clientX, clientY;
-
                 if (e.type === 'mousedown') {
                     clientX = e.clientX;
                     clientY = e.clientY;
-                } else { // touchstart
+                } else {
                     clientX = e.touches[0].clientX;
                     clientY = e.touches[0].clientY;
                 }
-
                 offsetX = clientX - rect.left;
                 offsetY = clientY - rect.top;
 
-                // set position to fixed and update with new values
                 holo.style.left = rect.left + 'px';
                 holo.style.top = rect.top + 'px';
                 holo.style.bottom = 'auto';
@@ -419,7 +419,6 @@
             function onDrag(e) {
                 if (!isDragging) return;
                 e.preventDefault();
-
                 let clientX, clientY;
                 if (e.type === 'mousemove') {
                     clientX = e.clientX;
@@ -428,24 +427,20 @@
                     clientX = e.touches[0].clientX;
                     clientY = e.touches[0].clientY;
                 }
-
                 let newLeft = clientX - offsetX;
                 let newTop = clientY - offsetY;
 
-                // optional boundary constraints (keep inside viewport)
                 const rect = holo.getBoundingClientRect();
-                const winWidth = window.innerWidth;
-                const winHeight = window.innerHeight;
-
-                // soft boundary: prevent going completely off screen
-                newLeft = Math.max(10, Math.min(winWidth - rect.width - 10, newLeft));
-                newTop = Math.max(10, Math.min(winHeight - rect.height - 10, newTop));
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                newLeft = Math.max(10, Math.min(winW - rect.width - 10, newLeft));
+                newTop = Math.max(10, Math.min(winH - rect.height - 10, newTop));
 
                 holo.style.left = newLeft + 'px';
                 holo.style.top = newTop + 'px';
             }
 
-            function stopDrag(e) {
+            function stopDrag() {
                 if (isDragging) {
                     isDragging = false;
                     holo.classList.remove('dragging');
@@ -457,40 +452,76 @@
                 document.removeEventListener('touchcancel', stopDrag);
             }
 
-            // AI response function (enhanced)
-            window.aiRespond = function(topic) {
-                const msgBox = document.getElementById('aiMessage');
-                const assistantName = 'Nya';
-                const responses = {
-                    time: `🕒 **Class time**: Your VR session is always open. The next guided holographic tour starts in 12 minutes. I'll ping you!`,
-                    assignment: `📋 **Assignments**: 1) Demo exploration 2) AR quiz. Need a hint? Just ask. I can show you where to find 3D models.`,
-                    help: `📚 **Class work**: You're in "Basic indoor AR/VR". Try pointing at the floating atoms. I can explain each topic.`,
-                    feature: `✨ **AR/VR goodies**: object grab, voice commands (beta), 360° notes. Say "Nya, record note" to test.`
-                };
-                let reply = responses[topic] || `I'm here to assist. Drag me around, I feel real! Ask about class time, assignments, or tools.`;
-                msgBox.innerHTML = `🤖 <strong>${assistantName}:</strong> ${reply}`;
-                // little haptic feedback: subtle scale
+            // ----- dzidzo AI response (text and voice) -----
+            window.dzidzoRespond = function(topic) {
+                const msgBox = document.getElementById('dzidzoMessage');
+                let reply = '';
+                switch(topic) {
+                    case 'time':
+                        reply = "🕊️ Dzidzo: Class time is flexible — next live session in 15 minutes. I'll remind you.";
+                        break;
+                    case 'assignment':
+                        reply = "📘 Assignments: Explore the Sketchfab demo and complete the AR quiz. Need a hint? I'm here.";
+                        break;
+                    case 'help':
+                        reply = "📚 You're in Classroom 1. Try gazing at the 3D periodic table — I can explain each element.";
+                        break;
+                    default: reply = "💬 I'm Dzidzo, your guide. Ask me anything about your AR/VR class.";
+                }
+                msgBox.innerHTML = `🧑🏾‍🏫 <strong>Dzidzo:</strong> ${reply}`;
+                // optional: gentle scale feedback
                 holo.style.transform = 'scale(1.02)';
                 setTimeout(() => holo.style.transform = 'scale(1)', 150);
             };
 
-            // initial greeting after load
+            // Voice (speech synthesis) — speaks the last response or a default
+            window.dzidzoSpeak = function() {
+                const msgBox = document.getElementById('dzidzoMessage');
+                // extract only the text part after "Dzidzo:"
+                let text = msgBox.innerText || msgBox.textContent;
+                // remove possible emoji or prefix "🧑🏾‍🏫 Dzidzo:" 
+                text = text.replace(/.*Dzidzo:\s*/i, ''); 
+                if (!text || text.length < 2) {
+                    text = "Hi, I'm Dzidzo. How can I help you with your class today?";
+                }
+
+                // use web speech api
+                if (!window.speechSynthesis) {
+                    alert('Your browser does not support voice synthesis.');
+                    return;
+                }
+                // cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.95;
+                utterance.pitch = 1.2;
+                utterance.volume = 1;
+                utterance.voice = speechSynthesis.getVoices().find(v => v.lang.includes('en') && v.name.includes('Google UK')) || null;
+                speechSynthesis.speak(utterance);
+                
+                // visual feedback on voice button
+                const voiceBtn = document.querySelector('.voice-btn');
+                voiceBtn.style.background = '#c06b9e';
+                setTimeout(() => voiceBtn.style.background = '', 300);
+            };
+
+            // welcome message after load
             window.addEventListener('load', function() {
                 setTimeout(() => {
-                    document.getElementById('aiMessage').innerHTML = `🧠 <strong>Nya:</strong> Welcome! I'm floating in your space. <b>Drag me anywhere</b> — I behave like a real hologram. Need help?`;
-                }, 800);
+                    document.getElementById('dzidzoMessage').innerHTML = `🧑🏾‍🏫 <strong>Dzidzo:</strong> I'm your personal guide. You can drag me, click any button, or hit "speak" to hear my voice.`;
+                }, 900);
             });
         })();
     </script>
-    <!-- ========== END AI ASSISTANT ========== -->
+    <!-- ========== END DZIDZO ========== -->
 
-    <!-- Footer (unchanged) -->
+    <!-- Footer unchanged -->
     <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
         <div class="container mt-5 pt-5">
             <div class="row">
                 <div class="col-md-6 mb-5">
                     <a href="index.html" class="navbar-brand"><h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Dzidzo</h1></a>
-                    <p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible to everyone—especially in underserved communities across Africa...</p>
+                    <p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible...</p>
                 </div>
                 <div class="col-md-6 mb-5">
                     <h3 class="text-white mb-4">Education Made Simpler</h3>
@@ -505,13 +536,12 @@
         </div>
     </div>
     <div class="container-fluid bg-dark text-white-50 border-top py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
-        <div class="container"><div class="row"><div class="col-md-6 text-center text-md-left mb-3 mb-md-0"><p class="m-0">Copyright &copy; <a class="text-white" href="#">2025 Dzidzo AR/VR</a>. All Rights Reserved.</p></div><div class="col-md-6 text-center text-md-right"><p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a> Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> <br> Template Customization and Development <a href="https://github.com/marknature/" target="_blank">@marknature_</a></p></div></div></div>
+        <div class="container"><div class="row"><div class="col-md-6 text-center text-md-left mb-3 mb-md-0"><p class="m-0">Copyright &copy; <a class="text-white" href="#">2025 Dzidzo AR/VR</a>. All Rights Reserved.</p></div><div class="col-md-6 text-center text-md-right"><p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a> Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> <br> Template Customization <a href="https://github.com/marknature/" target="_blank">@marknature_</a></p></div></div></div>
     </div>
 
-    <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
-    <!-- JavaScript Libraries -->
+    <!-- JS libs -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="lib/easing/easing.min.js"></script>
