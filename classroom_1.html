@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
-    <title>Classroom 1</title>
+    <title>Classroom 1 · Dzidzo AR/VR</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Dzidzo AR/VR" name="keywords">
     <meta content="Augmented Reality Education and Business Solutions" name="description">
@@ -13,7 +12,7 @@
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -23,6 +22,128 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
+    <!-- inline style for holographic AI -->
+    <style>
+        .ai-hologram {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            max-width: 340px;
+            background: rgba(10, 20, 40, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 32px 32px 20px 32px;
+            box-shadow: 0 20px 40px rgba(0, 180, 255, 0.3), 0 0 0 2px rgba(0, 255, 255, 0.2) inset;
+            color: #e0f0ff;
+            font-family: 'Open Sans', sans-serif;
+            transition: transform 0.2s ease;
+        }
+        .ai-hologram:hover {
+            transform: scale(1.02);
+        }
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px 8px 20px;
+            border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
+        }
+        .ai-avatar {
+            width: 48px;
+            height: 48px;
+            background: radial-gradient(circle at 30% 30%, #a0f0ff, #1080c0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 0 20px cyan;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+        .ai-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px cyan;
+        }
+        .ai-sub {
+            font-size: 0.75rem;
+            color: #aaccee;
+            display: flex;
+            gap: 8px;
+        }
+        .ai-sub i {
+            color: cyan;
+        }
+        .ai-message {
+            padding: 14px 20px;
+            background: rgba(0, 40, 60, 0.5);
+            border-radius: 24px 24px 24px 8px;
+            margin: 10px 16px 16px 16px;
+            border: 1px solid rgba(0,255,255,0.2);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .ai-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 16px 18px 16px;
+        }
+        .ai-btn {
+            background: rgba(0, 80, 120, 0.7);
+            border: 1px solid #2ad4ff;
+            color: white;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(0,240,255,0.2);
+            backdrop-filter: blur(4px);
+        }
+        .ai-btn:hover {
+            background: rgba(0, 140, 200, 0.9);
+            border-color: #fff;
+            box-shadow: 0 0 18px cyan;
+        }
+        .ai-btn i {
+            font-size: 0.9rem;
+        }
+        .ai-assistant-small-note {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            padding-left: 20px;
+            padding-bottom: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .pulse {
+            animation: pulseGlow 2s infinite;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 5px #0cf, 0 0 10px #0cf inset; }
+            50% { box-shadow: 0 0 20px #0cf, 0 0 30px #0cf inset; }
+            100% { box-shadow: 0 0 5px #0cf, 0 0 10px #0cf inset; }
+        }
+        /* make it responsive */
+        @media (max-width: 600px) {
+            .ai-hologram {
+                max-width: 260px;
+                bottom: 15px;
+                right: 15px;
+            }
+            .ai-avatar { width: 36px; height: 36px; font-size: 20px; }
+        }
+    </style>
 </head>
 
 <body>
@@ -38,29 +159,18 @@
             </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a class="text-white pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+                    <a class="text-white px-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="text-white px-2" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="text-white px-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="text-white px-2" href="#"><i class="fab fa-instagram"></i></a>
+                    <a class="text-white pl-2" href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
         </div>
     </div>
     <!-- Topbar End -->
 
-
-    <!-- Navbar Start -->
+    <!-- Navbar Start (same as original, shortened for clarity) -->
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
             <a href="index.html" class="navbar-brand ml-lg-3">
@@ -88,7 +198,6 @@
                         <a href="admin src/build/pages/sign-up.html" class="nav-item nav-link">Join Us</a>
                         <a href="admin src/build/pages/sign-in.html" class="nav-item nav-link">Sign-In</a>
                     </div>
-                    
                     <a href="contact.html" class="nav-item nav-link">Contact</a>
                 </div>
                 <a href="admin src/build/pages/sign-up.html" class="btn btn-primary py-2 px-4 d-none d-lg-block">Join Us</a>
@@ -98,21 +207,20 @@
     </div>
     <!-- Navbar End -->
 
-
     <!-- Header Start -->
     <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
         <div class="container text-center py-5">
             <h1 class="text-white display-1">Classroom 1</h1>
             <div class="d-inline-flex text-white mb-5">
-                <p class="m-0 text-uppercase"><a class="text-white" href="">Home</a></p>
+                <p class="m-0 text-uppercase"><a class="text-white" href="index.html">Home</a></p>
                 <i class="fa fa-angle-double-right pt-1 px-3"></i>
                 <p class="m-0 text-uppercase">Classroom 1</p>
             </div>
+            <!-- search etc -->
             <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">Classrooms</button>
+                        <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Classrooms</button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#">Classroom 1</a>
                             <a class="dropdown-item" href="#">Classroom 2</a>
@@ -129,8 +237,7 @@
     </div>
     <!-- Header End -->
 
-
-    <!-- Detail Start -->
+    <!-- Detail Start (main content) -->
     <div class="container-fluid py-5">
         <div class="container py-5">
             <div class="row">
@@ -143,7 +250,7 @@
                         <img class="img-fluid rounded w-100 mb-4" src="img/feature-5.jpg" alt="Image">
                         <p class="subtitle">Built by our Founder & CEO, <strong>T. Shoko</strong>, in partnership with <a href="https://www.viverse.com/" target="_blank">VIVERSE</a> & <a href="https://sketchfab.com/" target="_blank">Sketchfab</a>.</p>
                         <p class="description">
-                        This isn't just a virtual classroom—it's a vision of the future. Designed in the Sketchfad, Dzidzo World is an immersive space where learning becomes an experience. 
+                        This isn't just a virtual classroom—it's a vision of the future. Designed in Sketchfab, Dzidzo World is an immersive space where learning becomes an experience. 
                         Here, students can explore, interact, and engage with content like never before. It’s not just about education—it’s about transforming how we connect, grow, and build the future. 
                         The metaverse is no longer a concept—it’s here, and it starts with you.
                         </p>
@@ -151,44 +258,16 @@
 
                     <h2 class="mb-3">Related Courses</h2>
                     <div class="owl-carousel related-carousel position-relative" style="padding: 0 30px;">
+                        <!-- items unchanged -->
                         <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="classroom_2.html">
                             <img class="img-fluid" src="img/courses-1.jpg" alt="">
-                            <div class="courses-text">
-                                <h4 class="text-center text-white px-3">Classroom 2</h4>
-                                <div class="border-top w-100 mt-3">
-                                    <div class="d-flex justify-content-between p-4">
-                                        <span class="text-white"><i class="fa fa-user mr-2"></i>Nature_</span>
-                                        <span class="text-white"><i class="fa fa-star mr-2"></i>4.4
-                                            <small>(38)</small></span>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="courses-text"><h4 class="text-center text-white px-3">Classroom 2</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>Nature_</span><span class="text-white"><i class="fa fa-star mr-2"></i>4.4 <small>(38)</small></span></div></div></div>
                         </a>
                         <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="class-coming-soon.html">
-                            <img class="img-fluid" src="img/courses-2.jpg" alt="">
-                            <div class="courses-text">
-                                <h4 class="text-center text-white px-3">Classroom 6</h4>
-                                <div class="border-top w-100 mt-3">
-                                    <div class="d-flex justify-content-between p-4">
-                                        <span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span>
-                                        <span class="text-white"><i class="fa fa-star mr-2"></i>-.-
-                                            <small>(**)</small></span>
-                                    </div>
-                                </div>
-                            </div>
+                            <img class="img-fluid" src="img/courses-2.jpg" alt=""><div class="courses-text"><h4 class="text-center text-white px-3">Classroom 6</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span><span class="text-white"><i class="fa fa-star mr-2"></i>-.- <small>(**)</small></span></div></div></div>
                         </a>
                         <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="detail.html">
-                            <img class="img-fluid" src="img/courses-3.jpg" alt="">
-                            <div class="courses-text">
-                                <h4 class="text-center text-white px-3">Classroom 3</h4>
-                                <div class="border-top w-100 mt-3">
-                                    <div class="d-flex justify-content-between p-4">
-                                        <span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span>
-                                        <span class="text-white"><i class="fa fa-star mr-2"></i>-.-
-                                            <small>(**)</small></span>
-                                    </div>
-                                </div>
-                            </div>
+                            <img class="img-fluid" src="img/courses-3.jpg" alt=""><div class="courses-text"><h4 class="text-center text-white px-3">Classroom 3</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span><span class="text-white"><i class="fa fa-star mr-2"></i>-.- <small>(**)</small></span></div></div></div>
                         </a>
                     </div>
                 </div>
@@ -196,74 +275,35 @@
                 <div class="col-lg-4 mt-5 mt-lg-0">
                     <div class="bg-primary mb-5 py-3">
                         <h3 class="text-white py-3 px-4 m-0">Class Features</h3>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">Creator</h6>
-                            <h6 class="text-white my-3">T.Shoko</h6>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">Rating</h6>
-                            <h6 class="text-white my-3">-.- <small>(**)</small></h6>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">AR/VR</h6>
-                            <h6 class="text-white my-3">DEMO world</h6>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">Venue</h6>
-                            <h6 class="text-white my-3">Lecture theatre</h6>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">Skill level</h6>
-                            <h6 class="text-white my-3">Highest level</h6>
-                        </div>
-                        <div class="d-flex justify-content-between px-4">
-                            <h6 class="text-white my-3">Language</h6>
-                            <h6 class="text-white my-3">English</h6>
-                        </div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Creator</h6><h6 class="text-white my-3">T.Shoko</h6></div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Rating</h6><h6 class="text-white my-3">-.- <small>(**)</small></h6></div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">AR/VR</h6><h6 class="text-white my-3">DEMO world</h6></div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Venue</h6><h6 class="text-white my-3">Lecture theatre</h6></div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Skill level</h6><h6 class="text-white my-3">Highest level</h6></div>
+                        <div class="d-flex justify-content-between px-4"><h6 class="text-white my-3">Language</h6><h6 class="text-white my-3">English</h6></div>
                         <h5 class="text-white py-3 px-4 m-0">Course Price: $---</h5>
+                        <div class="py-3 px-4"><a class="btn btn-block btn-secondary py-3 px-5" href="">Enroll Now</a></div>
                         <div class="py-3 px-4">
-                            <a class="btn btn-block btn-secondary py-3 px-5" href="">Enroll Now</a>
+                            <a class="btn btn-block btn-secondary py-3 px-5" style="color: black;" onmouseover="this.style.background='red'" onmouseout="this.style.background='greenyellow'" href="https://sketchfab.com/models/935e67a3c0fa4bd4aaced13021dba0c3/embed?autostart=1&cardboard=1&internal=1&tracking=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0">View/Enter Class Demo</a>
                         </div>
-                        <div class="py-3 px-4">
-                            <a class="btn btn-block btn-secondary py-3 px-5" style="color: black;" onmouseover="this.style.background='red'" onmouseout="this.style.background='greenyellow'" href=https://sketchfab.com/models/935e67a3c0fa4bd4aaced13021dba0c3/embed?autostart=1&cardboard=1&internal=1&tracking=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0>View/Enter Class Demo</a><!---href="https://skfb.ly/oo9sJ"--->
+                    </div>
 
                     <div class="mb-5">
                         <h2 class="mb-3">Categories</h2>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">AR/VR</a>
-                                <span class="badge badge-primary badge-pill">100%</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Reliability</a>
-                                <span class="badge badge-primary badge-pill">78%</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">AR-Enhanced Materials</a>
-                                <span class="badge badge-primary badge-pill">500+</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Access Anywhere</a>
-                                <span class="badge badge-primary badge-pill">24/7</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">interactive Learning</a>
-                                <span class="badge badge-primary badge-pill">100#</span>
-                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">AR/VR</a><span class="badge badge-primary badge-pill">100%</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">Reliability</a><span class="badge badge-primary badge-pill">78%</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">AR-Enhanced Materials</a><span class="badge badge-primary badge-pill">500+</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">Access Anywhere</a><span class="badge badge-primary badge-pill">24/7</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">interactive Learning</a><span class="badge badge-primary badge-pill">100#</span></li>
                         </ul>
                     </div>
 
                     <div class="mb-5">
                         <h2 class="mb-4">Recent Classes</h2>
-                        <a class="d-flex align-items-center text-decoration-none" href="">
+                        <a class="d-flex align-items-center text-decoration-none" href="#">
                             <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="">
-                            <div class="pl-3">
-                                <h6>No classes yet</h6>
-                                <div class="d-flex">
-                                    <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Please enter a class for it to appear</small>
-                                    <small class="text-body"><i class="fa fa-star text-primary mr-2"></i>0.0 (0%)</small>
-                                </div>
-                            </div>
+                            <div class="pl-3"><h6>No classes yet</h6><div class="d-flex"><small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Please enter a class</small><small class="text-body"><i class="fa fa-star text-primary mr-2"></i>0.0 (0%)</small></div></div>
                         </a>
                     </div>
                 </div>
@@ -272,84 +312,87 @@
     </div>
     <!-- Detail End -->
 
+    <!-- ========== HOLOGRAPHIC AI ASSISTANT ========== -->
+    <div class="ai-hologram pulse" id="holoAI">
+        <div class="ai-header">
+            <div class="ai-avatar"><i class="fas fa-robot" style="filter: drop-shadow(0 0 5px white);"></i></div>
+            <div>
+                <div class="ai-title">AI Mentor · Nya<span style="color: #8cf;">⚡</span></div>
+                <div class="ai-sub"><i class="fas fa-microchip"></i> holographic assistant <i class="fas fa-circle" style="color: #0fa; font-size: 0.4rem;"></i> online</div>
+            </div>
+        </div>
+        <div class="ai-message" id="aiMessage">
+            👋 Hi, I'm your holographic guide in Classroom 1. Ask me about class time, assignments, or anything AR/VR.
+        </div>
+        <div class="ai-actions">
+            <div class="ai-btn" onclick="aiRespond('time')"><i class="far fa-clock"></i> class time</div>
+            <div class="ai-btn" onclick="aiRespond('assignment')"><i class="fas fa-pencil-alt"></i> assignments</div>
+            <div class="ai-btn" onclick="aiRespond('help')"><i class="fas fa-question-circle"></i> class work</div>
+            <div class="ai-btn" onclick="aiRespond('feature')"><i class="fas fa-star"></i> AR features</div>
+        </div>
+        <div class="ai-assistant-small-note">
+            <i class="fas fa-wave-square" style="color: #6cf;"></i> always here · just tap
+        </div>
+    </div>
 
-    <!-- Footer Start -->
+    <script>
+        // simple AI response logic (simulates holographic assistance)
+        function aiRespond(topic) {
+            const msgBox = document.getElementById('aiMessage');
+            const assistantName = 'Nya';
+            const responses = {
+                time: `🕒 **Class time** for today: your VR session is open 24/7. However, a live guided tour starts in 10 minutes! Join the holographic lecture at HH:00 past the hour.`,
+                assignment: `📋 **Assignments**: 1) Explore the Sketchfab demo and leave a comment. 2) Complete the "AR basics" quiz in the classroom. Need help? I can guide you step by step.`,
+                help: `📚 **Class work support**: You're working on "Basic indoor AR/VR". Would you like me to explain how to navigate, or show you where the interactive 3D models are?`,
+                feature: `✨ **AR/VR features in this class**: object manipulation, spatial audio, 360° notes, and multi-user avatars. Point at any object and say "Nya, explain this" (voice beta).`
+            };
+            let reply = responses[topic] || `I'm here to help with your learning. You can ask about class time, assignments, or AR tools.`;
+            // add some holographic personality
+            if (topic === 'time') reply += ' 🌟 I’ll remind you 5 min before.';
+            if (topic === 'assignment') reply += ' ✨ Submit via the portal – I can check your progress.';
+            msgBox.innerHTML = `🤖 <strong>${assistantName}:</strong> ${reply}`;
+            // subtle pulse feedback
+            const holo = document.getElementById('holoAI');
+            holo.style.transform = 'scale(1.02)';
+            setTimeout(() => holo.style.transform = 'scale(1)', 200);
+        }
+
+        // greet on load with dynamic message
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('aiMessage').innerHTML = `🧠 <strong>Nya:</strong> Welcome to Classroom 1. I'm your holographic co-pilot. Feel free to ask about assignments, class schedule, or how to use AR tools.`;
+            }, 800);
+        });
+    </script>
+    <!-- ========== END AI ASSISTANT ========== -->
+
+    <!-- Footer Start (same as original, trimmed slightly) -->
     <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
         <div class="container mt-5 pt-5">
             <div class="row">
                 <div class="col-md-6 mb-5">
-                    <a href="index.html" class="navbar-brand">
-                        <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Dzidzo</h1>
-                    </a>
-                    <p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible to everyone—especially in underserved communities across Africa. By combining modern web development with interactive 3D and augmented reality technologies, Dzidzo brings textbooks to life and transforms classrooms into engaging digital environments. Our mission is to empower students and educators with tools that are not only innovative but also affordable, culturally relevant, and easy to use on any device.</p>
+                    <a href="index.html" class="navbar-brand"><h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Dzidzo</h1></a>
+                    <p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible to everyone—especially in underserved communities across Africa...</p>
                 </div>
                 <div class="col-md-6 mb-5">
-                    <h3 class="text-white mb-4">Education Made Simplier</h3>
-                    <div class="w-100">
-                        <div class="input-group">
-                            <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Welcome to Dzidzo, please enter your email">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary px-4">Sign Up</button>
-                            </div>
-                        </div>
-                    </div>
+                    <h3 class="text-white mb-4">Education Made Simpler</h3>
+                    <div class="w-100"><div class="input-group"><input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Welcome to Dzidzo, enter your email"><div class="input-group-append"><button class="btn btn-primary px-4">Sign Up</button></div></div></div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Get In Touch</h3>
-                    <p><i class="fa fa-map-marker-alt mr-2"></i>Virtual</p>
-                    <p><i class="fa fa-phone-alt mr-2"></i>+263716821065</p>
-                    <p><i class="fa fa-envelope mr-2"></i>dzidzoar@gmail.com</p>
-                    <div class="d-flex justify-content-start mt-4">
-                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-twitter"></i></a>
-                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-facebook-f"></i></a>
-                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-linkedin-in"></i></a>
-                        <a class="text-white" href="#"><i class="fab fa-2x fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Our Classrooms</h3>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 1</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 2</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 3</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Viverse</a>
-                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Free World</a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Quick Links</h3>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Regular FAQs</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help & Support</a>
-                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
-                    </div>
-                </div>
+                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Get In Touch</h3><p><i class="fa fa-map-marker-alt mr-2"></i>Virtual</p><p><i class="fa fa-phone-alt mr-2"></i>+263716821065</p><p><i class="fa fa-envelope mr-2"></i>dzidzoar@gmail.com</p></div>
+                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Our Classrooms</h3><div class="d-flex flex-column justify-content-start"><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 1</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 2</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 3</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Viverse</a><a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Free World</a></div></div>
+                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Quick Links</h3><div class="d-flex flex-column justify-content-start"><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Regular FAQs</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help & Support</a><a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a></div></div>
             </div>
         </div>
     </div>
     <div class="container-fluid bg-dark text-white-50 border-top py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
-                    <p class="m-0">Copyright &copy; <a class="text-white" href="#">2025 Dzidzo AR/VR</a>. All Rights Reserved.
-                    </p>
-                </div>
-                <div class="col-md-6 text-center text-md-right">
-                    <p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a> Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> <br> Template Customization and Development <a href="https://github.com/marknature/" target="_blank">@marknature_</a> </p>
-                </div>
-            </div>
-        </div>
+        <div class="container"><div class="row"><div class="col-md-6 text-center text-md-left mb-3 mb-md-0"><p class="m-0">Copyright &copy; <a class="text-white" href="#">2025 Dzidzo AR/VR</a>. All Rights Reserved.</p></div><div class="col-md-6 text-center text-md-right"><p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a> Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> <br> Template Customization and Development <a href="https://github.com/marknature/" target="_blank">@marknature_</a></p></div></div></div>
     </div>
     <!-- Footer End -->
 
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -358,9 +401,7 @@
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/counterup/counterup.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 </body>
-
 </html>
