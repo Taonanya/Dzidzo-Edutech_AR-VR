@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
-    <title>Dzidzo Library</title>
+    <title>Dzidzo Library · AR/VR</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Dzidzo EduTech" name="keywords">
     <meta content="Augmented Reality Education" name="description">
@@ -13,7 +12,7 @@
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -23,10 +22,163 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-</head>
 
+    <!-- holographic dzidzo (like Siri) styles -->
+    <style>
+        .dzidzo-assistant {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            width: 340px;
+            background: rgba(15, 20, 35, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 215, 255, 0.6);
+            border-radius: 40px 40px 24px 40px;
+            box-shadow: 0 25px 45px rgba(0, 200, 255, 0.5), 0 0 0 2px rgba(120, 230, 255, 0.5) inset, 0 0 50px #00a6ff7f;
+            color: #f0f9ff;
+            font-family: 'Open Sans', sans-serif;
+            cursor: grab;
+            user-select: none;
+            will-change: left, top;
+            touch-action: none;
+            transition: box-shadow 0.2s;
+        }
+        .dzidzo-assistant:active {
+            cursor: grabbing;
+            box-shadow: 0 25px 55px cyan, 0 0 0 3px #ffffff inset;
+        }
+        .dzidzo-assistant:not(.dragging) {
+            animation: levitate 5s infinite ease-in-out;
+        }
+        @keyframes levitate {
+            0% { transform: translateY(0px) rotate(0deg); }
+            45% { transform: translateY(-6px) rotate(0.3deg); }
+            55% { transform: translateY(-6px) rotate(0.3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .dzidzo-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px 10px 20px;
+            border-bottom: 1px dashed rgba(0, 230, 255, 0.4);
+            cursor: grab;
+        }
+        .dzidzo-avatar {
+            width: 52px;
+            height: 52px;
+            background: radial-gradient(circle at 30% 30%, #a0e0ff, #0070b3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 0 30px #0cf, 0 0 10px #fff inset;
+            border: 2px solid #b5f0ff;
+            color: #0a1a2a;
+        }
+        .dzidzo-name {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #c1f0ff, #a0d0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px cyan;
+        }
+        .dzidzo-sub {
+            font-size: 0.75rem;
+            color: #b0e6ff;
+            display: flex;
+            gap: 10px;
+        }
+        .dzidzo-message {
+            padding: 14px 20px;
+            background: rgba(0, 50, 70, 0.5);
+            border-radius: 28px 28px 28px 8px;
+            margin: 12px 16px 16px 16px;
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            font-size: 0.96rem;
+            line-height: 1.5;
+            box-shadow: 0 6px 18px #0000004d;
+            backdrop-filter: blur(2px);
+        }
+        .dzidzo-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 0 16px 18px 16px;
+        }
+        .dzidzo-btn {
+            background: rgba(0, 70, 110, 0.8);
+            border: 1px solid #1ecbe8;
+            color: white;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 2px 12px #00b8ff70;
+            backdrop-filter: blur(4px);
+        }
+        .dzidzo-btn:hover {
+            background: rgba(0, 140, 200, 0.95);
+            border-color: #fff;
+            box-shadow: 0 0 30px #0cf;
+            transform: scale(1.05);
+        }
+        .voice-btn {
+            background: rgba(120, 0, 200, 0.7);
+            border-color: #d0a0ff;
+        }
+        .voice-btn:hover {
+            background: #9a4dff;
+        }
+        .small-note {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            padding-left: 20px;
+            padding-bottom: 12px;
+            display: flex;
+            gap: 18px;
+            color: #bbf0ff;
+        }
+        .pulse-glow {
+            animation: glowWave 3.5s infinite;
+        }
+        @keyframes glowWave {
+            0% { box-shadow: 0 0 20px #0cf, 0 0 25px #0cf inset; }
+            50% { box-shadow: 0 0 45px #6cf, 0 0 55px #3cf inset; }
+            100% { box-shadow: 0 0 20px #0cf, 0 0 25px #0cf inset; }
+        }
+        .dzidzo-assistant.dragging {
+            animation: none !important;
+            opacity: 0.96;
+            box-shadow: 0 30px 65px #00ffff, 0 0 0 3px white, 0 0 70px cyan;
+            border-color: white;
+        }
+        .drag-handle {
+            position: absolute;
+            top: 6px; left: 22px;
+            font-size: 10px;
+            color: #9fd0ff;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        @media (max-width: 600px) {
+            .dzidzo-assistant { width: 280px; bottom: 15px; right: 15px; }
+            .dzidzo-avatar { width: 44px; height: 44px; font-size: 26px; }
+        }
+    </style>
+</head>
 <body>
-    <!-- Topbar Start -->
+    <!-- Topbar Start (unchanged) -->
     <div class="container-fluid bg-dark">
         <div class="row py-2 px-lg-5">
             <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
@@ -38,29 +190,18 @@
             </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a class="text-white px-2" href="">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a class="text-white pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+                    <a class="text-white px-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="text-white px-2" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="text-white px-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="text-white px-2" href="#"><i class="fab fa-instagram"></i></a>
+                    <a class="text-white pl-2" href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
         </div>
     </div>
     <!-- Topbar End -->
 
-
-    <!-- Navbar Start -->
+    <!-- Navbar (unchanged) -->
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
             <a href="index.html" class="navbar-brand ml-lg-3">
@@ -88,7 +229,6 @@
                         <a href="admin src/build/pages/sign-up.html" class="nav-item nav-link">Join Us</a>
                         <a href="admin src/build/pages/sign-in.html" class="nav-item nav-link">Sign-In</a>
                     </div>
-                    
                     <a href="contact.html" class="nav-item nav-link">Contact</a>
                 </div>
                 <a href="admin src/build/pages/sign-up.html" class="btn btn-primary py-2 px-4 d-none d-lg-block">Join Us</a>
@@ -98,21 +238,19 @@
     </div>
     <!-- Navbar End -->
 
-
     <!-- Header Start -->
     <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
         <div class="container text-center py-5">
             <h1 class="text-white display-1">Library</h1>
             <div class="d-inline-flex text-white mb-5">
-                <p class="m-0 text-uppercase"><a class="text-white" href="">Home</a></p>
+                <p class="m-0 text-uppercase"><a class="text-white" href="index.html">Home</a></p>
                 <i class="fa fa-angle-double-right pt-1 px-3"></i>
-                <p class="m-0 text-uppercase">Classroom 2</p>
+                <p class="m-0 text-uppercase">Classroom 2 · Outdoor Library</p>
             </div>
             <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">Classrooms</button>
+                        <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown">Classrooms</button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="#">Classroom 1</a>
                             <a class="dropdown-item" href="#">Classroom 2</a>
@@ -129,8 +267,7 @@
     </div>
     <!-- Header End -->
 
-
-    <!-- Detail Start -->
+    <!-- Detail Start (main content for classroom 2 / library) -->
     <div class="container-fluid py-5">
         <div class="container py-5">
             <div class="row">
@@ -140,13 +277,12 @@
                             <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Classroom 2</h6>
                             <h1 class="display-4">Basic Out Door AR/VR Library</h1>
                         </div>
-                        <img class="img-fluid rounded w-100 mb-4" src="img/feature_6.jpg" alt="Image">
-                            <p class="subtitle">Designed by <strong>Mark "Nature" Chindudzi</strong> using the <a href="https://www.viverse.com/" target="_blank">VIVERSE.</a></p>
-    
-                            <p class="description">
-                                This one-of-a-kind outdoor classroom isn't just a digital space—it's a vision of what education can become. Created by Nature, a passionate technologist and the lead architect of Dzidzo, this immersive metaclassroom blends the beauty of nature with the power of virtual learning. Inspired by his deep love for the outdoors and his commitment to accessible education, Mark designed this environment to bring students out of the traditional box and into an open world of curiosity, wonder, and connection. <br><br>
-                                The future of learning isn't confined to four walls—and thanks to creators like Mark, it's now rooted in nature and delivered through the metaverse. Wherever you are, you're invited to step in, learn, and grow.
-                            </p>
+                        <img class="img-fluid rounded w-100 mb-4" src="img/feature_6.jpg" alt="Outdoor library">
+                        <p class="subtitle">Designed by <strong>Mark "Nature" Chindudzi</strong> using the <a href="https://www.viverse.com/" target="_blank">VIVERSE.</a></p>
+                        <p class="description">
+                            This one-of-a-kind outdoor classroom isn't just a digital space—it's a vision of what education can become. Created by Nature, a passionate technologist and the lead architect of Dzidzo, this immersive metaclassroom blends the beauty of nature with the power of virtual learning. Inspired by his deep love for the outdoors and his commitment to accessible education, Mark designed this environment to bring students out of the traditional box and into an open world of curiosity, wonder, and connection. <br><br>
+                            The future of learning isn't confined to four walls—and thanks to creators like Mark, it's now rooted in nature and delivered through the metaverse. Wherever you are, you're invited to step in, learn, and grow.
+                        </p>
                     </div>
 
                     <h2 class="mb-3">Related Courses</h2>
@@ -155,40 +291,16 @@
                             <img class="img-fluid" src="img/courses-4.jpg" alt="">
                             <div class="courses-text">
                                 <h4 class="text-center text-white px-3">Classroom 1</h4>
-                                <div class="border-top w-100 mt-3">
-                                    <div class="d-flex justify-content-between p-4">
-                                        <span class="text-white"><i class="fa fa-user mr-2"></i>T.Shoko</span>
-                                        <span class="text-white"><i class="fa fa-star mr-2"></i>4.2
-                                            <small>(256)</small></span>
-                                    </div>
-                                </div>
+                                <div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>T.Shoko</span><span class="text-white"><i class="fa fa-star mr-2"></i>4.2 <small>(256)</small></span></div></div>
                             </div>
                         </a>
                         <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="class-coming-soon.html">
                             <img class="img-fluid" src="img/courses-2.jpg" alt="">
-                            <div class="courses-text">
-                                <h4 class="text-center text-white px-3">Classroom 5</h4>
-                                <div class="border-top w-100 mt-3">
-                                    <div class="d-flex justify-content-between p-4">
-                                        <span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span>
-                                        <span class="text-white"><i class="fa fa-star mr-2"></i>-.-
-                                            <small>(**)</small></span>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="courses-text"><h4 class="text-center text-white px-3">Classroom 5</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span><span class="text-white"><i class="fa fa-star mr-2"></i>-.- <small>(**)</small></span></div></div></div>
                         </a>
                         <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="detail.html">
                             <img class="img-fluid" src="img/courses-3.jpg" alt="">
-                            <div class="courses-text">
-                                <h4 class="text-center text-white px-3">Classroom 3</h4>
-                                <div class="border-top w-100 mt-3">
-                                    <div class="d-flex justify-content-between p-4">
-                                        <span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span>
-                                        <span class="text-white"><i class="fa fa-star mr-2"></i>-.-
-                                            <small>(**)</small></span>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="courses-text"><h4 class="text-center text-white px-3">Classroom 3</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span><span class="text-white"><i class="fa fa-star mr-2"></i>-.- <small>(**)</small></span></div></div></div>
                         </a>
                     </div>
                 </div>
@@ -196,80 +308,36 @@
                 <div class="col-lg-4 mt-5 mt-lg-0">
                     <div class="bg-primary mb-5 py-3">
                         <h3 class="text-white py-3 px-4 m-0">Class Features</h3>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">Creator</h6>
-                            <h6 class="text-white my-3">Nature</h6>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">Rating</h6>
-                            <h6 class="text-white my-3">-.- <small>(**)</small></h6>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">AR/VR</h6>
-                            <h6 class="text-white my-3">DEMO world</h6>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">Where</h6>
-                            <h6 class="text-white my-3">Out Doors</h6>
-                        </div>
-                        <div class="d-flex justify-content-between border-bottom px-4">
-                            <h6 class="text-white my-3">Skill level</h6>
-                            <h6 class="text-white my-3">Highest level</h6>
-                        </div>
-                        <div class="d-flex justify-content-between px-4">
-                            <h6 class="text-white my-3">Language</h6>
-                            <h6 class="text-white my-3">English & Shona</h6>
-                        </div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Creator</h6><h6 class="text-white my-3">Nature</h6></div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Rating</h6><h6 class="text-white my-3">-.- <small>(**)</small></h6></div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">AR/VR</h6><h6 class="text-white my-3">DEMO world</h6></div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Where</h6><h6 class="text-white my-3">Out Doors</h6></div>
+                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Skill level</h6><h6 class="text-white my-3">Highest level</h6></div>
+                        <div class="d-flex justify-content-between px-4"><h6 class="text-white my-3">Language</h6><h6 class="text-white my-3">English & Shona</h6></div>
                         <h5 class="text-white py-3 px-4 m-0">Course Price: $---</h5>
+                        <div class="py-3 px-4"><a class="btn btn-block btn-secondary py-3 px-5" href="">Enroll Now</a></div>
                         <div class="py-3 px-4">
-                            <a class="btn btn-block btn-secondary py-3 px-5" href="">Enroll Now</a>
-                        </div>
-                        <div class="py-3 px-4">
-                            <a class="btn btn-block btn-secondary py-3 px-5" style="color: black;" onmouseover="this.style.background='red'" onmouseout="this.style.background='greenyellow'" href=https://sketchfab.com/models/2ad7f048f73c48fba9624bf62fb2d3bd/embed?autostart=1&cardboard=1&internal=1&tracking=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0>View/Enter Class Demo</a>
+                            <a class="btn btn-block btn-secondary py-3 px-5" style="color: black;" onmouseover="this.style.background='red'" onmouseout="this.style.background='greenyellow'" href="https://sketchfab.com/models/2ad7f048f73c48fba9624bf62fb2d3bd/embed?autostart=1&cardboard=1&internal=1&tracking=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0">View/Enter Class Demo</a>
                         </div>
                     </div>
 
                     <div class="mb-5">
                         <h2 class="mb-3">Categories</h2>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">AR/VR</a>
-                                <span class="badge badge-primary badge-pill">100%</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Reliability</a>
-                                <span class="badge badge-primary badge-pill">78%</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">AR-Enhanced Materials</a>
-                                <span class="badge badge-primary badge-pill">500+</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Venue</a>
-                                <span class="badge badge-primary badge-pill">Under the tree</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Access Anywhere</a>
-                                <span class="badge badge-primary badge-pill">24/7</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">interactive Learning</a>
-                                <span class="badge badge-primary badge-pill">100#</span>
-                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">AR/VR</a><span class="badge badge-primary badge-pill">100%</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">Reliability</a><span class="badge badge-primary badge-pill">78%</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">AR-Enhanced Materials</a><span class="badge badge-primary badge-pill">500+</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">Venue</a><span class="badge badge-primary badge-pill">Under the tree</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">Access Anywhere</a><span class="badge badge-primary badge-pill">24/7</span></li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">interactive Learning</a><span class="badge badge-primary badge-pill">100#</span></li>
                         </ul>
                     </div>
 
                     <div class="mb-5">
                         <h2 class="mb-4">Recent Classes</h2>
-                        <a class="d-flex align-items-center text-decoration-none" href="">
+                        <a class="d-flex align-items-center text-decoration-none" href="#">
                             <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="">
-                            <div class="pl-3">
-                                <h6>No classes yet</h6>
-                                <div class="d-flex">
-                                    <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Please enter a class for it to appear</small>
-                                    <small class="text-body"><i class="fa fa-star text-primary mr-2"></i>0.0 (0%)</small>
-                                </div>
-                            </div>
+                            <div class="pl-3"><h6>No classes yet</h6><div class="d-flex"><small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Please enter a class</small><small class="text-body"><i class="fa fa-star text-primary mr-2"></i>0.0 (0%)</small></div></div>
                         </a>
                     </div>
                 </div>
@@ -278,84 +346,221 @@
     </div>
     <!-- Detail End -->
 
+    <!-- ========== HOLOGRAPHIC DZIDZO (LIBRARY ASSISTANT, LIKE SIRI) ========== -->
+    <div class="dzidzo-assistant pulse-glow" id="dzidzoLib">
+        <div class="drag-handle"><i class="fas fa-wave-square"></i>  dzidzo · drag</div>
 
-    <!-- Footer Start -->
+        <div class="dzidzo-header" id="dzidzoHeader">
+            <div class="dzidzo-avatar"><i class="fas fa-user-graduate"></i></div>
+            <div>
+                <div class="dzidzo-name">dzidzo</div>
+                <div class="dzidzo-sub"><i class="fas fa-globe"></i> library AI · like Siri</div>
+            </div>
+        </div>
+        <div class="dzidzo-message" id="dzidzoMessage">
+            📖 Hello, I'm Dzidzo. Ask me about library hours, book recommendations for your program, or important library info.
+        </div>
+        <div class="dzidzo-actions">
+            <div class="dzidzo-btn" onclick="dzidzoLibrary('hours')"><i class="far fa-clock"></i> opening times</div>
+            <div class="dzidzo-btn" onclick="dzidzoLibrary('books')"><i class="fas fa-book-open"></i> book picks</div>
+            <div class="dzidzo-btn" onclick="dzidzoLibrary('info')"><i class="fas fa-info-circle"></i> library info</div>
+            <div class="dzidzo-btn voice-btn" onclick="dzidzoSpeak()"><i class="fas fa-microphone-alt"></i> speak</div>
+        </div>
+        <div class="small-note">
+            <span><i class="fas fa-arrows-alt"></i> drag me</span>
+            <span><i class="fas fa-brain"></i> ask anything</span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const holo = document.getElementById('dzidzoLib');
+            const header = document.getElementById('dzidzoHeader');
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            // Drag handlers (entire panel, but not if button)
+            holo.addEventListener('mousedown', startDrag);
+            holo.addEventListener('touchstart', startDrag, { passive: false });
+
+            function startDrag(e) {
+                if (e.target.classList.contains('dzidzo-btn') || e.target.closest('.dzidzo-btn')) return;
+                e.preventDefault();
+                isDragging = true;
+                holo.classList.add('dragging');
+
+                const rect = holo.getBoundingClientRect();
+                let clientX, clientY;
+                if (e.type === 'mousedown') {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                } else {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                }
+                offsetX = clientX - rect.left;
+                offsetY = clientY - rect.top;
+
+                holo.style.left = rect.left + 'px';
+                holo.style.top = rect.top + 'px';
+                holo.style.bottom = 'auto';
+                holo.style.right = 'auto';
+
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchmove', onDrag, { passive: false });
+                document.addEventListener('touchend', stopDrag);
+                document.addEventListener('touchcancel', stopDrag);
+            }
+
+            function onDrag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                let clientX, clientY;
+                if (e.type === 'mousemove') {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                } else {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                }
+                let newLeft = clientX - offsetX;
+                let newTop = clientY - offsetY;
+
+                const rect = holo.getBoundingClientRect();
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                newLeft = Math.max(10, Math.min(winW - rect.width - 10, newLeft));
+                newTop = Math.max(10, Math.min(winH - rect.height - 10, newTop));
+
+                holo.style.left = newLeft + 'px';
+                holo.style.top = newTop + 'px';
+            }
+
+            function stopDrag() {
+                if (isDragging) {
+                    isDragging = false;
+                    holo.classList.remove('dragging');
+                }
+                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchmove', onDrag);
+                document.removeEventListener('touchend', stopDrag);
+                document.removeEventListener('touchcancel', stopDrag);
+            }
+
+            // ---------- DZIDZO LIBRARY AI (like Siri) ----------
+            window.dzidzoLibrary = function(topic) {
+                const msgBox = document.getElementById('dzidzoMessage');
+                let response = '';
+
+                const now = new Date();
+                const hours = now.getHours();
+                const isOpen = (hours >= 8 && hours < 22); // 8am - 10pm
+
+                if (topic === 'hours') {
+                    const openTime = "08:00 AM";
+                    const closeTime = "10:00 PM";
+                    const status = isOpen ? "🟢 open now" : "🔴 closed now";
+                    response = `⏰ Library hours: ${openTime} – ${closeTime} (daily). Currently ${status}.`;
+                } 
+                else if (topic === 'books') {
+                    // simulate book recommendations based on "program"
+                    const programs = ['computer science', 'engineering', 'medicine', 'business', 'law', 'design'];
+                    const randomProgram = programs[Math.floor(Math.random() * programs.length)];
+                    const recommendations = {
+                        'computer science': '"AR/VR A-Z", "Python for XR", "Digital twins"',
+                        'engineering': '"Sustainable structures", "Fluid dynamics VR", "Materials science"',
+                        'medicine': '"Anatomy 4D", "Virtual surgery basics", "Neural interfaces"',
+                        'business': "'Metaverse marketing', 'VR leadership', 'Future of work'",
+                        'law': "'Cyber law 2030', 'Ethics in AR', 'Digital rights'",
+                        'design': "'3D UI/UX', 'Spatial design', 'Holographic interfaces'"
+                    };
+                    response = `📚 For ${randomProgram} students, I suggest: ${recommendations[randomProgram]}. Would you like more?`;
+                } 
+                else if (topic === 'info') {
+                    response = "ℹ️ Library info: silent zones (levels 1&2), VR booths (level 3), outdoor reading garden. Librarian available 9am–6pm. Free WiFi. Use your student QR to borrow AR books.";
+                } 
+                else {
+                    response = "I'm Dzidzo, your library AI. Ask about hours, book recommendations, or library rules.";
+                }
+
+                msgBox.innerHTML = `📖 <strong>Dzidzo:</strong> ${response}`;
+                // small haptic feedback
+                holo.style.transform = 'scale(1.02)';
+                setTimeout(() => holo.style.transform = 'scale(1)', 150);
+            };
+
+            // Voice (speech synthesis) – reads current message aloud
+            window.dzidzoSpeak = function() {
+                const msgBox = document.getElementById('dzidzoMessage');
+                let text = msgBox.innerText || msgBox.textContent;
+                text = text.replace(/.*Dzidzo:\s*/i, ''); // clean
+
+                if (!text || text.length < 3) {
+                    text = "Dzidzo library assistant. How can I help you today?";
+                }
+
+                if (!window.speechSynthesis) {
+                    alert('Voice not supported.');
+                    return;
+                }
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.95;
+                utterance.pitch = 1.1;
+                utterance.volume = 1;
+                utterance.voice = speechSynthesis.getVoices().find(v => v.lang.includes('en') && v.name.includes('Google')) || null;
+                speechSynthesis.speak(utterance);
+
+                // flash voice button
+                const btn = document.querySelector('.voice-btn');
+                btn.style.background = '#b77af2';
+                setTimeout(() => btn.style.background = '', 300);
+            };
+
+            // Initial greeting
+            window.addEventListener('load', function() {
+                setTimeout(() => {
+                    document.getElementById('dzidzoMessage').innerHTML = `📖 <strong>Dzidzo:</strong> I'm your library AI, just like Siri. Ask me about open hours, book suggestions for your program, or library info.`;
+                }, 800);
+            });
+        })();
+    </script>
+    <!-- ========== END DZIDZO ASSISTANT ========== -->
+
+    <!-- Footer Start (unchanged) -->
     <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
         <div class="container mt-5 pt-5">
             <div class="row">
                 <div class="col-md-6 mb-5">
-                    <a href="index.html" class="navbar-brand">
-                        <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Dzidzo</h1>
-                    </a>
-                    <p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible to everyone—especially in underserved communities across Africa and enhancing interaction online within the professional world. By combining modern web development with interactive 3D and augmented reality technologies, Dzidzo brings textbooks to life and transforms classrooms into engaging digital environments. Our mission is to empower students and educators with tools that are not only innovative but also affordable, culturally relevant, and easy to use on any device.</p>
+                    <a href="index.html" class="navbar-brand"><h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Dzidzo</h1></a>
+                    <p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible to everyone—especially in underserved communities across Africa and enhancing interaction online within the professional world...</p>
                 </div>
                 <div class="col-md-6 mb-5">
                     <h3 class="text-white mb-4">Education and business Made Simplier</h3>
-                    <div class="w-100">
-                        <div class="input-group">
-                            <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Welcome to Dzidzo, please enter your email">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary px-4">Sign Up</button>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="w-100"><div class="input-group"><input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Welcome to Dzidzo, please enter your email"><div class="input-group-append"><button class="btn btn-primary px-4">Sign Up</button></div></div></div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Get In Touch</h3>
-                    <p><i class="fa fa-map-marker-alt mr-2"></i>Virtual</p>
-                    <p><i class="fa fa-phone-alt mr-2"></i>+263716821065</p>
-                    <p><i class="fa fa-envelope mr-2"></i>dzidzoar@gmail.com</p>
-                    <div class="d-flex justify-content-start mt-4">
-                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-twitter"></i></a>
-                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-facebook-f"></i></a>
-                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-linkedin-in"></i></a>
-                        <a class="text-white" href="#"><i class="fab fa-2x fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Our Classrooms</h3>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 1</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 2</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 3</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Viverse</a>
-                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Free World</a>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-5">
-                    <h3 class="text-white mb-4">Quick Links</h3>
-                    <div class="d-flex flex-column justify-content-start">
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Regular FAQs</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help & Support</a>
-                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
-                    </div>
-                </div>
+                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Get In Touch</h3><p><i class="fa fa-map-marker-alt mr-2"></i>Virtual</p><p><i class="fa fa-phone-alt mr-2"></i>+263716821065</p><p><i class="fa fa-envelope mr-2"></i>dzidzoar@gmail.com</p></div>
+                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Our Classrooms</h3><div class="d-flex flex-column justify-content-start"><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 1</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 2</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 3</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Viverse</a><a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Free World</a></div></div>
+                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Quick Links</h3><div class="d-flex flex-column justify-content-start"><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Regular FAQs</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help & Support</a><a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a></div></div>
             </div>
         </div>
     </div>
     <div class="container-fluid bg-dark text-white-50 border-top py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
-                    <p class="m-0">Copyright &copy; <a class="text-white" href="#">2025 Dzidzo EduTech</a>. All Rights Reserved.
-                    </p>
-                </div>
-                <div class="col-md-6 text-center text-md-right">
-                    <p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a> Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> <br> Template Customization and Development <a href="https://github.com/marknature/" target="_blank">@marknature_</a> </p>
-                </div>
+                <div class="col-md-6 text-center text-md-left mb-3 mb-md-0"><p class="m-0">Copyright &copy; <a class="text-white" href="#">2025 Dzidzo EduTech</a>. All Rights Reserved.</p></div>
+                <div class="col-md-6 text-center text-md-right"><p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a> Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> <br> Template Customization <a href="https://github.com/marknature/" target="_blank">@marknature_</a></p></div>
             </div>
         </div>
     </div>
     <!-- Footer End -->
 
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -364,9 +569,6 @@
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/counterup/counterup.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-
-    <!-- Template Javascript -->
     <script src="js/main.js"></script>
 </body>
-
 </html>
