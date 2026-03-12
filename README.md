@@ -49,9 +49,16 @@ Example:
 ```env
 PORT=4000
 FRONTEND_ORIGIN=http://127.0.0.1:5500
-DATABASE_URL=postgresql://postgres:!What54321@localhost:5432/dzidzo
-JWT_SECRET=replace_this_with_a_long_random_secret
+DATABASE_URL=postgresql://your_db_user:your_db_password@localhost:5432/your_db_name
+JWT_SECRET=generate_your_own_long_random_secret
 ```
+
+Recommended setup:
+
+1. Copy `backend/.env.example` to `backend/.env`
+2. Create your own local PostgreSQL database and user
+3. Replace `your_db_user`, `your_db_password`, and `your_db_name`
+4. Generate your own JWT secret instead of using the placeholder
 
 ## First-Time Setup
 
