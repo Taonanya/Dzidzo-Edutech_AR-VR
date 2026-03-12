@@ -1,0 +1,14 @@
+CREATE INDEX IF NOT EXISTS idx_users_role ON users (role);
+CREATE INDEX IF NOT EXISTS idx_users_created_at ON users (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_categories_display_order ON categories (display_order, name);
+CREATE INDEX IF NOT EXISTS idx_courses_category ON courses (category_id);
+CREATE INDEX IF NOT EXISTS idx_courses_published_order ON courses (is_published, display_order);
+CREATE INDEX IF NOT EXISTS idx_lessons_course_order ON lessons (course_id, display_order);
+CREATE INDEX IF NOT EXISTS idx_enrollments_user ON enrollments (user_id, enrolled_at DESC);
+CREATE INDEX IF NOT EXISTS idx_enrollments_course ON enrollments (course_id, enrolled_at DESC);
+CREATE INDEX IF NOT EXISTS idx_library_items_category ON library_items (category_id);
+CREATE INDEX IF NOT EXISTS idx_library_items_published ON library_items (is_published, title);
+CREATE INDEX IF NOT EXISTS idx_team_members_display_order ON team_members (display_order, full_name);
+CREATE INDEX IF NOT EXISTS idx_testimonials_display_order ON testimonials (display_order, student_name);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages (status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_active ON newsletter_subscribers (is_active, subscribed_at DESC);

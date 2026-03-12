@@ -1,221 +1,175 @@
-# Dzidzo: Augmented Reality Web Education Platform
+# Dzidzo Edutech AR/VR
 
-![Dzidzo Logo](https://github.com/marknature/Dzidzo-Edutech_AR-VR/raw/main/logo.png)
-*Transforming African education through immersive and accessible technology*
+Dzidzo is a browser-based AR/VR education platform with a static frontend, a small Node/Express backend, and PostgreSQL for authentication and MVP content management.
 
-## 📚 Table of Contents
+## What Is In This Repo
 
-* [Project Overview](#project-overview)
-* [Key Features](#key-features)
-* [Technology Stack](#technology-stack)
-* [Installation & Setup](#installation--setup)
-* [Project Structure](#project-structure)
-* [Development Approach](#development-approach)
-* [Testing](#testing)
-* [Deployment](#deployment)
-* [Contributing](#contributing)
-* [Licensed under the AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html/)
+- Static public frontend served from the repository root
+- Admin frontend pages in `admin src/build/pages`
+- Node/Express backend in `backend`
+- PostgreSQL schema and migrations in `database/postgres`
+- Setup and schema documentation in `docs`
 
-<br>
+## Stack
 
-## 🌍 Project Overview
+- Frontend: HTML, CSS, JavaScript, Bootstrap, jQuery
+- Backend: Node.js, Express
+- Database: PostgreSQL
+- Auth: bcrypt + JWT
 
-**Dzidzo** (meaning *"education"* in Shona) is a browser-based platform that brings Augmented Reality (AR) and interactive 3D experiences to education, especially targeting African learners and institutions with limited access to immersive technology.
+## Project Structure
 
-This current version builds upon [Dzidzo Version 2](https://github.com/marknature/Dzidzo_AR-VR_Verion-2), transforming the original static template into a full-stack web application with backend support, content management, and emerging AR integrations.
-
-🛠 **Devpost Submission**: [Dzidzo on Devpost](https://devpost.com/software/dzidzo)
-
-<br>
-
-## ✨ Key Features
-
-### ✅ Current Functionality
-
-* Responsive educational interface with custom branding
-* Basic AR content integration using lightweight libraries
-* Modular and extensible content pages
-* Prototype classroom and lesson navigation
-* Simple user authentication (PHP/MySQL)
-* Modular PHP routing with potential Django backend upgrade
-
-### 🔄 In Development
-
-* Interactive 3D modules with **Three.js**
-* AR-enhanced lesson visualizations via **AR.js**
-* Django-powered backend (for future scalability)
-* Student progress tracking dashboard
-* Role-based admin dashboard for lesson control
-* VR support and gamified learning modules
-
-<br>
-
-## 🧰 Technology Stack
-
-### 🌐 Frontend
-
-* HTML5, CSS3, JavaScript
-* SCSS for maintainable styling
-* Bootstrap (responsive design)
-* AR.js for AR on the web
-* Three.js (3D object rendering)
-
-### ⚙️ Backend
-
-* PHP (Current)
-* SQL
-* Python (Planned integration)
-
-### 🔧 Tooling
-
-* Gulp for asset management
-* Webpack (module bundling)
-* Git for version control
-* VS Code + Jupyter for development
-
-<br>
-
-### ⚙️ Setup Instructions
-
-1. **Clone Repository**
-
-```bash
-git clone https://github.com/marknature/Dzidzo-Edutech_AR-VR.git
-cd Dzidzo-Edutech_AR-VR
+```text
+.
+|- admin src/build/pages
+|- backend
+|- database/postgres/migrations
+|- docs
+|- index.html
+|- course.html
+|- contact.html
+|- team.html
+|- testimonial.html
 ```
 
-2. **Install Node Dependencies**
+## Prerequisites
 
-```bash
+- Node.js 18+
+- PostgreSQL installed locally
+- A PostgreSQL database named `dzidzo`
+
+## Backend Environment
+
+Create:
+
+- `backend/.env`
+
+Example:
+
+```env
+PORT=4000
+FRONTEND_ORIGIN=http://127.0.0.1:5500
+DATABASE_URL=postgresql://postgres:!What54321@localhost:5432/dzidzo
+JWT_SECRET=replace_this_with_a_long_random_secret
+```
+
+## First-Time Setup
+
+### 1. Install frontend dev-server metadata
+
+From the repository root:
+
+```powershell
 npm install
 ```
 
-3. **Python Virtual Environment (if Django is used)**
+Note:
+This root package only exists so the static frontend can run with `npm run dev`.
 
-```bash
-python -m venv venv
-source venv/bin/activate      # Linux/macOS
-venv\Scripts\activate         # Windows
-pip install -r requirements.txt
+### 2. Install backend dependencies
+
+```powershell
+cd backend
+npm install
 ```
 
-4. **Configure MySQL Database**
+### 3. Run database migrations
 
-* Create a database called `dzidzo`
-* Update `config/database.php` with your DB credentials
+```powershell
+npm run migrate
+```
 
-5. **Run Local Development Servers**
+This applies the MVP schema and seed data.
 
-```bash
-# Start frontend
+## Running The App
+
+You need two terminals.
+
+### Terminal 1: Frontend
+
+From the repository root:
+
+```powershell
 npm run dev
-
-# Start PHP backend
-php -S localhost:8000
-
-# Or Django (if active)
-python manage.py runserver
 ```
 
-<br>
+Frontend URLs:
 
-## 🔨 Development Approach
+- Home: `http://127.0.0.1:5500/`
+- Sign up: `http://127.0.0.1:5500/admin%20src/build/pages/sign-up.html`
+- Sign in: `http://127.0.0.1:5500/admin%20src/build/pages/sign-in.html`
+- Admin management: `http://127.0.0.1:5500/admin%20src/build/pages/admin-management.html`
 
-We follow a **modular, iterative** approach:
+### Terminal 2: Backend
 
-### Phase 1: Static Template Customization ✅
-
-* Adapt UI for education
-* Dzidzo branding
-* Landing page & routing
-
-### Phase 2: Backend Foundation ✅
-
-* PHP backend
-* Auth system
-* Lesson content integration
-
-### Phase 3: AR Integration (Ongoing) 🔄
-
-* JavaScript-based AR viewer
-* 3D object embedding (OBJ/GLTF)
-* Marker-based lessons
-
-### Phase 4: Full Immersive Classroom (Planned) 🧪
-
-* Django migration
-* VR integration
-* Real-time multiplayer learning
-
-<br>
-
-## ✅ Testing
-
-We manually validate:
-
-* Template rendering across devices
-* AR content loading
-* Link & route resolution
-* Form inputs and validation
-* Component modularity
-
-To run test tools:
-
-```bash
-npm test
+```powershell
+cd backend
+npm run dev
 ```
 
-<br>
+Backend URL:
 
-## 🌐 Deployment
+- API: `http://localhost:4000`
 
-### Traditional Hosting
+## Admin Flow
 
-* Upload project to a cPanel or shared hosting server
-* Ensure PHP/MySQL configuration is correct
+1. Open the sign-up page
+2. Create an account with role `admin`
+3. Sign in
+4. Open the admin dashboard
+5. Use the tabbed admin management page to create, edit, and delete MVP content
 
-### Docker Deployment (Planned)
+## Available Database Tables
 
-```bash
-docker-compose up --build
+Main MVP tables:
+
+- `users`
+- `categories`
+- `courses`
+- `lessons`
+- `enrollments`
+- `library_items`
+- `team_members`
+- `testimonials`
+- `contact_messages`
+- `newsletter_subscribers`
+
+Support table:
+
+- `schema_migrations`
+
+For the detailed table plan, see:
+
+- [MVP database plan](C:/Users/dell/Documents/Dzidzo-Edutech_AR-VR/docs/mvp-database-plan.md)
+- [Migration process](C:/Users/dell/Documents/Dzidzo-Edutech_AR-VR/docs/postgres-migration-process.md)
+- [Postgres setup guide](C:/Users/dell/Documents/Dzidzo-Edutech_AR-VR/docs/postgres-setup.md)
+
+## Useful Commands
+
+From repo root:
+
+```powershell
+npm run dev
 ```
 
-<br>
+From `backend`:
 
-## 🤝 Contributing
+```powershell
+npm install
+npm run migrate
+npm run dev
+npm start
+```
 
-We’re building for learners—**by learners**. Contributions are welcome!
+## Notes
 
-### Steps:
+- The public site is still mostly static HTML, but key sections are now wired to PostgreSQL-backed APIs.
+- Contact submissions and newsletter subscriptions are stored in the database.
+- Team, testimonials, course listings, and course detail metadata are hydrated from the backend.
+- The admin area supports CRUD for the main MVP entities.
 
-1. Fork this repo
-2. Create a feature branch
-3. Make changes (with clear commit messages)
-4. Submit a PR
+## Git Branch
 
-**Dev Guidelines:**
+Current work is intended to continue on branch:
 
-* Use SCSS and modular JS
-* Keep PHP logic clean and separate
-* Add tests for major features
-* Follow naming conventions and comments
-
-<br>
-
-## 📄 License
-
-Licensed under the [ AGPL-3.0.](LICENSE).
-Open source, for the future of immersive education.
-
-<br>
-
-## 🌟 Related Links
-
-* 🔗 [DevPost: Dzidzo](https://devpost.com/software/dzidzo)
-* 🧠 [Version 2 (Previous Build)](https://github.com/marknature/Dzidzo_AR-VR_Verion-2)
-* 🧪 [Current Version](https://github.com/marknature/Dzidzo-Edutech_AR-VR)
-
-<br>
-
-**Made with ❤️ and ambition by Mark Chindudzi and the Dzidzo team.**
-*"Dzidzo is not just a platform—it's the future of African learning."*
+- `dev`

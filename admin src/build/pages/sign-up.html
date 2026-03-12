@@ -40,9 +40,234 @@
 
     <!-- Libraries Stylesheet -->
     <link href="../../../lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <style>
+      body.signup-page {
+        font-family: "Open Sans", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(40, 120, 235, 0.18), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(241, 77, 93, 0.16), transparent 24%),
+          linear-gradient(180deg, #f5f8ff 0%, #eef4ff 100%);
+      }
+
+      .signup-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(360px, 520px);
+        gap: 28px;
+        align-items: stretch;
+      }
+
+      .signup-hero-panel,
+      .signup-form-panel {
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 30px 70px rgba(18, 15, 45, 0.12);
+      }
+
+      .signup-hero-panel {
+        position: relative;
+        min-height: 720px;
+        background:
+          linear-gradient(145deg, rgba(18, 15, 45, 0.82), rgba(40, 120, 235, 0.7)),
+          url('https://raw.githubusercontent.com/marknature/Dzidzo-Edutech_AR-VR/main/img/main-img2.png') center/cover no-repeat;
+      }
+
+      .signup-hero-panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(255,255,255,0.04), transparent 38%),
+          radial-gradient(circle at top right, rgba(255,255,255,0.18), transparent 28%);
+      }
+
+      .signup-hero-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 100%;
+        padding: 48px;
+        color: white;
+      }
+
+      .signup-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px;
+        border: 1px solid rgba(255,255,255,0.22);
+        border-radius: 999px;
+        background: rgba(255,255,255,0.08);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .signup-hero-title {
+        margin: 18px 0 0;
+        font-family: "Jost", sans-serif;
+        font-size: 56px;
+        line-height: 1.02;
+        color: white;
+      }
+
+      .signup-hero-copy {
+        max-width: 540px;
+        margin-top: 18px;
+        font-size: 18px;
+        line-height: 1.75;
+        color: rgba(255,255,255,0.86);
+      }
+
+      .signup-feature-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 28px;
+      }
+
+      .signup-feature-card {
+        padding: 18px;
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 20px;
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(10px);
+      }
+
+      .signup-feature-card h6 {
+        margin: 0 0 8px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.78);
+      }
+
+      .signup-feature-card p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.9);
+      }
+
+      .signup-form-panel {
+        background: rgba(255,255,255,0.94);
+        border: 1px solid rgba(18, 15, 45, 0.08);
+      }
+
+      .signup-panel-inner {
+        padding: 40px 38px 36px;
+      }
+
+      .auth-orb-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .auth-orb {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        border-radius: 18px;
+        background: #f5f8ff;
+        border: 1px solid rgba(40, 120, 235, 0.12);
+      }
+
+      .signup-intro {
+        padding: 18px 18px 16px;
+        margin-bottom: 22px;
+        border: 1px solid rgba(40, 120, 235, 0.12);
+        border-radius: 22px;
+        background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+      }
+
+      .signup-intro h5 {
+        margin: 6px 0 0;
+        font-family: "Jost", sans-serif;
+        font-size: 20px;
+        color: #1d3f72;
+      }
+
+      .signup-intro p {
+        margin: 10px 0 0;
+        font-size: 14px;
+        line-height: 1.7;
+        color: #56719a;
+      }
+
+      .signup-field input,
+      .signup-field select {
+        min-height: 60px;
+        border-radius: 18px;
+        border: 1px solid rgba(18, 15, 45, 0.12);
+        background: #fbfcff;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+      }
+
+      .signup-field input:focus,
+      .signup-field select:focus {
+        border-color: #2878eb !important;
+        box-shadow: 0 0 0 4px rgba(40, 120, 235, 0.12) !important;
+      }
+
+      .role-help {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #6b7fa3;
+      }
+
+      .signup-primary-btn {
+        min-height: 60px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #2878eb 0%, #1f55b6 50%, #f14d5d 100%) !important;
+        box-shadow: 0 18px 35px rgba(40, 120, 235, 0.24);
+      }
+
+      .signup-primary-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 22px 38px rgba(40, 120, 235, 0.28);
+      }
+
+      .signup-link-row {
+        color: #607494;
+      }
+
+      @media (max-width: 1200px) {
+        .signup-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .signup-hero-panel {
+          min-height: 540px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .signup-hero-content {
+          padding: 32px 24px;
+        }
+
+        .signup-hero-title {
+          font-size: 40px;
+        }
+
+        .signup-feature-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .signup-panel-inner {
+          padding: 28px 22px 24px;
+        }
+      }
+    </style>
   </head>
 
-  <body class="m-0 font-sans antialiased font-normal bg-white text-start text-base leading-default text-slate-500">
+  <body class="signup-page m-0 font-sans antialiased font-normal bg-white text-start text-base leading-default text-slate-500">
     <!-- Navbar -->
     <nav class="absolute top-0 z-30 flex flex-wrap items-center justify-between w-full px-4 py-2 mt-6 mb-4 shadow-none lg:flex-nowrap lg:justify-start">
       <div class="container flex items-center justify-between py-0 flex-wrap-inherit">
@@ -107,15 +332,45 @@
           </div>
         </div>
         <div class="container">
-          <div class="flex flex-wrap -mx-3 -mt-48 md:-mt-56 lg:-mt-48">
-            <div class="w-full max-w-full px-3 mx-auto mt-0 md:flex-0 shrink-0 md:w-7/12 lg:w-5/12 xl:w-4/12">
-              <div class="relative z-0 flex flex-col min-w-0 break-words bg-white border-0 shadow-xl rounded-2xl bg-clip-border">
-                <div class="p-6 mb-0 text-center bg-white border-b-0 rounded-t-2xl">
-                  <h5>Sign Up with</h5>
+          <div class="signup-shell -mt-48 md:-mt-56 lg:-mt-48">
+            <section class="signup-hero-panel">
+              <div class="signup-hero-content">
+                <div>
+                  <span class="signup-kicker">Immersive Learning Starts Here</span>
+                  <h2 class="signup-hero-title">Build your Dzidzo identity for classrooms, teaching, and platform access.</h2>
+                  <p class="signup-hero-copy">Create an account once and use it to enter AR classrooms, manage educational content, teach learners, or operate the platform from the admin side.</p>
+                  <div class="signup-feature-grid">
+                    <article class="signup-feature-card">
+                      <h6>Students</h6>
+                      <p>Access immersive classrooms, library resources, and guided learning spaces.</p>
+                    </article>
+                    <article class="signup-feature-card">
+                      <h6>Teachers</h6>
+                      <p>Prepare structured content, review lessons, and coordinate learning delivery.</p>
+                    </article>
+                    <article class="signup-feature-card">
+                      <h6>Admins</h6>
+                      <p>Manage courses, testimonials, team profiles, enrollments, and public content.</p>
+                    </article>
+                  </div>
                 </div>
-                <div class="flex flex-wrap px-3 -mx-3 sm:px-6 xl:px-12">
+                <div>
+                  <p class="text-sm font-semibold uppercase tracking-[0.24em] text-white/70">One account. Multiple ways to learn and lead.</p>
+                </div>
+              </div>
+            </section>
+
+            <div class="w-full max-w-full">
+              <div class="signup-form-panel relative z-0 flex flex-col min-w-0 break-words bg-white border-0 bg-clip-border">
+                <div class="signup-panel-inner">
+                  <div class="mb-4 text-center">
+                    <p class="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Registration</p>
+                    <h3 class="mt-2 font-bold text-slate-700">Create your account</h3>
+                  </div>
+
+                  <div class="auth-orb-row">
                   <div class="w-3/12 max-w-full px-1 ml-auto flex-0">
-                    <a class="inline-block w-full px-5 py-2.5 mb-4 font-bold text-center text-gray-200 uppercase align-middle transition-all bg-transparent border border-gray-200 border-solid rounded-lg shadow-none cursor-pointer hover:-translate-y-px leading-pro text-xs ease-in tracking-tight-rem bg-150 bg-x-25 hover:bg-transparent hover:opacity-75" href="#">
+                    <a class="auth-orb" href="#">
                       <svg width="24px" height="32px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink32">
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                           <g transform="translate(3.000000, 3.000000)" fill-rule="nonzero">
@@ -127,7 +382,7 @@
                     </a>
                   </div>
                   <div class="w-3/12 max-w-full px-1 flex-0">
-                    <a class="inline-block w-full px-5 py-2.5 mb-4 font-bold text-center text-gray-200 uppercase align-middle transition-all bg-transparent border border-gray-200 border-solid rounded-lg shadow-none cursor-pointer hover:-translate-y-px leading-pro text-xs ease-in tracking-tight-rem bg-150 bg-x-25 hover:bg-transparent hover:opacity-75" href="#">
+                    <a class="auth-orb" href="#">
                       <svg width="24px" height="32px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                           <g transform="translate(7.000000, 0.564551)" fill="#000000" fill-rule="nonzero">
@@ -140,7 +395,7 @@
                     </a>
                   </div>
                   <div class="w-3/12 max-w-full px-1 mr-auto flex-0">
-                    <a class="inline-block w-full px-5 py-2.5 mb-4 font-bold text-center text-gray-200 uppercase align-middle transition-all bg-transparent border border-gray-200 border-solid rounded-lg shadow-none cursor-pointer hover:-translate-y-px leading-pro text-xs ease-in tracking-tight-rem bg-150 bg-x-25 hover:bg-transparent hover:opacity-75" href="#">
+                    <a class="auth-orb" href="#">
                       <svg width="24px" height="32px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                           <g transform="translate(3.000000, 2.000000)" fill-rule="nonzero">
@@ -153,32 +408,41 @@
                       </svg>
                     </a>
                   </div>
+                  </div>
                   <div class="relative w-full max-w-full px-3 mt-2 text-center shrink-0">
                     <p class="z-20 inline px-4 mb-2 font-semibold leading-normal bg-white text-sm text-slate-400">or</p>
                   </div>
-                </div>
-                <div class="flex-auto p-6">
-                  <form role="form text-left" id="signupForm">
-                    <div class="mb-4">
-                      <input type="text" class="placeholder:text-gray-500 text-sm focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-blue-500 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow" placeholder="Name" aria-label="Name" aria-describedby="email-addon" />
+                    <div class="signup-intro">
+                      <p class="text-xs font-bold uppercase tracking-[0.25em] text-blue-700">Create Your Dzidzo Account</p>
+                      <h5>Join as a student, teacher, or admin</h5>
+                      <p>Choose the role that matches how you will use the platform. You can manage content, teach, or explore immersive learning spaces.</p>
                     </div>
-                    <div class="mb-4">
-                      <input type="email" class="placeholder:text-gray-500 text-sm focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-blue-500 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow" placeholder="Email" aria-label="Email" aria-describedby="email-addon" />
-                    </div>
-                    <div class="mb-4">
-                      <input type="text" class="placeholder:text-gray-500 text-sm focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-blue-500 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow" placeholder="Admin/Teacher/Student" aria-label="Role" aria-describedby="role-addon" />
-                    </div>
-                    <div class="mb-4">
-                      <input type="password" class="placeholder:text-gray-500 text-sm focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-blue-500 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow" placeholder="Password" aria-label="Password" aria-describedby="password-addon" />
-                    </div>
+                    <form role="form text-left" id="signupForm">
+                      <div class="signup-field mb-4">
+                      <input id="name" name="name" type="text" class="placeholder:text-gray-500 text-sm focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-xl border border-solid border-gray-300 bg-white bg-clip-padding py-3 px-4 font-normal text-gray-700 transition-all focus:border-blue-500 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow" placeholder="Full name" aria-label="Name" aria-describedby="email-addon" />
+                      </div>
+                      <div class="signup-field mb-4">
+                      <input id="email" name="email" type="email" class="placeholder:text-gray-500 text-sm focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-xl border border-solid border-gray-300 bg-white bg-clip-padding py-3 px-4 font-normal text-gray-700 transition-all focus:border-blue-500 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow" placeholder="Email address" aria-label="Email" aria-describedby="email-addon" />
+                      </div>
+                      <div class="signup-field mb-4">
+                      <select id="role" name="role" class="text-sm focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-xl border border-solid border-gray-300 bg-white bg-clip-padding py-3 px-4 font-normal text-gray-700 transition-all focus:border-blue-500 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow" aria-label="Role" aria-describedby="role-addon">
+                        <option value="student" selected>Student</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                      <p class="role-help">Use `Admin` only for content management and platform operations.</p>
+                      </div>
+                      <div class="signup-field mb-4">
+                      <input id="password" name="password" type="password" class="placeholder:text-gray-500 text-sm focus:shadow-primary-outline leading-5.6 ease block w-full appearance-none rounded-xl border border-solid border-gray-300 bg-white bg-clip-padding py-3 px-4 font-normal text-gray-700 transition-all focus:border-blue-500 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow" placeholder="Password (minimum 8 characters)" aria-label="Password" aria-describedby="password-addon" />
+                      </div>
                     <div class="min-h-6 pl-7 mb-0.5 block">
                       <input class="w-4.8 h-4.8 ease -ml-7 rounded-1.4 checked:bg-gradient-to-tl checked:from-blue-500 checked:to-violet-500 after:text-xxs after:font-awesome after:duration-250 after:ease-in-out duration-250 relative float-left mt-1 cursor-pointer appearance-none border border-solid border-slate-200 bg-white bg-contain bg-center bg-no-repeat align-top transition-all after:absolute after:flex after:h-full after:w-full after:items-center after:justify-center after:text-white after:opacity-0 after:transition-all after:content-['\f00c'] checked:border-0 checked:border-transparent checked:bg-transparent checked:after:opacity-100" type="checkbox" value="" checked />
                       <label class="mb-2 ml-1 font-normal cursor-pointer text-sm text-slate-700" for="flexCheckDefault"> I agree the <a href="../../../t_c-s_page.html" class="font-bold text-slate-700">Terms and Conditions</a> </label>
                     </div>
                     <div class="text-center">
-                      <button type="button" class="inline-block w-full px-5 py-2.5 mt-6 mb-2 font-bold text-center text-white align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:-translate-y-px hover:shadow-xs leading-normal text-sm ease-in tracking-tight-rem shadow-md bg-150 bg-x-25 bg-gradient-to-tl from-zinc-800 to-zinc-700 hover:border-slate-700 hover:bg-slate-700 hover:text-white">Sign up</button>
+                      <button type="submit" class="signup-primary-btn inline-block w-full px-5 py-3 mt-6 mb-2 font-bold text-center text-white align-middle transition-all border-0 rounded-xl cursor-pointer active:opacity-85 leading-normal text-sm ease-in tracking-tight-rem">Create account</button>
                     </div>
-                    <p class="mt-4 mb-0 leading-normal text-sm">Already have an account? <a href="../pages/sign-in.html" class="font-bold text-slate-700">Sign in</a></p>
+                    <p class="signup-link-row mt-4 mb-0 leading-normal text-sm">Already have an account? <a href="../pages/sign-in.html" class="font-bold text-slate-700">Sign in</a></p>
                   </form>
                 </div>
               </div>
@@ -269,7 +533,7 @@
   <!-- main script file  -->
   <script src="../assets/js/argon-dashboard-tailwind.js?v=1.0.1" async></script>
 
-  <script type="module" src="assets/js/auth.js"></script>
+  <script src="../assets/js/auth.js"></script>
 
 </html>
 
