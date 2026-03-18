@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dzidzo Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="../assets/css/argon-dashboard-tailwind.css?v=1.0.1" rel="stylesheet" />
+    <link href="../assets/css/role-dashboard.css" rel="stylesheet" />
+  </head>
+  <body class="role-dashboard-page" data-dashboard-role="admin">
+    <div class="role-dashboard-shell">
+      <aside class="role-sidebar">
+        <div class="brand-lockup">
+          <span class="brand-mark">D</span>
+          <div class="brand-copy">
+            <strong>Dzidzo</strong>
+            <span>Admin portal</span>
+          </div>
+        </div>
+
+        <div>
+          <p class="sidebar-section-title">Workspace</p>
+          <nav class="sidebar-nav">
+            <button type="button" class="sidebar-link is-active">
+              <span class="sidebar-link-icon">D</span>
+              Dashboard
+            </button>
+            <a href="../pages/admin-management.html" class="sidebar-link">
+              <span class="sidebar-link-icon">M</span>
+              Content Manager
+            </a>
+            <button type="button" class="sidebar-link">
+              <span class="sidebar-link-icon">U</span>
+              Users
+            </button>
+            <button type="button" class="sidebar-link">
+              <span class="sidebar-link-icon">R</span>
+              Reports
+            </button>
+            <button type="button" class="sidebar-link">
+              <span class="sidebar-link-icon">L</span>
+              Library
+            </button>
+          </nav>
+        </div>
+
+        <div class="sidebar-profile">
+          <div class="sidebar-profile-top">
+            <span class="avatar-chip" data-dzidzo-initials>DZ</span>
+            <div>
+              <p class="sidebar-profile-name" data-dzidzo-name>Loading...</p>
+              <p class="sidebar-profile-role" data-dzidzo-role>Admin</p>
+            </div>
+          </div>
+          <div class="sidebar-profile-actions">
+            <a href="../pages/admin-management.html">Manage</a>
+            <button id="dzidzo-logout" type="button">Logout</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="dashboard-main">
+        <section class="dashboard-panel">
+          <header class="dashboard-topbar">
+            <div class="dashboard-heading">
+              <p data-dashboard-date-label>Platform snapshot</p>
+              <h1 data-dashboard-title>Admin command center</h1>
+            </div>
+            <div class="topbar-tools">
+              <button class="topbar-tool" type="button">Q</button>
+              <button class="topbar-tool" type="button">N</button>
+              <button class="topbar-tool" type="button">S</button>
+              <div class="topbar-pill">
+                <span class="muted-copy">Today</span>
+                <strong id="dashboard-date"></strong>
+              </div>
+              <div class="topbar-avatar">
+                <strong data-dzidzo-initials>DZ</strong>
+                <span data-dzidzo-name>Loading...</span>
+              </div>
+            </div>
+          </header>
+
+          <div class="dashboard-grid">
+            <div class="dashboard-content">
+              <section id="dashboard-stats" class="stats-grid"></section>
+
+              <div class="dashboard-row">
+                <article class="panel-card">
+                  <div class="panel-header">
+                    <div>
+                      <h3>Platform performance</h3>
+                      <small>Weekly engagement, submissions, and traffic</small>
+                    </div>
+                    <div class="panel-tabs">
+                      <span class="is-active">This Week</span>
+                      <span>Last Week</span>
+                    </div>
+                  </div>
+                  <div class="line-chart">
+                    <svg viewBox="0 0 540 220" preserveAspectRatio="none" aria-hidden="true">
+                      <path d="M0 160 C50 110, 90 108, 130 150 S220 208, 270 140 S360 70, 405 120 S490 180, 540 118" fill="none" stroke="#ff8c66" stroke-width="4" stroke-linecap="round"/>
+                      <path d="M0 186 C60 164, 92 100, 140 112 S220 164, 280 184 S360 186, 410 116 S490 76, 540 140" fill="none" stroke="#6c63ff" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="chart-legend">
+                    <span class="legend-accent">Active users</span>
+                    <span class="legend-accent-2">New enrollments</span>
+                  </div>
+                </article>
+
+                <article class="panel-card">
+                  <div class="panel-header">
+                    <div>
+                      <h3>School overview</h3>
+                      <small>Projected vs completed activity</small>
+                    </div>
+                    <div class="panel-tabs">
+                      <span class="is-active">Week</span>
+                      <span>Month</span>
+                      <span>Year</span>
+                    </div>
+                  </div>
+                  <div class="bar-chart">
+                    <svg viewBox="0 0 540 220" preserveAspectRatio="none" aria-hidden="true">
+                      <g fill="none" stroke-linecap="round">
+                        <path d="M20 170 L20 86 M70 170 L70 110 M120 170 L120 72 M170 170 L170 120 M220 170 L220 58 M270 170 L270 92 M320 170 L320 66 M370 170 L370 118 M420 170 L420 80 M470 170 L470 60 M520 170 L520 102" stroke="#6c63ff" stroke-width="8" />
+                        <path d="M20 160 L20 110 M70 160 L70 76 M120 160 L120 104 M170 160 L170 66 M220 160 L220 98 M270 160 L270 56 M320 160 L320 86 M370 160 L370 72 M420 160 L420 106 M470 160 L470 88 M520 160 L520 120" stroke="#20b486" stroke-width="8" />
+                      </g>
+                    </svg>
+                  </div>
+                  <div class="chart-legend">
+                    <span class="legend-accent">Projects</span>
+                    <span class="legend-success">Resources</span>
+                  </div>
+                </article>
+              </div>
+
+              <div class="dashboard-row">
+                <article class="panel-card">
+                  <div class="panel-header">
+                    <div>
+                      <h3>School calendar</h3>
+                      <small>March 2026</small>
+                    </div>
+                    <div class="topbar-pill">Term 1</div>
+                  </div>
+                  <div class="calendar-grid">
+                    <strong>Su</strong><strong>Mo</strong><strong>Tu</strong><strong>We</strong><strong>Th</strong><strong>Fr</strong><strong>Sa</strong>
+                    <span></span><span>1</span><span>2</span><span>3</span><span>4</span><span class="is-marked">5</span><span>6</span>
+                    <span>7</span><span>8</span><span>9</span><span>10</span><span class="is-today">11</span><span>12</span><span>13</span>
+                    <span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span class="is-marked">19</span><span>20</span>
+                    <span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span>
+                    <span>28</span><span>29</span><span>30</span><span>31</span>
+                  </div>
+                </article>
+
+                <article class="panel-card">
+                  <div class="panel-header">
+                    <div>
+                      <h3>Operational queue</h3>
+                      <small>Reviews and approval flow</small>
+                    </div>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="dashboard-table">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Subject</th>
+                          <th>Qualification</th>
+                          <th>Fee</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="dashboard-table-body"></tbody>
+                    </table>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <aside class="right-rail">
+              <section class="rail-card">
+                <div class="panel-header">
+                  <div>
+                    <h4>Recent people</h4>
+                    <small>Learners, teachers, and staff</small>
+                  </div>
+                  <button class="topbar-tool" type="button">+</button>
+                </div>
+                <div id="dashboard-people" class="list-stack"></div>
+                <button class="cta-soft" type="button">View More</button>
+              </section>
+
+              <section class="rail-card">
+                <div class="panel-header">
+                  <div>
+                    <h4>Messages</h4>
+                    <small>Latest admin inbox</small>
+                  </div>
+                </div>
+                <div id="dashboard-messages" class="list-stack"></div>
+              </section>
+
+              <section class="rail-card">
+                <div class="panel-header">
+                  <div>
+                    <h4>Quick actions</h4>
+                    <small>Jump into common workflows</small>
+                  </div>
+                </div>
+                <div class="quick-actions">
+                  <a class="quick-action" href="../pages/admin-management.html">Create content</a>
+                  <button class="quick-action" type="button">Review users</button>
+                  <button class="quick-action" type="button">Publish library</button>
+                  <button class="quick-action" type="button">Open reports</button>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="../assets/js/protected-page.js"></script>
+    <script src="../assets/js/role-dashboard.js"></script>
+  </body>
+</html>

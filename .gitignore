@@ -15,7 +15,7 @@ Thumbs.db
 .idea/
 coverage/
 dist/
-build/
+/build/
 .tmp/
 .temp/
 *.pid

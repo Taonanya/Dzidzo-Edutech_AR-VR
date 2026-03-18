@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dzidzo Teacher Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="../assets/css/argon-dashboard-tailwind.css?v=1.0.1" rel="stylesheet" />
+    <link href="../assets/css/role-dashboard.css" rel="stylesheet" />
+  </head>
+  <body class="role-dashboard-page" data-dashboard-role="teacher">
+    <div class="role-dashboard-shell">
+      <aside class="role-sidebar">
+        <div class="brand-lockup">
+          <span class="brand-mark">D</span>
+          <div class="brand-copy">
+            <strong>Dzidzo</strong>
+            <span>Teacher portal</span>
+          </div>
+        </div>
+
+        <div>
+          <p class="sidebar-section-title">Workspace</p>
+          <nav class="sidebar-nav">
+            <button type="button" class="sidebar-link is-active">
+              <span class="sidebar-link-icon">D</span>
+              Dashboard
+            </button>
+            <button type="button" class="sidebar-link">
+              <span class="sidebar-link-icon">C</span>
+              My classes
+            </button>
+            <button type="button" class="sidebar-link">
+              <span class="sidebar-link-icon">L</span>
+              Lessons
+            </button>
+            <button type="button" class="sidebar-link">
+              <span class="sidebar-link-icon">A</span>
+              Assessments
+            </button>
+            <a href="../../../course.html" class="sidebar-link">
+              <span class="sidebar-link-icon">V</span>
+              View site
+            </a>
+          </nav>
+        </div>
+
+        <div class="sidebar-profile">
+          <div class="sidebar-profile-top">
+            <span class="avatar-chip" data-dzidzo-initials>DZ</span>
+            <div>
+              <p class="sidebar-profile-name" data-dzidzo-name>Loading...</p>
+              <p class="sidebar-profile-role" data-dzidzo-role>Teacher</p>
+            </div>
+          </div>
+          <div class="sidebar-profile-actions">
+            <a href="../../../course.html">Courses</a>
+            <button id="dzidzo-logout" type="button">Logout</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="dashboard-main">
+        <section class="dashboard-panel">
+          <header class="dashboard-topbar">
+            <div class="dashboard-heading">
+              <p data-dashboard-date-label>Classroom pulse</p>
+              <h1 data-dashboard-title>Teacher teaching desk</h1>
+            </div>
+            <div class="topbar-tools">
+              <button class="topbar-tool" type="button">Q</button>
+              <button class="topbar-tool" type="button">B</button>
+              <button class="topbar-tool" type="button">S</button>
+              <div class="topbar-pill">
+                <span class="muted-copy">Today</span>
+                <strong id="dashboard-date"></strong>
+              </div>
+              <div class="topbar-avatar">
+                <strong data-dzidzo-initials>DZ</strong>
+                <span data-dzidzo-name>Loading...</span>
+              </div>
+            </div>
+          </header>
+
+          <div class="dashboard-grid">
+            <div class="dashboard-content">
+              <section id="dashboard-stats" class="stats-grid"></section>
+
+              <div class="dashboard-row">
+                <article class="panel-card">
+                  <div class="panel-header">
+                    <div>
+                      <h3>Class performance</h3>
+                      <small>Weekly learner movement across your courses</small>
+                    </div>
+                    <div class="panel-tabs">
+                      <span class="is-active">This Week</span>
+                      <span>Last Week</span>
+                    </div>
+                  </div>
+                  <div class="line-chart">
+                    <svg viewBox="0 0 540 220" preserveAspectRatio="none" aria-hidden="true">
+                      <path d="M0 170 C65 104, 105 100, 148 140 S242 206, 292 126 S372 74, 410 112 S492 174, 540 92" fill="none" stroke="#ff9266" stroke-width="4" stroke-linecap="round"/>
+                      <path d="M0 184 C62 172, 108 102, 168 118 S246 170, 298 182 S382 166, 432 86 S498 72, 540 136" fill="none" stroke="#5b6cff" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="chart-legend">
+                    <span class="legend-accent">Completed lessons</span>
+                    <span class="legend-accent-2">Assignments returned</span>
+                  </div>
+                </article>
+
+                <article class="panel-card">
+                  <div class="panel-header">
+                    <div>
+                      <h3>School overview</h3>
+                      <small>Practice, attendance, and submissions</small>
+                    </div>
+                    <div class="panel-tabs">
+                      <span class="is-active">Week</span>
+                      <span>Month</span>
+                      <span>All</span>
+                    </div>
+                  </div>
+                  <div class="bar-chart">
+                    <svg viewBox="0 0 540 220" preserveAspectRatio="none" aria-hidden="true">
+                      <g fill="none" stroke-linecap="round">
+                        <path d="M20 170 L20 100 M70 170 L70 88 M120 170 L120 66 M170 170 L170 110 M220 170 L220 82 M270 170 L270 58 M320 170 L320 90 M370 170 L370 70 M420 170 L420 108 M470 170 L470 96 M520 170 L520 120" stroke="#5b6cff" stroke-width="8" />
+                        <path d="M20 160 L20 122 M70 160 L70 104 M120 160 L120 92 M170 160 L170 74 M220 160 L220 106 M270 160 L270 78 M320 160 L320 68 M370 160 L370 98 M420 160 L420 86 M470 160 L470 72 M520 160 L520 116" stroke="#20b486" stroke-width="8" />
+                      </g>
+                    </svg>
+                  </div>
+                  <div class="chart-legend">
+                    <span class="legend-accent">Lesson output</span>
+                    <span class="legend-success">Attendance</span>
+                  </div>
+                </article>
+              </div>
+
+              <div class="dashboard-row">
+                <article class="panel-card">
+                  <div class="panel-header">
+                    <div>
+                      <h3>Teaching calendar</h3>
+                      <small>March 2026</small>
+                    </div>
+                    <div class="topbar-pill">Week 2</div>
+                  </div>
+                  <div class="calendar-grid">
+                    <strong>Su</strong><strong>Mo</strong><strong>Tu</strong><strong>We</strong><strong>Th</strong><strong>Fr</strong><strong>Sa</strong>
+                    <span></span><span>1</span><span>2</span><span class="is-marked">3</span><span>4</span><span>5</span><span>6</span>
+                    <span>7</span><span>8</span><span>9</span><span>10</span><span class="is-today">11</span><span>12</span><span>13</span>
+                    <span>14</span><span class="is-marked">15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span>
+                    <span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span>
+                    <span>28</span><span>29</span><span>30</span><span>31</span>
+                  </div>
+                </article>
+
+                <article class="panel-card">
+                  <div class="panel-header">
+                    <div>
+                      <h3>Teacher details</h3>
+                      <small>Upcoming workloads and classroom checks</small>
+                    </div>
+                  </div>
+                  <div class="table-wrap">
+                    <table class="dashboard-table">
+                      <thead>
+                        <tr>
+                          <th>Course</th>
+                          <th>Focus</th>
+                          <th>Tasks</th>
+                          <th>Due</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="dashboard-table-body"></tbody>
+                    </table>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <aside class="right-rail">
+              <section class="rail-card">
+                <div class="panel-header">
+                  <div>
+                    <h4>Recent students</h4>
+                    <small>Your most active learners</small>
+                  </div>
+                  <button class="topbar-tool" type="button">+</button>
+                </div>
+                <div id="dashboard-people" class="list-stack"></div>
+                <button class="cta-soft" type="button">Open roster</button>
+              </section>
+
+              <section class="rail-card">
+                <div class="panel-header">
+                  <div>
+                    <h4>Messages</h4>
+                    <small>Latest classroom messages</small>
+                  </div>
+                </div>
+                <div id="dashboard-messages" class="list-stack"></div>
+              </section>
+
+              <section class="rail-card">
+                <div class="panel-header">
+                  <div>
+                    <h4>Quick actions</h4>
+                    <small>Fast classroom workflows</small>
+                  </div>
+                </div>
+                <div class="quick-actions">
+                  <button class="quick-action" type="button">Create lesson</button>
+                  <button class="quick-action" type="button">Review work</button>
+                  <button class="quick-action" type="button">Take attendance</button>
+                  <a class="quick-action" href="../../../detail.html">Open content</a>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="../assets/js/protected-page.js"></script>
+    <script src="../assets/js/role-dashboard.js"></script>
+  </body>
+</html>

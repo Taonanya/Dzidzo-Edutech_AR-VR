@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dzidzo Admin Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <link href="../assets/css/argon-dashboard-tailwind.css?v=1.0.1" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --panel: rgba(255, 252, 246, 0.9);
+        --line: rgba(48, 42, 34, 0.1);
+        --text: #2a241f;
+        --muted: #7a7168;
+        --teal: #1f6c63;
+        --teal-dark: #144e47;
+        --sand: #e7d7be;
+        --gold: #b7792e;
+        --rose: #8e4d42;
+        --slate: #34485c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Manrope", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(183, 121, 46, 0.16), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(31, 108, 99, 0.12), transparent 26%),
+          linear-gradient(180deg, #f9f5ed 0%, var(--bg) 100%);
+      }
+
+      .shell {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 24px;
+        margin-bottom: 18px;
+        background: rgba(255, 252, 246, 0.78);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: 0 18px 50px rgba(42, 36, 31, 0.08);
+        backdrop-filter: blur(14px);
+      }
+
+      .brand-kicker {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .brand-title {
+        margin: 6px 0 0;
+        font-family: "Fraunces", serif;
+        font-size: 34px;
+        line-height: 1;
+        color: var(--text);
+      }
+
+      .brand-copy {
+        margin: 8px 0 0;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr) 420px;
+        gap: 18px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: 0 24px 60px rgba(42, 36, 31, 0.08);
+        backdrop-filter: blur(14px);
+      }
+
+      .sidebar {
+        padding: 24px;
+        position: sticky;
+        top: 20px;
+        align-self: start;
+      }
+
+      .user-badge {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        padding: 16px;
+        margin: 22px 0;
+        background: linear-gradient(135deg, rgba(31, 108, 99, 0.1), rgba(183, 121, 46, 0.12));
+        border-radius: 22px;
+      }
+
+      .user-mark {
+        width: 54px;
+        height: 54px;
+        display: grid;
+        place-items: center;
+        border-radius: 18px;
+        font-weight: 800;
+        color: white;
+        background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+        box-shadow: 0 12px 22px rgba(31, 108, 99, 0.25);
+      }
+
+      .section-nav {
+        display: grid;
+        gap: 10px;
+      }
+
+      .nav-pill {
+        width: 100%;
+        text-align: left;
+        padding: 14px 16px;
+        border: 1px solid transparent;
+        border-radius: 18px;
+        background: rgba(231, 215, 190, 0.35);
+        transition: 0.2s ease;
+      }
+
+      .nav-pill:hover {
+        transform: translateY(-1px);
+        background: rgba(231, 215, 190, 0.55);
+      }
+
+      .nav-pill.active {
+        color: white;
+        background: linear-gradient(135deg, var(--teal), #2a7f74);
+        box-shadow: 0 12px 28px rgba(31, 108, 99, 0.24);
+      }
+
+      .nav-meta {
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        opacity: 0.74;
+      }
+
+      .sidebar-actions {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .btn-ui {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 48px;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 18px;
+        font-weight: 800;
+        transition: 0.2s ease;
+      }
+
+      .btn-ui:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-ghost {
+        background: white;
+        color: var(--text);
+        box-shadow: 0 8px 18px rgba(42, 36, 31, 0.06);
+      }
+
+      .btn-dark {
+        background: linear-gradient(135deg, #2f353d, #161a1f);
+        color: white;
+      }
+
+      .btn-create {
+        background: linear-gradient(135deg, var(--gold), #cf8d3e);
+        color: white;
+        box-shadow: 0 10px 24px rgba(183, 121, 46, 0.24);
+      }
+
+      .btn-save {
+        background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+        color: white;
+      }
+
+      .btn-soft {
+        background: #e9dfd0;
+        color: var(--text);
+      }
+
+      .content {
+        padding: 24px;
+      }
+
+      .content-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: end;
+        flex-wrap: wrap;
+      }
+
+      .section-kicker {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .section-title {
+        margin: 8px 0 0;
+        font-family: "Fraunces", serif;
+        font-size: 32px;
+        line-height: 1.05;
+      }
+
+      .section-copy {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        max-width: 680px;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .search-input {
+        min-width: 260px;
+        min-height: 48px;
+        padding: 0 16px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: white;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 22px;
+      }
+
+      .metric-card {
+        padding: 18px;
+        border-radius: 22px;
+        color: white;
+      }
+
+      .metric-card:nth-child(4n + 1) { background: linear-gradient(135deg, var(--teal), #2d8277); }
+      .metric-card:nth-child(4n + 2) { background: linear-gradient(135deg, var(--gold), #cf8d3e); }
+      .metric-card:nth-child(4n + 3) { background: linear-gradient(135deg, var(--rose), #a45f53); }
+      .metric-card:nth-child(4n + 4) { background: linear-gradient(135deg, var(--slate), #4d657e); }
+
+      .metric-card p {
+        margin: 0;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        opacity: 0.82;
+      }
+
+      .metric-card h3 {
+        margin: 16px 0 0;
+        font-size: 36px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .table-shell {
+        overflow: hidden;
+        margin-top: 22px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+      }
+
+      .table-shell-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(248,242,233,0.8));
+      }
+
+      .table-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: #f0e7d8;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #6f5d4b;
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .data-table th {
+        padding: 14px 18px;
+        text-align: left;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #7f7469;
+        border-bottom: 1px solid rgba(48, 42, 34, 0.08);
+      }
+
+      .data-table td {
+        padding: 16px 18px;
+        font-size: 14px;
+        color: var(--text);
+        border-top: 1px solid rgba(48, 42, 34, 0.06);
+        vertical-align: top;
+      }
+
+      .data-table tbody tr:hover {
+        background: rgba(247, 239, 226, 0.7);
+      }
+
+      .row-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        padding: 0 12px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .row-action.edit {
+        background: #e8f4ff;
+        color: #1256a8;
+      }
+
+      .row-action.delete {
+        background: #fff0f1;
+        color: #b33d50;
+      }
+
+      .empty-state {
+        padding: 42px 20px;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      .editor {
+        padding: 24px;
+        position: sticky;
+        top: 20px;
+        align-self: start;
+      }
+
+      .editor-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #f0e7d8;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #6f5d4b;
+      }
+
+      .editor-form {
+        display: grid;
+        gap: 14px;
+        margin-top: 22px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+
+      .field label {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #7f7469;
+      }
+
+      .field input,
+      .field textarea,
+      .field select {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fffdfa;
+        color: var(--text);
+      }
+
+      .field textarea {
+        min-height: 110px;
+        resize: vertical;
+      }
+
+      .checkbox-field {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: rgba(231, 215, 190, 0.22);
+      }
+
+      .editor-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .editor-meta {
+        margin-top: 18px;
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(231, 215, 190, 0.24);
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+
+      @media (max-width: 1360px) {
+        .workspace {
+          grid-template-columns: 260px minmax(0, 1fr);
+        }
+
+        .editor {
+          grid-column: 1 / -1;
+          position: static;
+        }
+      }
+
+      @media (max-width: 960px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: static;
+        }
+
+        .metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          padding: 12px;
+        }
+
+        .topbar,
+        .sidebar,
+        .content,
+        .editor {
+          padding: 18px;
+          border-radius: 22px;
+        }
+
+        .metrics {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar,
+        .editor-actions {
+          grid-template-columns: 1fr;
+          display: grid;
+        }
+
+        .search-input {
+          min-width: 0;
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="brand-kicker">Dzidzo Studio</p>
+          <h1 class="brand-title">Admin Operations Deck</h1>
+          <p class="brand-copy">A structured control surface for content, curriculum, people, enrollments, and inbound audience activity. Switch sections from the left, scan records in the center, and edit with precision on the right.</p>
+        </div>
+        <div class="topbar-actions">
+          <span class="table-chip">PostgreSQL-backed</span>
+          <span class="table-chip">JWT admin session</span>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <aside class="panel sidebar">
+          <p class="brand-kicker">Navigation</p>
+          <div class="user-badge">
+            <div class="user-mark">A</div>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Signed In</p>
+              <p id="admin-user-name" class="mt-1 text-base font-extrabold">Admin</p>
+            </div>
+          </div>
+
+          <nav id="section-tabs" class="section-nav"></nav>
+
+          <div class="sidebar-actions">
+            <a href="../pages/admin-dashboard.html" class="btn-ui btn-ghost">Back To Dashboard</a>
+            <button id="admin-logout" class="btn-ui btn-dark">Log Out</button>
+          </div>
+        </aside>
+
+        <section class="panel content">
+          <div class="content-header">
+            <div>
+              <p id="section-kicker" class="section-kicker">Overview</p>
+              <h2 id="section-title" class="section-title">Content Summary</h2>
+              <p id="section-description" class="section-copy">Track and manage the MVP database content.</p>
+            </div>
+
+            <div class="toolbar">
+              <input id="table-search" class="search-input" placeholder="Search current tab" />
+              <button id="create-record" class="btn-ui btn-create">Create New</button>
+            </div>
+          </div>
+
+          <section id="admin-summary" class="metrics"></section>
+
+          <section class="table-shell">
+            <div class="table-shell-header">
+              <span class="table-chip">Live Records</span>
+              <span class="text-sm text-slate-500">Edit or remove data directly from this table.</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead>
+                  <tr id="table-head"></tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+              </table>
+            </div>
+
+            <div id="empty-state" class="empty-state hidden">No records found for this section.</div>
+          </section>
+        </section>
+
+        <aside class="panel editor">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="brand-kicker">Editor</p>
+              <h3 id="editor-title" class="section-title" style="font-size: 28px;">Create Record</h3>
+              <p id="editor-subtitle" class="section-copy" style="margin-top: 6px;">Select a section and start creating or editing data.</p>
+            </div>
+            <span id="editor-badge" class="editor-status">Idle</span>
+          </div>
+
+          <form id="editor-form" class="editor-form"></form>
+
+          <div class="editor-actions">
+            <button id="save-record" class="btn-ui btn-save">Save Record</button>
+            <button id="reset-editor" type="button" class="btn-ui btn-soft">Reset Editor</button>
+          </div>
+
+          <div id="editor-meta" class="editor-meta"></div>
+        </aside>
+      </div>
+    </main>
+    <script src="../assets/js/admin-management.js"></script>
+  </body>
+</html>
