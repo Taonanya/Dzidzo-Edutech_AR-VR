@@ -306,11 +306,23 @@ async function api(path, options = {}) {
     }
   });
 
-  const data = await response.json();
+  const contentType = response.headers.get("content-type") || "";
+  const data = contentType.includes("application/json")
+    ? await response.json()
+    : { error: await response.text() };
+
   if (!response.ok) {
     throw new Error(data.error || "Request failed.");
   }
   return data;
+}
+
+async function safeApi(path, fallback = { items: [] }) {
+  try {
+    return await api(path);
+  } catch (_error) {
+    return fallback;
+  }
 }
 
 function titleCase(value) {
@@ -475,12 +487,12 @@ function renderEditor() {
 
 async function loadLookups() {
   const [categories, courses, users, assignments, submissions, attendanceSessions] = await Promise.all([
-    api("/api/admin/lookups/categories"),
-    api("/api/admin/lookups/courses"),
-    api("/api/admin/lookups/users"),
-    api("/api/admin/lookups/assignments"),
-    api("/api/admin/lookups/submissions"),
-    api("/api/admin/lookups/attendance-sessions")
+    safeApi("/api/admin/lookups/categories"),
+    safeApi("/api/admin/lookups/courses"),
+    safeApi("/api/admin/lookups/users"),
+    safeApi("/api/admin/lookups/assignments"),
+    safeApi("/api/admin/lookups/submissions"),
+    safeApi("/api/admin/lookups/attendance-sessions")
   ]);
   state.lookups.categories = categories.items;
   state.lookups.courses = courses.items;
@@ -492,8 +504,8 @@ async function loadLookups() {
 
 async function loadSection(sectionKey) {
   const section = sectionDefinitions[sectionKey];
-  const result = await api(section.endpoint);
-  state.data[sectionKey] = result.items;
+  const result = await safeApi(section.endpoint);
+  state.data[sectionKey] = result.items || [];
   if (sectionKey === state.currentSection) {
     renderTable();
     renderEditor();
@@ -501,8 +513,8 @@ async function loadSection(sectionKey) {
 }
 
 async function loadSummary() {
-  const result = await api("/api/admin/summary");
-  state.summary = result.summary;
+  const result = await safeApi("/api/admin/summary", { summary: {} });
+  state.summary = result.summary || {};
   renderSummary();
 }
 
