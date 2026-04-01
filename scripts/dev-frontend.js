@@ -78,8 +78,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`Dzidzo frontend running at http://${HOST}:${PORT}`);
-  console.log(`Home: http://${HOST}:${PORT}/`);
-  console.log(`Sign up: http://${HOST}:${PORT}/admin%20src/build/pages/sign-up.html`);
-  console.log(`Sign in: http://${HOST}:${PORT}/admin%20src/build/pages/sign-in.html`);
+  console.log(`Dzidzo frontend running at http://${HOST}:${PORT}/`);
 });
