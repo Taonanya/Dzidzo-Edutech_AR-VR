@@ -2,197 +2,775 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Classroom 1 · Dzidzo AR/VR</title>
+    <title>Immersive Science Lab | Dzidzo AR/VR</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Dzidzo AR/VR" name="keywords">
-    <meta content="Augmented Reality Education and Business Solutions" name="description">
+    <meta content="Dzidzo AR/VR classroom, virtual reality learning, science lab" name="keywords">
+    <meta content="A modern immersive VR classroom for guided science learning, live instruction, and measurable student progress." name="description">
 
-    <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-
-    <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
 
-    <!-- holographic person (dzidzo) with voice + drag -->
     <style>
-        .ai-hologram {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 999;
-            width: 340px;
-            background: rgba(20, 15, 35, 0.65);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 2px solid rgba(255, 215, 150, 0.7);
-            border-radius: 36px 36px 24px 36px;
-            box-shadow: 0 25px 45px rgba(255, 140, 200, 0.4), 0 0 0 2px rgba(255, 220, 160, 0.5) inset, 0 0 40px #ffb3ff99;
-            color: #fef0e0;
-            font-family: 'Open Sans', sans-serif;
-            transition: box-shadow 0.2s, transform 0.1s;
-            cursor: grab;
-            user-select: none;
-            will-change: left, top;
-            touch-action: none;
-        }
-        .ai-hologram:active {
-            cursor: grabbing;
-            box-shadow: 0 25px 55px #ffa0d0, 0 0 0 3px #fff6d0 inset;
-            transition: none;
-        }
-        .ai-hologram:not(.dragging) {
-            animation: softFloat 5s infinite ease-in-out;
-        }
-        @keyframes softFloat {
-            0% { transform: translateY(0px) rotate(0deg); }
-            45% { transform: translateY(-7px) rotate(0.3deg); }
-            55% { transform: translateY(-7px) rotate(0.3deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
+        :root {
+            --vr-bg: #07111f;
+            --vr-cyan: #5de4ff;
+            --vr-sky: #6a9bff;
+            --vr-gold: #ffd166;
+            --vr-text: #eaf4ff;
+            --vr-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
         }
 
-        .ai-header {
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(76, 121, 255, 0.18), transparent 28%),
+                radial-gradient(circle at top right, rgba(0, 224, 255, 0.18), transparent 24%),
+                linear-gradient(180deg, #f4f8ff 0%, #edf4ff 38%, #ffffff 100%);
+        }
+
+        .vr-page {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vr-page::before,
+        .vr-page::after {
+            content: "";
+            position: absolute;
+            border-radius: 999px;
+            pointer-events: none;
+            filter: blur(12px);
+            opacity: 0.5;
+        }
+
+        .vr-page::before {
+            top: 180px;
+            left: -120px;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(93, 228, 255, 0.35), transparent 70%);
+        }
+
+        .vr-page::after {
+            top: 560px;
+            right: -120px;
+            width: 360px;
+            height: 360px;
+            background: radial-gradient(circle, rgba(106, 155, 255, 0.3), transparent 70%);
+        }
+
+        .vr-shell {
+            position: relative;
+            z-index: 1;
+            padding-bottom: 90px;
+        }
+
+        .vr-hero {
+            position: relative;
+            margin-top: -40px;
+            padding: 48px 0 30px;
+        }
+
+        .vr-hero-card {
+            position: relative;
+            overflow: hidden;
+            padding: 44px;
+            border-radius: 32px;
+            background:
+                linear-gradient(140deg, rgba(10, 23, 43, 0.98), rgba(6, 15, 31, 0.9)),
+                linear-gradient(120deg, rgba(93, 228, 255, 0.2), transparent 40%);
+            color: var(--vr-text);
+            box-shadow: var(--vr-shadow);
+        }
+
+        .vr-hero-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 18%, rgba(93, 228, 255, 0.18), transparent 18%),
+                radial-gradient(circle at 82% 22%, rgba(106, 155, 255, 0.28), transparent 20%),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: auto, auto, 42px 42px, 42px 42px;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .vr-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border: 1px solid rgba(93, 228, 255, 0.28);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--vr-cyan);
+            background: rgba(93, 228, 255, 0.08);
+            margin-bottom: 18px;
+        }
+
+        .vr-heading {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2.6rem, 4vw, 4.4rem);
+            line-height: 1.02;
+            margin-bottom: 18px;
+            color: #ffffff;
+            max-width: 680px;
+        }
+
+        .vr-subcopy {
+            max-width: 610px;
+            color: rgba(234, 244, 255, 0.82);
+            font-size: 1.05rem;
+            margin-bottom: 26px;
+        }
+
+        .vr-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .vr-meta-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.92rem;
+        }
+
+        .vr-cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .vr-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 54px;
+            padding: 0 22px;
+            border-radius: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        }
+
+        .vr-btn:hover {
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+        .vr-btn-primary {
+            color: #03111f;
+            background: linear-gradient(135deg, var(--vr-cyan), #8cf5ff);
+            box-shadow: 0 16px 30px rgba(93, 228, 255, 0.25);
+        }
+
+        .vr-btn-secondary {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .vr-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .vr-stat-card {
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            min-height: 110px;
+        }
+
+        .vr-stat-card strong {
+            display: block;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.9rem;
+            line-height: 1;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .vr-stage {
+            position: relative;
+            min-height: 540px;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background:
+                radial-gradient(circle at center, rgba(93, 228, 255, 0.08), transparent 34%),
+                linear-gradient(180deg, rgba(16, 30, 58, 0.92), rgba(7, 17, 31, 0.96));
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        .vr-stage::before {
+            content: "";
+            position: absolute;
+            inset: 22px;
+            border-radius: 24px;
+            border: 1px solid rgba(93, 228, 255, 0.14);
+            opacity: 0.65;
+        }
+
+        .vr-stage-grid {
+            position: absolute;
+            inset: auto 10% 9% 10%;
+            height: 38%;
+            background:
+                linear-gradient(90deg, rgba(93, 228, 255, 0.12) 1px, transparent 1px),
+                linear-gradient(rgba(93, 228, 255, 0.12) 1px, transparent 1px);
+            background-size: 28px 28px;
+            transform: perspective(720px) rotateX(70deg);
+            transform-origin: center top;
+            opacity: 0.8;
+        }
+
+        .vr-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: orbFloat 7s ease-in-out infinite;
+        }
+
+        .vr-orb.one {
+            top: 14%;
+            left: 12%;
+            width: 88px;
+            height: 88px;
+            background: radial-gradient(circle, rgba(93, 228, 255, 0.65), rgba(93, 228, 255, 0.08) 70%);
+        }
+
+        .vr-orb.two {
+            top: 18%;
+            right: 16%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(106, 155, 255, 0.5), rgba(106, 155, 255, 0.06) 72%);
+            animation-delay: -2s;
+        }
+
+        .vr-orb.three {
+            bottom: 18%;
+            left: 28%;
+            width: 68px;
+            height: 68px;
+            background: radial-gradient(circle, rgba(255, 209, 102, 0.6), rgba(255, 209, 102, 0.06) 70%);
+            animation-delay: -4s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(0, -18px, 0) scale(1.06); }
+        }
+
+        .vr-scene-card {
+            position: absolute;
+            width: min(260px, 48%);
+            padding: 18px;
+            border-radius: 20px;
+            background: rgba(7, 17, 31, 0.74);
+            border: 1px solid rgba(93, 228, 255, 0.18);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.24);
+            animation: cardLift 7s ease-in-out infinite;
+        }
+
+        .vr-scene-card h4 {
+            color: #ffffff;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .vr-scene-card p {
+            color: rgba(234, 244, 255, 0.76);
+            margin-bottom: 10px;
+            font-size: 0.92rem;
+        }
+
+        .vr-scene-card small {
+            color: var(--vr-cyan);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .vr-scene-card.a { top: 12%; left: 9%; }
+        .vr-scene-card.b { top: 26%; right: 8%; animation-delay: -2s; }
+        .vr-scene-card.c { bottom: 14%; left: 20%; animation-delay: -4s; }
+
+        @keyframes cardLift {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .vr-pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 210px;
+            height: 210px;
+            border-radius: 50%;
+            border: 1px solid rgba(93, 228, 255, 0.26);
+            transform: translate(-50%, -50%);
+            animation: ringPulse 3.5s ease-out infinite;
+        }
+
+        .vr-pulse-ring::after {
+            content: "";
+            position: absolute;
+            inset: 18px;
+            border-radius: 50%;
+            border: 1px solid rgba(106, 155, 255, 0.3);
+        }
+
+        @keyframes ringPulse {
+            0% { opacity: 0.22; transform: translate(-50%, -50%) scale(0.92); }
+            70% { opacity: 0.9; }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        .vr-section { padding-top: 38px; }
+
+        .vr-section-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .vr-kicker {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #4a7eea;
+            margin-bottom: 12px;
+        }
+
+        .vr-title {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(2rem, 3vw, 3rem);
+            line-height: 1.05;
+            color: #0a1730;
+            margin-bottom: 10px;
+        }
+
+        .vr-lead {
+            color: #5d6f8c;
+            max-width: 700px;
+            margin: 0;
+        }
+
+        .vr-panel {
+            border-radius: 26px;
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(96, 126, 191, 0.12);
+            box-shadow: 0 18px 50px rgba(34, 56, 120, 0.08);
+            backdrop-filter: blur(16px);
+        }
+
+        .vr-journey,
+        .vr-grid-2,
+        .vr-card-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .vr-journey { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .vr-grid-2 { grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr); align-items: start; }
+        .vr-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+        .vr-step,
+        .vr-card,
+        .vr-duty-panel,
+        .vr-timeline,
+        .vr-brief {
+            padding: 24px;
+            border-radius: 24px;
+        }
+
+        .vr-step {
+            position: relative;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(238, 245, 255, 0.86));
+            overflow: hidden;
+        }
+
+        .vr-step::before {
+            content: "";
+            position: absolute;
+            inset: auto -10% -60% auto;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(93, 228, 255, 0.15), transparent 68%);
+        }
+
+        .vr-step-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: #0c1f3b;
+            color: #ffffff;
+            font-family: "Space Grotesk", sans-serif;
+            margin-bottom: 18px;
+        }
+
+        .vr-step h4,
+        .vr-card h4,
+        .vr-duty-panel h4 {
+            font-family: "Space Grotesk", sans-serif;
+            color: #10203d;
+            margin-bottom: 10px;
+        }
+
+        .vr-step p,
+        .vr-card p,
+        .vr-duty-panel p {
+            color: #60708b;
+            margin-bottom: 0;
+        }
+
+        .vr-card {
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(96, 126, 191, 0.12);
+        }
+
+        .vr-outcome-list,
+        .vr-check-list,
+        .vr-duty-list,
+        .vr-timeline-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .vr-outcome-list li,
+        .vr-check-list li,
+        .vr-duty-list li,
+        .vr-timeline-list li {
+            position: relative;
+            padding-left: 28px;
+            color: #586987;
+            margin-bottom: 12px;
+        }
+
+        .vr-outcome-list li::before,
+        .vr-check-list li::before,
+        .vr-duty-list li::before,
+        .vr-timeline-list li::before {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--vr-cyan), #2f7dff);
+            box-shadow: 0 0 0 6px rgba(93, 228, 255, 0.12);
+        }
+
+        .vr-duty-shell {
+            padding: 28px;
+            background: linear-gradient(180deg, rgba(10, 23, 48, 0.98), rgba(7, 17, 31, 0.95));
+            color: #ffffff;
+        }
+
+        .vr-duty-shell .vr-title,
+        .vr-duty-shell .vr-lead,
+        .vr-duty-shell .vr-duty-panel h4,
+        .vr-duty-shell .vr-duty-panel p,
+        .vr-duty-shell .vr-duty-list li {
+            color: #ffffff;
+        }
+
+        .vr-duty-shell .vr-lead,
+        .vr-duty-shell .vr-duty-panel p,
+        .vr-duty-shell .vr-duty-list li { color: rgba(234, 244, 255, 0.78); }
+
+        .vr-duty-shell .vr-kicker { color: var(--vr-cyan); }
+
+        .vr-duty-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .vr-duty-panel {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .vr-duty-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(93, 228, 255, 0.12);
+            color: var(--vr-cyan);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .vr-live-panel {
+            padding: 28px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(238, 245, 255, 0.9));
+        }
+
+        .vr-meter { margin-top: 18px; }
+
+        .vr-meter-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+            font-weight: 600;
+            color: #1f3152;
+        }
+
+        .vr-meter-track {
+            position: relative;
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(16, 32, 61, 0.08);
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .vr-meter-fill {
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #2c79ff, #62e6ff);
+            transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .vr-timeline {
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(96, 126, 191, 0.12);
+        }
+
+        .vr-timeline-list li {
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(96, 126, 191, 0.12);
+        }
+
+        .vr-timeline-list li:last-child {
+            border-bottom: 0;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .vr-timeline-time {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #3f71ef;
+            margin-bottom: 6px;
+        }
+
+        .vr-brief {
+            background: linear-gradient(180deg, #0c1d37, #081322);
+            color: #ffffff;
+            box-shadow: var(--vr-shadow);
+        }
+
+        .vr-brief p,
+        .vr-brief li { color: rgba(234, 244, 255, 0.78); }
+
+        .vr-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .vr-mini-card {
+            padding: 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .vr-mini-card strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+
+        .vr-cta-panel {
+            position: relative;
+            overflow: hidden;
+            padding: 34px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, #09162d, #123166 65%, #0d1d39);
+            color: #ffffff;
+            box-shadow: var(--vr-shadow);
+        }
+
+        .vr-cta-panel::before {
+            content: "";
+            position: absolute;
+            inset: auto -40px -40px auto;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(93, 228, 255, 0.32), transparent 68%);
+        }
+
+        .vr-cta-panel > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .vr-floating-guide {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 1000;
+            width: min(360px, calc(100vw - 32px));
+            padding: 18px;
+            border-radius: 24px;
+            background: rgba(6, 15, 29, 0.88);
+            border: 1px solid rgba(93, 228, 255, 0.2);
+            backdrop-filter: blur(18px);
+            color: #ffffff;
+            box-shadow: 0 18px 50px rgba(3, 10, 26, 0.45);
+        }
+
+        .vr-guide-head {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 16px 20px 8px 20px;
-            border-bottom: 1px dashed rgba(255, 200, 130, 0.5);
-            cursor: grab;
+            margin-bottom: 12px;
         }
-        .ai-header:active {
-            cursor: grabbing;
-        }
-        /* human avatar — instead of robot */
-        .ai-avatar {
-            width: 52px;
-            height: 52px;
-            background: radial-gradient(circle at 35% 30%, #ffcf9a, #b27a5b);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 0 30px #ffc085, 0 0 8px #fff2d0 inset;
-            border: 2px solid #fff1c1;
-            color: #2e1f12;
-            text-shadow: 0 2px 5px rgba(255,255,200,0.8);
-        }
-        .ai-title {
-            font-weight: 700;
-            font-size: 1.3rem;
-            letter-spacing: 1px;
-            color: #fff6e6;
-            text-shadow: 0 0 15px #ffc0cb, 0 0 30px #ffaa80;
-        }
-        .ai-title small {
-            font-size: 0.8rem;
-            color: #ffdb9f;
-            text-shadow: none;
-        }
-        .ai-sub {
-            font-size: 0.8rem;
-            color: #ffdec2;
-            display: flex;
-            gap: 8px;
-        }
-        .ai-sub i {
-            color: #ffb47b;
-        }
-        .ai-message {
-            padding: 14px 20px;
-            background: rgba(45, 30, 50, 0.6);
-            border-radius: 28px 28px 28px 8px;
-            margin: 12px 16px 16px 16px;
-            border: 1px solid rgba(255, 200, 150, 0.4);
-            font-size: 0.96rem;
-            line-height: 1.5;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.5);
-            backdrop-filter: blur(2px);
-        }
-        .ai-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 0 16px 14px 16px;
-        }
-        .ai-btn {
-            background: rgba(70, 40, 60, 0.8);
-            border: 1px solid #ffb27a;
-            color: #fff5e5;
-            border-radius: 40px;
-            padding: 8px 16px;
-            font-size: 0.8rem;
-            font-weight: 600;
+
+        .vr-guide-avatar {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: 0.15s;
-            box-shadow: 0 2px 12px rgba(255, 140, 100, 0.4);
-            backdrop-filter: blur(4px);
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(93, 228, 255, 0.3), rgba(106, 155, 255, 0.4));
+            color: var(--vr-cyan);
+            font-size: 1.35rem;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
         }
-        .ai-btn:hover {
-            background: rgba(140, 70, 100, 0.9);
-            border-color: #ffe0a0;
-            box-shadow: 0 0 28px #ffaa88;
-            transform: scale(1.05);
+
+        .vr-guide-title {
+            font-family: "Space Grotesk", sans-serif;
+            margin: 0;
+            color: #ffffff;
         }
-        .voice-btn {
-            background: rgba(140, 80, 140, 0.9);
-            border-color: #ffd0a0;
+
+        .vr-guide-copy {
+            color: rgba(234, 244, 255, 0.76);
+            font-size: 0.92rem;
+            margin-bottom: 14px;
         }
-        .voice-btn:hover {
-            background: #b35e8f;
-        }
-        .ai-assistant-small-note {
-            font-size: 0.7rem;
-            opacity: 0.7;
-            padding-left: 20px;
-            padding-bottom: 12px;
+
+        .vr-guide-actions {
             display: flex;
-            gap: 15px;
-            color: #ffcfb0;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .pulse-glow {
-            animation: glowHuman 3.5s infinite;
+
+        .vr-guide-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border: 0;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            font-weight: 700;
+            cursor: pointer;
         }
-        @keyframes glowHuman {
-            0% { box-shadow: 0 0 18px #ffb6c1, 0 0 20px #ffae80 inset; }
-            50% { box-shadow: 0 0 38px #ffb0a0, 0 0 45px #ffba90 inset; }
-            100% { box-shadow: 0 0 18px #ffb6c1, 0 0 20px #ffae80 inset; }
+
+        .vr-guide-btn.active,
+        .vr-guide-btn:hover {
+            background: rgba(93, 228, 255, 0.18);
+            color: #ffffff;
         }
-        .ai-hologram.dragging {
-            animation: none !important;
-            opacity: 0.95;
-            box-shadow: 0 30px 60px #ffa8d0, 0 0 0 3px #fff2bb, 0 0 55px #ffa0a0;
-            border-color: #ffe8b0;
+
+        .vr-reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
-        /* small handle */
-        .drag-handle {
-            position: absolute;
-            top: 5px; left: 20px;
-            font-size: 10px;
-            color: #ffcfb0;
-            opacity: 0.5;
-            pointer-events: none;
+
+        .vr-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
-        @media (max-width: 600px) {
-            .ai-hologram { width: 280px; bottom: 15px; right: 15px; }
-            .ai-avatar { width: 44px; height: 44px; font-size: 26px; }
+
+        @media (max-width: 991.98px) {
+            .vr-hero-card { padding: 30px; }
+            .vr-grid-2,
+            .vr-duty-grid,
+            .vr-card-grid,
+            .vr-journey { grid-template-columns: 1fr; }
+            .vr-stage {
+                min-height: 480px;
+                margin-top: 24px;
+            }
+            .vr-scene-card { width: min(250px, 80%); }
+        }
+
+        @media (max-width: 767.98px) {
+            .vr-heading { font-size: 2.4rem; }
+            .vr-stat-grid,
+            .vr-mini-grid { grid-template-columns: 1fr; }
+            .vr-stage { min-height: 520px; }
+            .vr-scene-card.a { top: 10%; left: 6%; }
+            .vr-scene-card.b { top: 36%; right: 6%; }
+            .vr-scene-card.c { bottom: 10%; left: 10%; }
+            .vr-floating-guide {
+                right: 16px;
+                bottom: 16px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Topbar unchanged -->
     <div class="container-fluid bg-dark">
         <div class="row py-2 px-lg-5">
             <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
@@ -214,7 +792,6 @@
         </div>
     </div>
 
-    <!-- Navbar -->
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
             <a href="index.html" class="navbar-brand ml-lg-3">
@@ -245,283 +822,234 @@
                     <a href="contact.html" class="nav-item nav-link">Contact</a>
                 </div>
                 <a href="/sign-up" class="btn btn-primary py-2 px-4 d-none d-lg-block">Join Us</a>
-                <a href="/sign-in" class="btn btn-primary py-2 px-4 d-none d-lg-block">Sign-In</a>
+                <a href="/sign-in" class="btn btn-primary py-2 px-4 d-none d-lg-block ml-2">Sign-In</a>
             </div>
         </nav>
     </div>
 
-    <!-- Header -->
-    <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
+    <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom mb-0">
         <div class="container text-center py-5">
-            <h1 class="text-white display-1">Classroom 1</h1>
-            <div class="d-inline-flex text-white mb-5">
+            <h1 class="text-white display-4">Immersive Science Lab</h1>
+            <div class="d-inline-flex text-white mb-2">
                 <p class="m-0 text-uppercase"><a class="text-white" href="index.html">Home</a></p>
                 <i class="fa fa-angle-double-right pt-1 px-3"></i>
-                <p class="m-0 text-uppercase">Classroom 1</p>
-            </div>
-            <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown">Classrooms</button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Classroom 1</a>
-                            <a class="dropdown-item" href="#">Classroom 2</a>
-                            <a class="dropdown-item" href="#">Classroom 3</a>
-                        </div>
-                    </div>
-                    <input type="text" class="form-control border-light" style="padding: 30px 25px;" placeholder="Keyword">
-                    <div class="input-group-append">
-                        <button class="btn btn-secondary px-4 px-lg-5">Search</button>
-                    </div>
-                </div>
+                <p class="m-0 text-uppercase">VR Classroom</p>
             </div>
         </div>
     </div>
 
-    <!-- Main detail (unchanged) -->
-    <div class="container-fluid py-5">
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="mb-5">
-                        <div class="section-title position-relative mb-5">
-                            <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Classroom 1</h6>
-                            <h1 class="display-4">Basic indoor AR/VR classroom</h1>
+    <main class="vr-page">
+        <div class="container vr-shell">
+            <section class="vr-hero">
+                <div class="vr-hero-card">
+                    <div class="row align-items-center">
+                        <div class="col-lg-7">
+                            <span class="vr-badge"><i class="fas fa-vr-cardboard"></i> Live classroom experience</span>
+                            <h2 class="vr-heading">Walk inside the lesson, manipulate concepts, and learn science as a shared virtual space.</h2>
+                            <p class="vr-subcopy">This classroom is designed as a guided VR session for secondary and tertiary learners. Students explore live models, complete practical tasks, and receive structured teacher support while progress, attendance, and review work stay measurable.</p>
+                            <div class="vr-meta">
+                                <span class="vr-meta-chip"><i class="fas fa-atom"></i> Topic: Matter and atomic structure</span>
+                                <span class="vr-meta-chip"><i class="fas fa-user-friends"></i> Cohort: 28 learners</span>
+                                <span class="vr-meta-chip"><i class="fas fa-clock"></i> Session length: 45 minutes</span>
+                            </div>
+                            <div class="vr-cta-group">
+                                <a class="vr-btn vr-btn-primary" href="/sign-up"><i class="fas fa-user-plus"></i> Join this classroom</a>
+                                <a class="vr-btn vr-btn-secondary" href="https://sketchfab.com/models/935e67a3c0fa4bd4aaced13021dba0c3/embed?autostart=1&cardboard=1&internal=1&tracking=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0" target="_blank" rel="noopener noreferrer"><i class="fas fa-play-circle"></i> Launch VR demo</a>
+                            </div>
+                            <div class="vr-stat-grid">
+                                <div class="vr-stat-card"><strong>92%</strong><span>Task completion in the guided practical sequence.</span></div>
+                                <div class="vr-stat-card"><strong>3D</strong><span>Interactive objects learners can rotate, inspect, and annotate.</span></div>
+                                <div class="vr-stat-card"><strong>Live</strong><span>Teacher prompts, peer discussions, and real-time feedback.</span></div>
+                            </div>
                         </div>
-                        <img class="img-fluid rounded w-100 mb-4" src="img/feature-5.jpg" alt="Image">
-                        <p class="subtitle">Built by our Founder & CEO, <strong>T. Shoko</strong>, in partnership with <a href="https://www.viverse.com/" target="_blank">VIVERSE</a> & <a href="https://sketchfab.com/" target="_blank">Sketchfab</a>.</p>
-                        <p class="description">
-                        This isn't just a virtual classroom—it's a vision of the future. Designed in Sketchfab, Dzidzo World is an immersive space where learning becomes an experience. 
-                        Here, students can explore, interact, and engage with content like never before. It’s not just about education—it’s about transforming how we connect, grow, and build the future. 
-                        The metaverse is no longer a concept—it’s here, and it starts with you.
-                        </p>
-                    </div>
-                    <h2 class="mb-3">Related Courses</h2>
-                    <div class="owl-carousel related-carousel position-relative" style="padding: 0 30px;">
-                        <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="classroom_2.html">
-                            <img class="img-fluid" src="img/courses-1.jpg" alt=""><div class="courses-text"><h4 class="text-center text-white px-3">Classroom 2</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>Nature_</span><span class="text-white"><i class="fa fa-star mr-2"></i>4.4 <small>(38)</small></span></div></div></div>
-                        </a>
-                        <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="class-coming-soon.html">
-                            <img class="img-fluid" src="img/courses-2.jpg" alt=""><div class="courses-text"><h4 class="text-center text-white px-3">Classroom 6</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span><span class="text-white"><i class="fa fa-star mr-2"></i>-.- <small>(**)</small></span></div></div></div>
-                        </a>
-                        <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="detail.html">
-                            <img class="img-fluid" src="img/courses-3.jpg" alt=""><div class="courses-text"><h4 class="text-center text-white px-3">Classroom 3</h4><div class="border-top w-100 mt-3"><div class="d-flex justify-content-between p-4"><span class="text-white"><i class="fa fa-user mr-2"></i>COMING SOON!!</span><span class="text-white"><i class="fa fa-star mr-2"></i>-.- <small>(**)</small></span></div></div></div>
-                        </a>
+
+                        <div class="col-lg-5">
+                            <div class="vr-stage">
+                                <div class="vr-pulse-ring"></div>
+                                <div class="vr-orb one"></div>
+                                <div class="vr-orb two"></div>
+                                <div class="vr-orb three"></div>
+                                <div class="vr-scene-card a"><small>Zone 01</small><h4>Concept dome</h4><p>Students enter a shared scene where atoms, bonds, and reactions are visualized at room scale.</p></div>
+                                <div class="vr-scene-card b"><small>Zone 02</small><h4>Teacher guidance layer</h4><p>Live prompts, checkpoints, and observation notes stay visible without breaking immersion.</p></div>
+                                <div class="vr-scene-card c"><small>Zone 03</small><h4>Assessment sandbox</h4><p>Learners complete short tasks, submit screenshots, and reflect on what changed.</p></div>
+                                <div class="vr-stage-grid"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="col-lg-4 mt-5 mt-lg-0">
-                    <div class="bg-primary mb-5 py-3">
-                        <h3 class="text-white py-3 px-4 m-0">Class Features</h3>
-                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Creator</h6><h6 class="text-white my-3">T.Shoko</h6></div>
-                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Rating</h6><h6 class="text-white my-3">-.- <small>(**)</small></h6></div>
-                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">AR/VR</h6><h6 class="text-white my-3">DEMO world</h6></div>
-                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Venue</h6><h6 class="text-white my-3">Lecture theatre</h6></div>
-                        <div class="d-flex justify-content-between border-bottom px-4"><h6 class="text-white my-3">Skill level</h6><h6 class="text-white my-3">Highest level</h6></div>
-                        <div class="d-flex justify-content-between px-4"><h6 class="text-white my-3">Language</h6><h6 class="text-white my-3">English</h6></div>
-                        <h5 class="text-white py-3 px-4 m-0">Course Price: $---</h5>
-                        <div class="py-3 px-4"><a class="btn btn-block btn-secondary py-3 px-5" href="">Enroll Now</a></div>
-                        <div class="py-3 px-4">
-                            <a class="btn btn-block btn-secondary py-3 px-5" style="color: black;" onmouseover="this.style.background='red'" onmouseout="this.style.background='greenyellow'" href="https://sketchfab.com/models/935e67a3c0fa4bd4aaced13021dba0c3/embed?autostart=1&cardboard=1&internal=1&tracking=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0">View/Enter Class Demo</a>
-                        </div>
+            <section class="vr-section vr-reveal">
+                <div class="vr-section-head">
+                    <div>
+                        <div class="vr-kicker">Learning journey</div>
+                        <h3 class="vr-title">A VR class should feel like a lesson, not just a 3D room.</h3>
+                        <p class="vr-lead">Each segment has a clear learning job: orient, explore, practice, and review. That structure is what makes the classroom educational instead of decorative.</p>
                     </div>
+                </div>
+                <div class="vr-journey">
+                    <article class="vr-step vr-panel"><span class="vr-step-index">01</span><h4>Orientation</h4><p>Students enter the lab, understand the objective, and review headset safety, controls, and success criteria.</p></article>
+                    <article class="vr-step vr-panel"><span class="vr-step-index">02</span><h4>Guided exploration</h4><p>The teacher reveals models, layers, and hotspots so students observe before they manipulate.</p></article>
+                    <article class="vr-step vr-panel"><span class="vr-step-index">03</span><h4>Active practice</h4><p>Learners complete tasks in pairs, annotate findings, and submit evidence of understanding.</p></article>
+                    <article class="vr-step vr-panel"><span class="vr-step-index">04</span><h4>Reflection and review</h4><p>Progress, teacher notes, and quick feedback are captured so the session leads into the next class.</p></article>
+                </div>
+            </section>
 
-                    <div class="mb-5">
-                        <h2 class="mb-3">Categories</h2>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">AR/VR</a><span class="badge badge-primary badge-pill">100%</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">Reliability</a><span class="badge badge-primary badge-pill">78%</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">AR-Enhanced Materials</a><span class="badge badge-primary badge-pill">500+</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">Access Anywhere</a><span class="badge badge-primary badge-pill">24/7</span></li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0"><a href="" class="text-decoration-none h6 m-0">interactive Learning</a><span class="badge badge-primary badge-pill">100#</span></li>
+            <section class="vr-section vr-reveal">
+                <div class="vr-grid-2">
+                    <div class="vr-panel vr-card">
+                        <div class="vr-kicker">Educational outcomes</div>
+                        <h3 class="vr-title">What students should leave with</h3>
+                        <ul class="vr-outcome-list mt-4">
+                            <li>Explain atomic structure using immersive spatial examples instead of flat diagrams alone.</li>
+                            <li>Compare elements and compounds by interacting with dynamic 3D models and teacher cues.</li>
+                            <li>Complete a practical task, submit a short reflection, and receive review comments.</li>
+                            <li>Build confidence with collaborative virtual learning rather than passive watching.</li>
                         </ul>
                     </div>
-                    <div class="mb-5">
-                        <h2 class="mb-4">Recent Classes</h2>
-                        <a class="d-flex align-items-center text-decoration-none" href="#">
-                            <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="">
-                            <div class="pl-3"><h6>No classes yet</h6><div class="d-flex"><small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Please enter a class</small><small class="text-body"><i class="fa fa-star text-primary mr-2"></i>0.0 (0%)</small></div></div>
-                        </a>
+                    <aside class="vr-brief">
+                        <div class="vr-kicker">Session brief</div>
+                        <h4 class="text-white mb-3">Classroom setup</h4>
+                        <ul class="vr-check-list">
+                            <li>Teacher opens the live scene and enables the guided path.</li>
+                            <li>Students join through a course link or dashboard shortcut.</li>
+                            <li>Attendance is captured at entry and again at checkpoint two.</li>
+                            <li>Review work is attached to each submission at the end of class.</li>
+                        </ul>
+                        <div class="vr-mini-grid">
+                            <div class="vr-mini-card"><strong>12</strong><span>Interactive hotspots in the current lesson.</span></div>
+                            <div class="vr-mini-card"><strong>4 min</strong><span>Average orientation time before exploration begins.</span></div>
+                            <div class="vr-mini-card"><strong>2</strong><span>Teacher review checkpoints during the lesson.</span></div>
+                            <div class="vr-mini-card"><strong>1 click</strong><span>From dashboard to headset-ready class launch.</span></div>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
+            <section class="vr-section vr-reveal">
+                <div class="vr-card-grid">
+                    <article class="vr-card vr-panel"><div class="vr-kicker">Interactive layer</div><h4>Hands-on spatial models</h4><p>Students rotate structures, isolate layers, and zoom into concepts that are hard to grasp in 2D.</p></article>
+                    <article class="vr-card vr-panel"><div class="vr-kicker">Assessment layer</div><h4>Embedded checks for understanding</h4><p>Micro-prompts and practical tasks create evidence of learning while the lesson is still active.</p></article>
+                    <article class="vr-card vr-panel"><div class="vr-kicker">Support layer</div><h4>Teacher and peer guidance</h4><p>Students are not left alone in the headset. Guidance remains present, visible, and timed to the lesson.</p></article>
+                </div>
+            </section>
+
+            <section class="vr-section vr-reveal">
+                <div class="vr-duty-shell vr-panel">
+                    <div class="vr-section-head mb-0">
+                        <div>
+                            <div class="vr-kicker">Responsibilities</div>
+                            <h3 class="vr-title">Students, teachers, and admins each have a real job in this classroom.</h3>
+                            <p class="vr-lead">The experience works when the lesson flow, records, and content operations support each role instead of treating VR as a standalone demo.</p>
+                        </div>
+                    </div>
+                    <div class="vr-duty-grid">
+                        <article class="vr-duty-panel">
+                            <span class="vr-duty-badge"><i class="fas fa-user-graduate"></i> Students</span>
+                            <h4>Explore and submit evidence</h4>
+                            <ul class="vr-duty-list">
+                                <li>Enter the correct lesson from the dashboard.</li>
+                                <li>Complete the guided task path in sequence.</li>
+                                <li>Upload a response, screenshot, or reflection before exit.</li>
+                            </ul>
+                        </article>
+                        <article class="vr-duty-panel">
+                            <span class="vr-duty-badge"><i class="fas fa-chalkboard-teacher"></i> Teachers</span>
+                            <h4>Guide, assess, and review work</h4>
+                            <ul class="vr-duty-list">
+                                <li>Start sessions, monitor attendance, and release checkpoints.</li>
+                                <li>Review submissions and leave structured feedback.</li>
+                                <li>Adapt the next lesson using observed performance.</li>
+                            </ul>
+                        </article>
+                        <article class="vr-duty-panel">
+                            <span class="vr-duty-badge"><i class="fas fa-user-shield"></i> Admins</span>
+                            <h4>Keep the ecosystem running</h4>
+                            <ul class="vr-duty-list">
+                                <li>Manage courses, libraries, teachers, and timetabled sessions.</li>
+                                <li>Track activity, course health, and content readiness.</li>
+                                <li>Ensure the class links, media, and records stay active.</li>
+                            </ul>
+                        </article>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            <section class="vr-section vr-reveal">
+                <div class="vr-grid-2">
+                    <div class="vr-live-panel vr-panel">
+                        <div class="vr-kicker">Live class telemetry</div>
+                        <h3 class="vr-title">The page should feel active even before the headset opens.</h3>
+                        <p class="vr-lead">These session indicators are animated to suggest a living classroom with progress, engagement, and readiness data.</p>
+
+                        <div class="vr-meter">
+                            <div class="vr-meter-row"><span>Attendance check-in</span><span>84%</span></div>
+                            <div class="vr-meter-track"><div class="vr-meter-fill" data-fill="84"></div></div>
+                        </div>
+                        <div class="vr-meter">
+                            <div class="vr-meter-row"><span>Task completion</span><span>76%</span></div>
+                            <div class="vr-meter-track"><div class="vr-meter-fill" data-fill="76"></div></div>
+                        </div>
+                        <div class="vr-meter">
+                            <div class="vr-meter-row"><span>Review feedback returned</span><span>63%</span></div>
+                            <div class="vr-meter-track"><div class="vr-meter-fill" data-fill="63"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="vr-timeline vr-panel">
+                        <div class="vr-kicker">45 minute flow</div>
+                        <h4>Lesson timeline</h4>
+                        <ul class="vr-timeline-list mt-4">
+                            <li><span class="vr-timeline-time">00 - 05 min</span>Learners enter, calibrate, and review the lesson objective.</li>
+                            <li><span class="vr-timeline-time">06 - 18 min</span>Teacher-led concept walkthrough with visual hotspots and prompts.</li>
+                            <li><span class="vr-timeline-time">19 - 34 min</span>Pair activity, interactive manipulation, and short evidence capture.</li>
+                            <li><span class="vr-timeline-time">35 - 45 min</span>Reflection, review work, and transition into the next task or homework.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="vr-section vr-reveal">
+                <div class="vr-cta-panel">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <div class="vr-kicker text-white-50">Ready to launch</div>
+                            <h3 class="vr-title text-white">Use this as the flagship classroom pattern for science, labs, and guided practical lessons.</h3>
+                            <p class="vr-lead text-white-50">The design now presents VR as a structured educational product: entry, learning path, activity, attendance, review, and progression.</p>
+                        </div>
+                        <div class="col-lg-4 text-lg-right mt-4 mt-lg-0">
+                            <a class="vr-btn vr-btn-primary mr-2 mb-2" href="/sign-in"><i class="fas fa-door-open"></i> Open dashboard</a>
+                            <a class="vr-btn vr-btn-secondary mb-2" href="course.html"><i class="fas fa-th-large"></i> View more classrooms</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-    </div>
+    </main>
 
-    <!-- ========== DZIDZO (human assistant with voice) ========== -->
-    <div class="ai-hologram pulse-glow" id="dzidzoHolo">
-        <div class="drag-handle"><i class="fas fa-fingerprint"></i>  dzidzo · drag</div>
-
-        <div class="ai-header" id="dzidzoHeader">
-            <div class="ai-avatar"><i class="fas fa-user-circle"></i></div> <!-- human icon -->
+    <div class="vr-floating-guide" id="vrGuide">
+        <div class="vr-guide-head">
+            <div class="vr-guide-avatar"><i class="fas fa-satellite-dish"></i></div>
             <div>
-                <div class="ai-title">Dzidzo <small>⚘</small></div>
-                <div class="ai-sub"><i class="fas fa-heart" style="color: #ffaf9a;"></i> your learning companion · voice ready</div>
+                <h5 class="vr-guide-title">Dzidzo Guide</h5>
+                <small class="text-white-50">Live classroom assistant</small>
             </div>
         </div>
-        <div class="ai-message" id="dzidzoMessage">
-            👋🏾 Hi, I'm Dzidzo. I'm here to help you learn — ask me about class time, assignments, or anything. And yes, I can speak!
-        </div>
-        <div class="ai-actions">
-            <div class="ai-btn" onclick="dzidzoRespond('time')"><i class="far fa-clock"></i> class time</div>
-            <div class="ai-btn" onclick="dzidzoRespond('assignment')"><i class="fas fa-pencil-alt"></i> assignments</div>
-            <div class="ai-btn" onclick="dzidzoRespond('help')"><i class="fas fa-question-circle"></i> class work</div>
-            <div class="ai-btn voice-btn" onclick="dzidzoSpeak()"><i class="fas fa-volume-up"></i> speak</div>
-        </div>
-        <div class="ai-assistant-small-note">
-            <span><i class="fas fa-arrows-alt"></i> drag anywhere</span>
-            <span><i class="fas fa-microphone-alt"></i> voice click</span>
+        <p class="vr-guide-copy" id="vrGuideMessage">This class is ready for student entry, teacher moderation, and assignment evidence capture. Select a focus to preview the classroom emphasis.</p>
+        <div class="vr-guide-actions">
+            <button class="vr-guide-btn active" data-guide-message="This class is ready for student entry, teacher moderation, and assignment evidence capture. Select a focus to preview the classroom emphasis."><i class="fas fa-broadcast-tower"></i> Overview</button>
+            <button class="vr-guide-btn" data-guide-message="Teacher mode highlights orientation, live prompts, attendance checkpoints, and review notes during the session."><i class="fas fa-chalkboard-teacher"></i> Teacher mode</button>
+            <button class="vr-guide-btn" data-guide-message="Student mode focuses on clear objectives, guided interactions, pair work, and reflective submission at the end."><i class="fas fa-user-graduate"></i> Student mode</button>
+            <button class="vr-guide-btn" data-guide-message="Admin mode keeps class links, media assets, attendance records, and review workflows available across the platform."><i class="fas fa-user-shield"></i> Admin mode</button>
         </div>
     </div>
 
-    <!-- Drag + voice + human responses -->
-    <script>
-        (function() {
-            const holo = document.getElementById('dzidzoHolo');
-            const header = document.getElementById('dzidzoHeader');
-            let isDragging = false;
-            let offsetX, offsetY;
-
-            // Drag start (whole panel but not if button)
-            holo.addEventListener('mousedown', startDrag);
-            holo.addEventListener('touchstart', startDrag, { passive: false });
-
-            function startDrag(e) {
-                if (e.target.classList.contains('ai-btn') || e.target.closest('.ai-btn')) return;
-                e.preventDefault();
-                isDragging = true;
-                holo.classList.add('dragging');
-
-                const rect = holo.getBoundingClientRect();
-                let clientX, clientY;
-                if (e.type === 'mousedown') {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                } else {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                }
-                offsetX = clientX - rect.left;
-                offsetY = clientY - rect.top;
-
-                holo.style.left = rect.left + 'px';
-                holo.style.top = rect.top + 'px';
-                holo.style.bottom = 'auto';
-                holo.style.right = 'auto';
-
-                document.addEventListener('mousemove', onDrag);
-                document.addEventListener('mouseup', stopDrag);
-                document.addEventListener('touchmove', onDrag, { passive: false });
-                document.addEventListener('touchend', stopDrag);
-                document.addEventListener('touchcancel', stopDrag);
-            }
-
-            function onDrag(e) {
-                if (!isDragging) return;
-                e.preventDefault();
-                let clientX, clientY;
-                if (e.type === 'mousemove') {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                } else {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                }
-                let newLeft = clientX - offsetX;
-                let newTop = clientY - offsetY;
-
-                const rect = holo.getBoundingClientRect();
-                const winW = window.innerWidth;
-                const winH = window.innerHeight;
-                newLeft = Math.max(10, Math.min(winW - rect.width - 10, newLeft));
-                newTop = Math.max(10, Math.min(winH - rect.height - 10, newTop));
-
-                holo.style.left = newLeft + 'px';
-                holo.style.top = newTop + 'px';
-            }
-
-            function stopDrag() {
-                if (isDragging) {
-                    isDragging = false;
-                    holo.classList.remove('dragging');
-                }
-                document.removeEventListener('mousemove', onDrag);
-                document.removeEventListener('mouseup', stopDrag);
-                document.removeEventListener('touchmove', onDrag);
-                document.removeEventListener('touchend', stopDrag);
-                document.removeEventListener('touchcancel', stopDrag);
-            }
-
-            // ----- dzidzo AI response (text and voice) -----
-            window.dzidzoRespond = function(topic) {
-                const msgBox = document.getElementById('dzidzoMessage');
-                let reply = '';
-                switch(topic) {
-                    case 'time':
-                        reply = "🕊️ Dzidzo: Class time is flexible — next live session in 15 minutes. I'll remind you.";
-                        break;
-                    case 'assignment':
-                        reply = "📘 Assignments: Explore the Sketchfab demo and complete the AR quiz. Need a hint? I'm here.";
-                        break;
-                    case 'help':
-                        reply = "📚 You're in Classroom 1. Try gazing at the 3D periodic table — I can explain each element.";
-                        break;
-                    default: reply = "💬 I'm Dzidzo, your guide. Ask me anything about your AR/VR class.";
-                }
-                msgBox.innerHTML = `🧑🏾‍🏫 <strong>Dzidzo:</strong> ${reply}`;
-                // optional: gentle scale feedback
-                holo.style.transform = 'scale(1.02)';
-                setTimeout(() => holo.style.transform = 'scale(1)', 150);
-            };
-
-            // Voice (speech synthesis) — speaks the last response or a default
-            window.dzidzoSpeak = function() {
-                const msgBox = document.getElementById('dzidzoMessage');
-                // extract only the text part after "Dzidzo:"
-                let text = msgBox.innerText || msgBox.textContent;
-                // remove possible emoji or prefix "🧑🏾‍🏫 Dzidzo:" 
-                text = text.replace(/.*Dzidzo:\s*/i, ''); 
-                if (!text || text.length < 2) {
-                    text = "Hi, I'm Dzidzo. How can I help you with your class today?";
-                }
-
-                // use web speech api
-                if (!window.speechSynthesis) {
-                    alert('Your browser does not support voice synthesis.');
-                    return;
-                }
-                // cancel any ongoing speech
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.95;
-                utterance.pitch = 1.2;
-                utterance.volume = 1;
-                utterance.voice = speechSynthesis.getVoices().find(v => v.lang.includes('en') && v.name.includes('Google UK')) || null;
-                speechSynthesis.speak(utterance);
-                
-                // visual feedback on voice button
-                const voiceBtn = document.querySelector('.voice-btn');
-                voiceBtn.style.background = '#c06b9e';
-                setTimeout(() => voiceBtn.style.background = '', 300);
-            };
-
-            // welcome message after load
-            window.addEventListener('load', function() {
-                setTimeout(() => {
-                    document.getElementById('dzidzoMessage').innerHTML = `🧑🏾‍🏫 <strong>Dzidzo:</strong> I'm your personal guide. You can drag me, click any button, or hit "speak" to hear my voice.`;
-                }, 900);
-            });
-        })();
-    </script>
-    <!-- ========== END DZIDZO ========== -->
-
-    <!-- Footer unchanged -->
     <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
         <div class="container mt-5 pt-5">
             <div class="row">
                 <div class="col-md-6 mb-5">
                     <a href="index.html" class="navbar-brand"><h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Dzidzo</h1></a>
-                    <p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible...</p>
+                    <p class="m-0">Dzidzo is an AR/VR-powered learning platform designed to turn virtual classrooms into structured educational spaces with real teaching flow, progress tracking, and modern content delivery.</p>
                 </div>
                 <div class="col-md-6 mb-5">
                     <h3 class="text-white mb-4">Education Made Simpler</h3>
@@ -530,18 +1058,22 @@
             </div>
             <div class="row">
                 <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Get In Touch</h3><p><i class="fa fa-map-marker-alt mr-2"></i>Virtual</p><p><i class="fa fa-phone-alt mr-2"></i>+263716821065</p><p><i class="fa fa-envelope mr-2"></i>dzidzoar@gmail.com</p></div>
-                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Our Classrooms</h3><div class="d-flex flex-column justify-content-start"><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 1</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 2</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 3</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Viverse</a><a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Free World</a></div></div>
-                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Quick Links</h3><div class="d-flex flex-column justify-content-start"><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Regular FAQs</a><a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help & Support</a><a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a></div></div>
+                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Our Classrooms</h3><div class="d-flex flex-column justify-content-start"><a class="text-white-50 mb-2" href="classroom_1.html"><i class="fa fa-angle-right mr-2"></i>Immersive Science Lab</a><a class="text-white-50 mb-2" href="classroom_2.html"><i class="fa fa-angle-right mr-2"></i>Dzidzo Library</a><a class="text-white-50 mb-2" href="course.html"><i class="fa fa-angle-right mr-2"></i>Course Directory</a><a class="text-white-50 mb-2" href="/library"><i class="fa fa-angle-right mr-2"></i>Digital Library</a><a class="text-white-50" href="/my-courses"><i class="fa fa-angle-right mr-2"></i>My Courses</a></div></div>
+                <div class="col-md-4 mb-5"><h3 class="text-white mb-4">Quick Links</h3><div class="d-flex flex-column justify-content-start"><a class="text-white-50 mb-2" href="/sign-up"><i class="fa fa-angle-right mr-2"></i>Create account</a><a class="text-white-50 mb-2" href="/sign-in"><i class="fa fa-angle-right mr-2"></i>Sign in</a><a class="text-white-50 mb-2" href="feature.html"><i class="fa fa-angle-right mr-2"></i>Platform features</a><a class="text-white-50 mb-2" href="team.html"><i class="fa fa-angle-right mr-2"></i>Meet the team</a><a class="text-white-50" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact</a></div></div>
             </div>
         </div>
     </div>
     <div class="container-fluid bg-dark text-white-50 border-top py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
-        <div class="container"><div class="row"><div class="col-md-6 text-center text-md-left mb-3 mb-md-0"><p class="m-0">Copyright &copy; <a class="text-white" href="#">2025 Dzidzo AR/VR</a>. All Rights Reserved.</p></div><div class="col-md-6 text-center text-md-right"><p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a> Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a> <br> Template Customization <a href="https://github.com/marknature/" target="_blank">@marknature_</a></p></div></div></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-left mb-3 mb-md-0"><p class="m-0">Copyright &copy; <a class="text-white" href="#">2026 Dzidzo AR/VR</a>. All Rights Reserved.</p></div>
+                <div class="col-md-6 text-center text-md-right"><p class="m-0">Designed on top of the existing Dzidzo web experience and adapted into a modern VR classroom presentation.</p></div>
+            </div>
+        </div>
     </div>
 
     <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
-    <!-- JS libs -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="lib/easing/easing.min.js"></script>
@@ -549,5 +1081,42 @@
     <script src="lib/counterup/counterup.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        (function () {
+            const revealTargets = document.querySelectorAll(".vr-reveal");
+            const meterFills = document.querySelectorAll(".vr-meter-fill");
+            const guideMessage = document.getElementById("vrGuideMessage");
+            const guideButtons = document.querySelectorAll(".vr-guide-btn");
+
+            if ("IntersectionObserver" in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("is-visible");
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.18 });
+
+                revealTargets.forEach((target) => observer.observe(target));
+            } else {
+                revealTargets.forEach((target) => target.classList.add("is-visible"));
+            }
+
+            setTimeout(() => {
+                meterFills.forEach((fill) => {
+                    fill.style.width = Number(fill.getAttribute("data-fill") || 0) + "%";
+                });
+            }, 250);
+
+            guideButtons.forEach((button) => {
+                button.addEventListener("click", () => {
+                    guideButtons.forEach((item) => item.classList.remove("active"));
+                    button.classList.add("active");
+                    guideMessage.textContent = button.getAttribute("data-guide-message");
+                });
+            });
+        })();
+    </script>
 </body>
 </html>
