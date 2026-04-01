@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import express from "express";
 import { query } from "../config/db.js";
+import { asyncHandler, respondWithError } from "../lib/http.js";
 import { createAuthToken } from "../lib/jwt.js";
 import {
   validateSigninPayload,
@@ -9,7 +10,7 @@ import {
 
 export const authRouter = express.Router();
 
-authRouter.post("/signup", async (req, res) => {
+authRouter.post("/signup", asyncHandler(async (req, res) => {
   const parsed = validateSignupPayload(req.body);
 
   if (!parsed.ok) {
@@ -18,16 +19,16 @@ authRouter.post("/signup", async (req, res) => {
 
   const { fullName, email, password, role } = parsed.value;
 
+  const existingUser = await query(
+    "SELECT id FROM users WHERE email = $1 LIMIT 1",
+    [email]
+  );
+
+  if (existingUser.rowCount > 0) {
+    return res.status(409).json({ error: "An account with this email already exists." });
+  }
+
   try {
-    const existingUser = await query(
-      "SELECT id FROM users WHERE email = $1 LIMIT 1",
-      [email]
-    );
-
-    if (existingUser.rowCount > 0) {
-      return res.status(409).json({ error: "An account with this email already exists." });
-    }
-
     const passwordHash = await bcrypt.hash(password, 10);
 
     const result = await query(
@@ -48,11 +49,11 @@ authRouter.post("/signup", async (req, res) => {
       user
     });
   } catch (error) {
-    return res.status(500).json({ error: "Failed to create account." });
+    return respondWithError(res, error, "Failed to create account.");
   }
-});
+}));
 
-authRouter.post("/signin", async (req, res) => {
+authRouter.post("/signin", asyncHandler(async (req, res) => {
   const parsed = validateSigninPayload(req.body);
 
   if (!parsed.ok) {
@@ -102,6 +103,6 @@ authRouter.post("/signin", async (req, res) => {
       user: safeUser
     });
   } catch (error) {
-    return res.status(500).json({ error: "Failed to sign in." });
+    return respondWithError(res, error, "Failed to sign in.");
   }
-});
+}));

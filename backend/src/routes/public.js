@@ -1,9 +1,10 @@
 import express from "express";
 import { query } from "../config/db.js";
+import { asyncHandler, respondWithError } from "../lib/http.js";
 
 export const publicRouter = express.Router();
 
-publicRouter.get("/categories", async (_req, res) => {
+publicRouter.get("/categories", asyncHandler(async (_req, res) => {
   const result = await query(`
     SELECT id, name, slug, description, display_order
     FROM categories
@@ -11,9 +12,9 @@ publicRouter.get("/categories", async (_req, res) => {
     ORDER BY display_order ASC, name ASC
   `);
   res.json({ items: result.rows });
-});
+}));
 
-publicRouter.get("/courses", async (req, res) => {
+publicRouter.get("/courses", asyncHandler(async (req, res) => {
   const limit = Math.min(Number(req.query.limit || 20), 100);
   const result = await query(
     `
@@ -31,10 +32,11 @@ publicRouter.get("/courses", async (req, res) => {
   );
 
   res.json({ items: result.rows });
-});
+}));
 
-publicRouter.get("/courses/by-page", async (req, res) => {
+publicRouter.get("/courses/by-page", asyncHandler(async (req, res) => {
   const pagePath = String(req.query.page_path || "").trim();
+  const includeLessons = String(req.query.include_lessons || "").trim() === "true";
 
   if (!pagePath) {
     return res.status(400).json({ error: "page_path is required." });
@@ -58,10 +60,25 @@ publicRouter.get("/courses/by-page", async (req, res) => {
     return res.status(404).json({ error: "Course not found." });
   }
 
-  return res.json({ item: result.rows[0] });
-});
+  if (!includeLessons) {
+    return res.json({ item: result.rows[0] });
+  }
 
-publicRouter.get("/team-members", async (_req, res) => {
+  const lessons = await query(
+    `
+      SELECT title, slug, summary, content, media_type, media_url, duration_minutes, display_order
+      FROM lessons
+      WHERE course_id = $1
+        AND is_published = TRUE
+      ORDER BY display_order ASC, title ASC
+    `,
+    [result.rows[0].id]
+  );
+
+  return res.json({ item: result.rows[0], lessons: lessons.rows });
+}));
+
+publicRouter.get("/team-members", asyncHandler(async (_req, res) => {
   const result = await query(`
     SELECT full_name, title, bio, image_url, twitter_url, facebook_url,
            linkedin_url, instagram_url, youtube_url, display_order
@@ -70,9 +87,9 @@ publicRouter.get("/team-members", async (_req, res) => {
     ORDER BY display_order ASC, full_name ASC
   `);
   res.json({ items: result.rows });
-});
+}));
 
-publicRouter.get("/testimonials", async (_req, res) => {
+publicRouter.get("/testimonials", asyncHandler(async (_req, res) => {
   const result = await query(`
     SELECT student_name, student_title, quote, image_url, rating, display_order
     FROM testimonials
@@ -80,9 +97,9 @@ publicRouter.get("/testimonials", async (_req, res) => {
     ORDER BY display_order ASC, student_name ASC
   `);
   res.json({ items: result.rows });
-});
+}));
 
-publicRouter.get("/library-items", async (req, res) => {
+publicRouter.get("/library-items", asyncHandler(async (req, res) => {
   const limit = Math.min(Number(req.query.limit || 20), 100);
   const result = await query(
     `
@@ -97,9 +114,9 @@ publicRouter.get("/library-items", async (req, res) => {
     [limit]
   );
   res.json({ items: result.rows });
-});
+}));
 
-publicRouter.post("/contact-messages", async (req, res) => {
+publicRouter.post("/contact-messages", asyncHandler(async (req, res) => {
   const fullName = String(req.body.full_name || "").trim();
   const email = String(req.body.email || "").trim().toLowerCase();
   const subject = String(req.body.subject || "").trim();
@@ -109,22 +126,28 @@ publicRouter.post("/contact-messages", async (req, res) => {
     return res.status(400).json({ error: "Full name, email, subject, and message are required." });
   }
 
-  const result = await query(
-    `
-      INSERT INTO contact_messages (full_name, email, subject, message)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id, full_name, email, subject, status, created_at
-    `,
-    [fullName, email, subject, message]
-  );
+  let result;
+
+  try {
+    result = await query(
+      `
+        INSERT INTO contact_messages (full_name, email, subject, message)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, full_name, email, subject, status, created_at
+      `,
+      [fullName, email, subject, message]
+    );
+  } catch (error) {
+    return respondWithError(res, error, "Could not save the contact message.");
+  }
 
   res.status(201).json({
     message: "Message sent successfully.",
     item: result.rows[0]
   });
-});
+}));
 
-publicRouter.post("/newsletter-subscriptions", async (req, res) => {
+publicRouter.post("/newsletter-subscriptions", asyncHandler(async (req, res) => {
   const email = String(req.body.email || "").trim().toLowerCase();
   const source = String(req.body.source || "site-footer").trim();
 
@@ -132,19 +155,25 @@ publicRouter.post("/newsletter-subscriptions", async (req, res) => {
     return res.status(400).json({ error: "Email is required." });
   }
 
-  const result = await query(
-    `
-      INSERT INTO newsletter_subscribers (email, source, is_active)
-      VALUES ($1, $2, TRUE)
-      ON CONFLICT (email)
-      DO UPDATE SET source = EXCLUDED.source, is_active = TRUE, updated_at = NOW()
-      RETURNING id, email, source, is_active, subscribed_at
-    `,
-    [email, source]
-  );
+  let result;
+
+  try {
+    result = await query(
+      `
+        INSERT INTO newsletter_subscribers (email, source, is_active)
+        VALUES ($1, $2, TRUE)
+        ON CONFLICT (email)
+        DO UPDATE SET source = EXCLUDED.source, is_active = TRUE, updated_at = NOW()
+        RETURNING id, email, source, is_active, subscribed_at
+      `,
+      [email, source]
+    );
+  } catch (error) {
+    return respondWithError(res, error, "Could not save the subscription.");
+  }
 
   res.status(201).json({
     message: "Subscription saved successfully.",
     item: result.rows[0]
   });
-});
+}));

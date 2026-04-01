@@ -14,13 +14,14 @@ const sectionDefinitions = {
   users: {
     label: "Users",
     kicker: "Accounts",
-    description: "Manage admin, teacher, and student records.",
+    description: "Manage admin, teacher, and student records, including initial passwords for new accounts.",
     endpoint: "/api/admin/users",
     columns: ["full_name", "email", "role", "is_active", "created_at"],
     searchKeys: ["full_name", "email", "role"],
     fields: [
       { name: "full_name", label: "Full Name", type: "text", required: true },
       { name: "email", label: "Email", type: "email", required: true },
+      { name: "password", label: "Password", type: "password" },
       { name: "role", label: "Role", type: "select", options: ["admin", "teacher", "student"], required: true },
       { name: "is_active", label: "Active", type: "checkbox", defaultValue: true }
     ]

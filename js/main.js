@@ -423,11 +423,12 @@
         }
 
         const [courseResult, coursesResult] = await Promise.all([
-            api(`/api/public/courses/by-page?page_path=${encodeURIComponent(path)}`),
+            api(`/api/public/courses/by-page?page_path=${encodeURIComponent(path)}&include_lessons=true`),
             api("/api/public/courses?limit=10")
         ]);
 
         const course = courseResult.item;
+        const lessons = courseResult.lessons || [];
         const allCourses = (coursesResult.items || []).filter((item) => item.page_path !== path);
 
         const headerTitle = document.querySelector(".page-header .display-1");
@@ -469,6 +470,42 @@
             image.alt = course.title;
         }
 
+        const contentColumn = document.querySelector(".col-lg-8");
+        const sidebarColumn = document.querySelector(".col-lg-4");
+
+        if (contentColumn && lessons.length) {
+            let roadmap = contentColumn.querySelector("[data-dzidzo-roadmap]");
+
+            if (!roadmap) {
+                roadmap = document.createElement("section");
+                roadmap.setAttribute("data-dzidzo-roadmap", "true");
+                roadmap.className = "mb-5";
+                contentColumn.appendChild(roadmap);
+            }
+
+            roadmap.innerHTML = `
+                <div class="section-title position-relative mb-4">
+                    <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">VR learning path</h6>
+                    <h1 class="display-5">What happens inside this space</h1>
+                </div>
+                <div class="row">
+                    ${lessons.map((lesson) => `
+                        <div class="col-md-6 mb-4">
+                            <div class="bg-light border rounded h-100 p-4">
+                                <p class="text-uppercase text-secondary mb-2" style="letter-spacing:0.12em;font-size:12px;">Step ${lesson.display_order}</p>
+                                <h5 class="mb-3">${lesson.title}</h5>
+                                <p class="mb-3">${lesson.summary || "Immersive lesson activity."}</p>
+                                <div class="d-flex justify-content-between text-muted small">
+                                    <span>${lesson.media_type || "lesson"}</span>
+                                    <span>${lesson.duration_minutes || 0} min</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join("")}
+                </div>
+            `;
+        }
+
         const featureRows = document.querySelectorAll(".bg-primary.mb-5.py-3 .d-flex.justify-content-between");
         featureRows.forEach((row) => {
             const label = row.querySelector("h6:first-child")?.textContent?.trim();
@@ -490,6 +527,48 @@
         if (priceHeading) {
             priceHeading.textContent = `Course Price: ${course.currency_code || "USD"} ${Number(course.price_amount || 0).toFixed(2)}`;
         }
+
+        if (sidebarColumn) {
+            let vrCard = sidebarColumn.querySelector("[data-dzidzo-vr-card]");
+
+            if (!vrCard) {
+                vrCard = document.createElement("div");
+                vrCard.setAttribute("data-dzidzo-vr-card", "true");
+                vrCard.className = "bg-primary mb-5 py-3";
+                sidebarColumn.insertBefore(vrCard, sidebarColumn.firstChild);
+            }
+
+            vrCard.innerHTML = `
+                <h3 class="text-white py-3 px-4 m-0">Immersive session scope</h3>
+                <div class="py-3 px-4 bg-light">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h6 class="m-0">Scene access</h6>
+                        <span>${course.demo_url ? "Ready" : "Planned"}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h6 class="m-0">VR lessons</h6>
+                        <span>${lessons.length}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h6 class="m-0">Instructor</h6>
+                        <span>${course.instructor_name || "Dzidzo"}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="m-0">Mode</h6>
+                        <span>${course.course_type || "classroom"}</span>
+                    </div>
+                </div>
+                <div class="py-3 px-4">
+                    <a class="btn btn-block btn-secondary py-3 px-5 mb-3" href="${course.demo_url || course.page_path || "#"}">${course.demo_url ? "Launch VR tour" : "View course"}</a>
+                    <a class="btn btn-block btn-primary py-3 px-5" href="/sign-up">Join this cohort</a>
+                </div>
+            `;
+        }
+
+        document.querySelectorAll('a.btn.btn-block.btn-secondary.py-3.px-5').forEach((button) => {
+            button.setAttribute("href", course.demo_url || course.page_path || "#");
+            button.textContent = course.demo_url ? "Launch VR tour" : "View course";
+        });
 
         const relatedCarousel = $(".related-carousel");
         if (relatedCarousel.length) {

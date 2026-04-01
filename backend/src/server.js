@@ -4,6 +4,7 @@ import { pool } from "./config/db.js";
 import { env } from "./config/env.js";
 import { adminRouter } from "./routes/admin.js";
 import { authRouter } from "./routes/auth.js";
+import { dashboardRouter } from "./routes/dashboard.js";
 import { protectedRouter } from "./routes/protected.js";
 import { publicRouter } from "./routes/public.js";
 
@@ -28,7 +29,13 @@ app.get("/api/health", async (_req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/public", publicRouter);
 app.use("/api", protectedRouter);
+app.use("/api/dashboard", dashboardRouter);
 app.use("/api/admin", adminRouter);
+
+app.use((error, _req, res, _next) => {
+  console.error(error);
+  res.status(500).json({ error: "Internal server error." });
+});
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Not found." });

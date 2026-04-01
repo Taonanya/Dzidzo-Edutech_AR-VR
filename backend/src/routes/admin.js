@@ -1,5 +1,8 @@
+import bcrypt from "bcryptjs";
 import express from "express";
 import { query } from "../config/db.js";
+import { asyncHandler, respondWithError } from "../lib/http.js";
+import { normalizeEmail, normalizeRole } from "../lib/validators.js";
 import { requireAuth } from "../middleware/require-auth.js";
 import { requireRole } from "../middleware/require-role.js";
 
@@ -32,6 +35,10 @@ function nullable(value) {
   return String(value).trim();
 }
 
+async function hashPassword(password) {
+  return bcrypt.hash(String(password), 10);
+}
+
 const resourceConfig = {
   users: {
     listSql: `
@@ -46,16 +53,41 @@ const resourceConfig = {
     `,
     updateSql: `
       UPDATE users
-      SET full_name = $2, email = $3, role = $4, is_active = $5
+      SET full_name = $2, email = $3, role = $4, is_active = $5,
+          password_hash = COALESCE($6, password_hash)
       WHERE id = $1
       RETURNING id, full_name, email, role, is_active, created_at, updated_at
     `,
     deleteSql: `DELETE FROM users WHERE id = $1 RETURNING id`,
-    serializeCreate(body) {
-      return [body.full_name, body.email, body.password_hash || '$2b$10$temporary.hash.replace.me.for.real.user.seed', body.role || 'student', bool(body.is_active, true)];
+    async serializeCreate(body) {
+      const fullName = nullable(body.full_name);
+      const email = normalizeEmail(body.email);
+      const role = normalizeRole(body.role);
+      const password = String(body.password || "").trim();
+
+      if (!fullName || !email || password.length < 8) {
+        throw new Error("VALIDATION: User records require full name, email, and a password of at least 8 characters.");
+      }
+
+      return [
+        fullName,
+        email,
+        await hashPassword(password),
+        role || "student",
+        bool(body.is_active, true)
+      ];
     },
-    serializeUpdate(id, body) {
-      return [id, body.full_name, body.email, body.role || 'student', bool(body.is_active, true)];
+    async serializeUpdate(id, body) {
+      const password = String(body.password || "").trim();
+
+      return [
+        id,
+        nullable(body.full_name),
+        normalizeEmail(body.email),
+        normalizeRole(body.role) || "student",
+        bool(body.is_active, true),
+        password ? await hashPassword(password) : null
+      ];
     }
   },
   categories: {
@@ -127,10 +159,10 @@ const resourceConfig = {
         num(body.lecture_count, 0),
         num(body.duration_hours, 0),
         nullable(body.skill_level),
-        body.language || 'English',
+        body.language || "English",
         num(body.price_amount, 0),
-        body.currency_code || 'USD',
-        body.course_type || 'classroom',
+        body.currency_code || "USD",
+        body.course_type || "classroom",
         bool(body.is_published, true),
         bool(body.is_featured, false),
         num(body.display_order, 0)
@@ -242,7 +274,7 @@ const resourceConfig = {
     `,
     deleteSql: `DELETE FROM testimonials WHERE id = $1 RETURNING id`,
     serializeCreate(body) {
-      return [body.student_name, nullable(body.student_title), body.quote, nullable(body.image_url), body.rating === null || body.rating === undefined || body.rating === '' ? null : num(body.rating, 0), num(body.display_order, 0), bool(body.is_published, true)];
+      return [body.student_name, nullable(body.student_title), body.quote, nullable(body.image_url), body.rating === null || body.rating === undefined || body.rating === "" ? null : num(body.rating, 0), num(body.display_order, 0), bool(body.is_published, true)];
     },
     serializeUpdate(id, body) {
       return [id, ...this.serializeCreate(body)];
@@ -262,7 +294,7 @@ const resourceConfig = {
     `,
     deleteSql: `DELETE FROM contact_messages WHERE id = $1 RETURNING id`,
     serializeUpdate(id, body) {
-      return [id, body.full_name, body.email, body.subject, body.message, body.status || 'new'];
+      return [id, body.full_name, normalizeEmail(body.email), body.subject, body.message, body.status || "new"];
     }
   },
   newsletterSubscribers: {
@@ -279,7 +311,7 @@ const resourceConfig = {
     `,
     deleteSql: `DELETE FROM newsletter_subscribers WHERE id = $1 RETURNING id`,
     serializeUpdate(id, body) {
-      return [id, body.email, nullable(body.source), bool(body.is_active, true)];
+      return [id, normalizeEmail(body.email), nullable(body.source), bool(body.is_active, true)];
     }
   },
   enrollments: {
@@ -304,7 +336,7 @@ const resourceConfig = {
     `,
     deleteSql: `DELETE FROM enrollments WHERE id = $1 RETURNING id`,
     serializeCreate(body) {
-      return [nullable(body.user_id), nullable(body.course_id), body.status || 'active', num(body.progress_percent, 0)];
+      return [nullable(body.user_id), nullable(body.course_id), body.status || "active", num(body.progress_percent, 0)];
     },
     serializeUpdate(id, body) {
       return [id, ...this.serializeCreate(body)];
@@ -312,8 +344,8 @@ const resourceConfig = {
   }
 };
 
-adminRouter.get('/summary', async (_req, res) => {
-  const summaryKeys = ['users', 'categories', 'courses', 'lessons', 'library_items', 'team_members', 'testimonials', 'contact_messages', 'newsletter_subscribers', 'enrollments'];
+adminRouter.get("/summary", asyncHandler(async (_req, res) => {
+  const summaryKeys = ["users", "categories", "courses", "lessons", "library_items", "team_members", "testimonials", "contact_messages", "newsletter_subscribers", "enrollments"];
   const summary = {};
 
   for (const tableName of summaryKeys) {
@@ -322,55 +354,81 @@ adminRouter.get('/summary', async (_req, res) => {
   }
 
   res.json({ summary });
-});
+}));
 
-adminRouter.get('/lookups/categories', async (_req, res) => {
+adminRouter.get("/lookups/categories", asyncHandler(async (_req, res) => {
   const result = await query(`SELECT id, name FROM categories WHERE is_active = TRUE ORDER BY display_order ASC, name ASC`);
   res.json({ items: result.rows });
-});
+}));
 
-adminRouter.get('/lookups/courses', async (_req, res) => {
+adminRouter.get("/lookups/courses", asyncHandler(async (_req, res) => {
   const result = await query(`SELECT id, title FROM courses ORDER BY display_order ASC, title ASC`);
   res.json({ items: result.rows });
-});
+}));
 
-adminRouter.get('/lookups/users', async (_req, res) => {
+adminRouter.get("/lookups/users", asyncHandler(async (_req, res) => {
   const result = await query(`SELECT id, full_name, email FROM users ORDER BY created_at DESC`);
   res.json({ items: result.rows });
-});
+}));
 
 for (const [resourceName, config] of Object.entries(resourceConfig)) {
   const basePath = `/${resourceName}`;
 
-  adminRouter.get(basePath, async (_req, res) => {
+  adminRouter.get(basePath, asyncHandler(async (_req, res) => {
     const result = await query(config.listSql);
     res.json({ items: result.rows });
-  });
+  }));
 
   if (config.insertSql) {
-    adminRouter.post(basePath, async (req, res) => {
-      const result = await query(config.insertSql, config.serializeCreate(req.body));
-      res.status(201).json({ item: result.rows[0] });
-    });
+    adminRouter.post(basePath, asyncHandler(async (req, res) => {
+      try {
+        const params = await config.serializeCreate(req.body);
+        const result = await query(config.insertSql, params);
+        res.status(201).json({ item: result.rows[0] });
+      } catch (error) {
+        if (error instanceof Error && error.message.startsWith("VALIDATION:")) {
+          return res.status(400).json({ error: error.message.replace("VALIDATION: ", "") });
+        }
+
+        return respondWithError(res, error, `Failed to create ${resourceName}.`);
+      }
+    }));
   }
 
   if (config.updateSql) {
-    adminRouter.put(`${basePath}/:id`, async (req, res) => {
-      const result = await query(config.updateSql, config.serializeUpdate(req.params.id, req.body));
-      if (result.rowCount === 0) {
-        return res.status(404).json({ error: `${resourceName} item not found.` });
+    adminRouter.put(`${basePath}/:id`, asyncHandler(async (req, res) => {
+      try {
+        const params = await config.serializeUpdate(req.params.id, req.body);
+        const result = await query(config.updateSql, params);
+
+        if (result.rowCount === 0) {
+          return res.status(404).json({ error: `${resourceName} item not found.` });
+        }
+
+        return res.json({ item: result.rows[0] });
+      } catch (error) {
+        if (error instanceof Error && error.message.startsWith("VALIDATION:")) {
+          return res.status(400).json({ error: error.message.replace("VALIDATION: ", "") });
+        }
+
+        return respondWithError(res, error, `Failed to update ${resourceName}.`);
       }
-      return res.json({ item: result.rows[0] });
-    });
+    }));
   }
 
   if (config.deleteSql) {
-    adminRouter.delete(`${basePath}/:id`, async (req, res) => {
-      const result = await query(config.deleteSql, [req.params.id]);
-      if (result.rowCount === 0) {
-        return res.status(404).json({ error: `${resourceName} item not found.` });
+    adminRouter.delete(`${basePath}/:id`, asyncHandler(async (req, res) => {
+      try {
+        const result = await query(config.deleteSql, [req.params.id]);
+
+        if (result.rowCount === 0) {
+          return res.status(404).json({ error: `${resourceName} item not found.` });
+        }
+
+        return res.json({ success: true });
+      } catch (error) {
+        return respondWithError(res, error, `Failed to delete ${resourceName}.`);
       }
-      return res.json({ success: true });
-    });
+    }));
   }
 }
