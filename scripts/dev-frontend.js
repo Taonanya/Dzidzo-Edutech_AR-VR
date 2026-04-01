@@ -25,6 +25,15 @@ const MIME_TYPES = {
   ".map": "application/json; charset=utf-8"
 };
 
+const ROUTE_REDIRECTS = {
+  "/sign-up": "/admin%20src/build/pages/sign-up.html",
+  "/sign-in": "/admin%20src/build/pages/sign-in.html",
+  "/admin-dashboard": "/admin%20src/build/pages/admin-dashboard.html",
+  "/teacher-dashboard": "/admin%20src/build/pages/teacher-dashboard.html",
+  "/student-dashboard": "/admin%20src/build/pages/student-dashboard.html",
+  "/admin-management": "/admin%20src/build/pages/admin-management.html"
+};
+
 function send(res, statusCode, body, contentType = "text/plain; charset=utf-8") {
   res.writeHead(statusCode, { "Content-Type": contentType });
   res.end(body);
@@ -67,6 +76,15 @@ function tryServeFile(filePath, res) {
 }
 
 const server = http.createServer((req, res) => {
+  const parsedUrl = new URL(req.url || "/", `http://${HOST}:${PORT}`);
+  const redirectTarget = ROUTE_REDIRECTS[parsedUrl.pathname];
+
+  if (redirectTarget) {
+    res.writeHead(302, { Location: redirectTarget });
+    res.end();
+    return;
+  }
+
   const filePath = resolveFilePath(req.url || "/");
 
   if (!filePath) {
