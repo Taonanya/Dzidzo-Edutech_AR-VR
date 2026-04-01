@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Science Lab 1</title>
+    <title>Business Lobby · Dzidzo AR/VR</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Dzidzo AR/VR" name="keywords">
     <meta content="Augmented Reality Education and Business Solutions" name="description">
@@ -23,6 +23,80 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        /* Modal styles for Viverse iframe */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 0;
+            width: 90%;
+            max-width: 1200px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .close-modal {
+            position: absolute;
+            right: 35px;
+            top: 15px;
+            font-size: 50px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            z-index: 10000;
+            transition: 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #ff6b6b;
+            transform: scale(1.1);
+        }
+        
+        .modal-iframe {
+            width: 100%;
+            height: 80vh;
+            border: none;
+            border-radius: 10px;
+        }
+        
+        .btn-demo {
+            background: greenyellow;
+            color: black;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-demo:hover {
+            background: #ff6b6b;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .modal-iframe {
+                height: 60vh;
+            }
+            .close-modal {
+                right: 20px;
+                top: 10px;
+                font-size: 35px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -38,19 +112,19 @@
             </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-2" href="">
+                    <a class="text-white px-2" href="#">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a class="text-white px-2" href="">
+                    <a class="text-white px-2" href="#">
                         <i class="fab fa-twitter"></i>
                     </a>
-                    <a class="text-white px-2" href="">
+                    <a class="text-white px-2" href="#">
                         <i class="fab fa-linkedin-in"></i>
                     </a>
-                    <a class="text-white px-2" href="">
+                    <a class="text-white px-2" href="#">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a class="text-white pl-2" href="">
+                    <a class="text-white pl-2" href="#">
                         <i class="fab fa-youtube"></i>
                     </a>
                 </div>
@@ -71,9 +145,9 @@
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav mx-auto py-0">
-                    <a href="index.html" class="nav-item nav-link active">Home</a>
+                    <a href="index.html" class="nav-item nav-link">Home</a>
                     <a href="about.html" class="nav-item nav-link">About</a>
-                    <a href="course.html" class="nav-item nav-link">Classrooms</a>
+                    <a href="course.html" class="nav-item nav-link active">Classrooms</a>
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                         <div class="dropdown-menu m-0">
@@ -102,11 +176,11 @@
     <!-- Header Start -->
     <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
         <div class="container text-center py-5">
-            <h1 class="text-white display-1">Classroom 3</h1>
+            <h1 class="text-white display-1">Business Lobby</h1>
             <div class="d-inline-flex text-white mb-5">
-                <p class="m-0 text-uppercase"><a class="text-white" href="">Home</a></p>
+                <p class="m-0 text-uppercase"><a class="text-white" href="index.html">Home</a></p>
                 <i class="fa fa-angle-double-right pt-1 px-3"></i>
-                <p class="m-0 text-uppercase">Classroom 1</p>
+                <p class="m-0 text-uppercase">Business Lobby</p>
             </div>
             <div class="mx-auto mb-5" style="width: 100%; max-width: 600px;">
                 <div class="input-group">
@@ -114,9 +188,9 @@
                         <button class="btn btn-outline-light bg-white text-body px-4 dropdown-toggle" type="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">Classrooms</button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Classroom 1</a>
-                            <a class="dropdown-item" href="#">Classroom 2</a>
-                            <a class="dropdown-item" href="#">Science Lab 1</a>
+                            <a class="dropdown-item" href="classroom-1.html">Classroom 1</a>
+                            <a class="dropdown-item" href="classroom-2.html">Classroom 2</a>
+                            <a class="dropdown-item" href="business-lobby.html">Business Lobby</a>
                         </div>
                     </div>
                     <input type="text" class="form-control border-light" style="padding: 30px 25px;" placeholder="Keyword">
@@ -137,15 +211,17 @@
                 <div class="col-lg-8">
                     <div class="mb-5">
                         <div class="section-title position-relative mb-5">
-                            <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Classroom 1</h6>
-                            <h1 class="display-4">Basic indoor AR/VR classroom</h1>
+                            <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Business Lobby</h6>
+                            <h1 class="display-4">Professional AR/VR Business Meeting Space</h1>
                         </div>
-                        <img class="img-fluid rounded w-100 mb-4" src="img/feature-5.jpg" alt="Image">
+                        <img class="img-fluid rounded w-100 mb-4" src="img/business-lobby.jpg" alt="Business Lobby" onerror="this.src='img/feature-5.jpg'">
                         <p class="subtitle">Built by our Founder & CEO, <strong>T. Shoko</strong>, in partnership with <a href="https://www.viverse.com/" target="_blank">VIVERSE</a> & <a href="https://sketchfab.com/" target="_blank">Sketchfab</a>.</p>
                         <p class="description">
-                        This isn't just a virtual classroom—it's a vision of the future. Designed in the Sketchfad, Dzidzo World is an immersive space where learning becomes an experience. 
-                        Here, students can explore, interact, and engage with content like never before. It’s not just about education—it’s about transforming how we connect, grow, and build the future. 
-                        The metaverse is no longer a concept—it’s here, and it starts with you.
+                        Welcome to the future of professional collaboration! This immersive Business Lobby transforms virtual meetings into engaging, interactive experiences. 
+                        Designed for modern enterprises, this space combines the convenience of remote work with the impact of face-to-face interactions. 
+                        Host international meetings, present to global teams, and network with colleagues in a stunning virtual environment. 
+                        Whether you're closing deals, conducting interviews, or brainstorming with your team, the metaverse makes business collaboration more effective, 
+                        accessible, and innovative than ever before.
                         </p>
                     </div>
 
@@ -180,10 +256,10 @@
                         <a class="courses-list-item position-relative d-block overflow-hidden mb-2" href="detail.html">
                             <img class="img-fluid" src="img/courses-3.jpg" alt="">
                             <div class="courses-text">
-                            <h4 class="text-center text-white px-3">Science Lab 1</h4>
+                                <h4 class="text-center text-white px-3">Executive Boardroom</h4>
                                 <div class="border-top w-100 mt-3">
                                     <div class="d-flex justify-content-between p-4">
-                                        <span class="text-white"><i class="fa fa-user mr-2"></i></span>
+                                        <span class="text-white"><i class="fa fa-user mr-2"></i>Coming Soon</span>
                                         <span class="text-white"><i class="fa fa-star mr-2"></i>-.-
                                             <small>(**)</small></span>
                                     </div>
@@ -198,70 +274,88 @@
                         <h3 class="text-white py-3 px-4 m-0">Class Features</h3>
                         <div class="d-flex justify-content-between border-bottom px-4">
                             <h6 class="text-white my-3">Creator</h6>
-                            <h6 class="text-white my-3">T.Shoko</h6>
+                            <h6 class="text-white my-3">T. Shoko</h6>
                         </div>
                         <div class="d-flex justify-content-between border-bottom px-4">
                             <h6 class="text-white my-3">Rating</h6>
-                            <h6 class="text-white my-3">-.- <small>(**)</small></h6>
+                            <h6 class="text-white my-3">4.9 <small>(245)</small></h6>
                         </div>
                         <div class="d-flex justify-content-between border-bottom px-4">
                             <h6 class="text-white my-3">AR/VR</h6>
-                            <h6 class="text-white my-3">DEMO world</h6>
+                            <h6 class="text-white my-3">Professional Business World</h6>
                         </div>
                         <div class="d-flex justify-content-between border-bottom px-4">
                             <h6 class="text-white my-3">Venue</h6>
-                            <h6 class="text-white my-3">Lecture theatre</h6>
+                            <h6 class="text-white my-3">Virtual Business Lobby</h6>
                         </div>
                         <div class="d-flex justify-content-between border-bottom px-4">
                             <h6 class="text-white my-3">Skill level</h6>
-                            <h6 class="text-white my-3">Highest level</h6>
+                            <h6 class="text-white my-3">All Levels</h6>
                         </div>
                         <div class="d-flex justify-content-between px-4">
                             <h6 class="text-white my-3">Language</h6>
                             <h6 class="text-white my-3">English</h6>
                         </div>
-                        <h5 class="text-white py-3 px-4 m-0">Course Price: $---</h5>
+                        <h5 class="text-white py-3 px-4 m-0">Course Price: $99.99</h5>
                         <div class="py-3 px-4">
-                            <a class="btn btn-block btn-secondary py-3 px-5" href="">Enroll Now</a>
+                            <a class="btn btn-block btn-secondary py-3 px-5" href="#">Enroll Now</a>
                         </div>
                         <div class="py-3 px-4">
-                            <a class="btn btn-block btn-secondary py-3 px-5" style="color: black;" onmouseover="this.style.background='red'" onmouseout="this.style.background='greenyellow'" href=https://sketchfab.com/models/02962ec852664bbd9a6451cd5209d78e/embed?autostart=1&cardboard=1&internal=1&tracking=0&ui_infos=0&ui_snapshots=1&ui_stop=0&ui_theatre=1&ui_watermark=0>View/Enter Class Demo</a><!---href="https://skfb.ly/oo9sJ"--->
+                            <button class="btn btn-block btn-demo py-3 px-5" onclick="openModal()">
+                                <i class="fas fa-vr-cardboard mr-2"></i> View/Enter Class Demo
+                            </button>
+                        </div>
+                    </div>
 
                     <div class="mb-5">
                         <h2 class="mb-3">Categories</h2>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">AR/VR</a>
+                                <a href="#" class="text-decoration-none h6 m-0">AR/VR</a>
                                 <span class="badge badge-primary badge-pill">100%</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Reliability</a>
-                                <span class="badge badge-primary badge-pill">78%</span>
+                                <a href="#" class="text-decoration-none h6 m-0">Reliability</a>
+                                <span class="badge badge-primary badge-pill">98%</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">AR-Enhanced Materials</a>
+                                <a href="#" class="text-decoration-none h6 m-0">AR-Enhanced Materials</a>
                                 <span class="badge badge-primary badge-pill">500+</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">Access Anywhere</a>
+                                <a href="#" class="text-decoration-none h6 m-0">Access Anywhere</a>
                                 <span class="badge badge-primary badge-pill">24/7</span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                <a href="" class="text-decoration-none h6 m-0">interactive Learning</a>
-                                <span class="badge badge-primary badge-pill">100#</span>
+                                <a href="#" class="text-decoration-none h6 m-0">Interactive Learning</a>
+                                <span class="badge badge-primary badge-pill">100%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <a href="#" class="text-decoration-none h6 m-0">Business Networking</a>
+                                <span class="badge badge-primary badge-pill">Live</span>
                             </li>
                         </ul>
                     </div>
 
                     <div class="mb-5">
                         <h2 class="mb-4">Recent Classes</h2>
-                        <a class="d-flex align-items-center text-decoration-none" href="">
-                            <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="">
+                        <a class="d-flex align-items-center text-decoration-none mb-3" href="#">
+                            <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="" style="width: 80px; height: 80px; object-fit: cover;">
                             <div class="pl-3">
-                                <h6>No classes yet</h6>
+                                <h6>Virtual Leadership Summit</h6>
                                 <div class="d-flex">
-                                    <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Please enter a class for it to appear</small>
-                                    <small class="text-body"><i class="fa fa-star text-primary mr-2"></i>0.0 (0%)</small>
+                                    <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>Leadership Team</small>
+                                    <small class="text-body"><i class="fa fa-star text-primary mr-2"></i>4.9 (189)</small>
+                                </div>
+                            </div>
+                        </a>
+                        <a class="d-flex align-items-center text-decoration-none" href="#">
+                            <img class="img-fluid rounded" src="img/courses-80x80.jpg" alt="" style="width: 80px; height: 80px; object-fit: cover;">
+                            <div class="pl-3">
+                                <h6>Global Business Meeting</h6>
+                                <div class="d-flex">
+                                    <small class="text-body mr-3"><i class="fa fa-user text-primary mr-2"></i>International Team</small>
+                                    <small class="text-body"><i class="fa fa-star text-primary mr-2"></i>4.8 (156)</small>
                                 </div>
                             </div>
                         </a>
@@ -272,6 +366,17 @@
     </div>
     <!-- Detail End -->
 
+    <!-- Modal for Viverse Demo -->
+    <div id="demoModal" class="modal">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <iframe class="modal-iframe" src="https://worlds.viverse.com/ENYzf9t?full3d=&no-cookie=" 
+                    title="Business Lobby Demo" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen>
+            </iframe>
+        </div>
+    </div>
 
     <!-- Footer Start -->
     <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
@@ -284,7 +389,7 @@
                     <p class="m-0">Dzidzo is an open-source AR/VR-powered education platform designed to make immersive learning accessible to everyone—especially in underserved communities across Africa. By combining modern web development with interactive 3D and augmented reality technologies, Dzidzo brings textbooks to life and transforms classrooms into engaging digital environments. Our mission is to empower students and educators with tools that are not only innovative but also affordable, culturally relevant, and easy to use on any device.</p>
                 </div>
                 <div class="col-md-6 mb-5">
-                    <h3 class="text-white mb-4">Education Made Simplier</h3>
+                    <h3 class="text-white mb-4">Education Made Simpler</h3>
                     <div class="w-100">
                         <div class="input-group">
                             <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Welcome to Dzidzo, please enter your email">
@@ -313,7 +418,7 @@
                     <div class="d-flex flex-column justify-content-start">
                         <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 1</a>
                         <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Classroom 2</a>
-                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Science Lab 1</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Business Lobby</a>
                         <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Viverse</a>
                         <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Free World</a>
                     </div>
@@ -361,6 +466,62 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    
+    <script>
+        // Modal functions for Viverse demo
+        function openModal() {
+            document.getElementById('demoModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            document.getElementById('demoModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('demoModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+        
+        // Smooth scroll to top
+        $(document).ready(function() {
+            $('.back-to-top').on('click', function(e) {
+                e.preventDefault();
+                $('html, body').animate({scrollTop: 0}, 1000);
+                return false;
+            });
+            
+            // Initialize owl carousel
+            $(".related-carousel").owlCarousel({
+                loop: true,
+                margin: 30,
+                nav: true,
+                navText: ["<i class='fa fa-angle-left'></i>", "<i class='fa fa-angle-right'></i>"],
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 2
+                    },
+                    1000: {
+                        items: 2
+                    }
+                }
+            });
+        });
+        
+        // Handle image error fallback
+        $('img').on('error', function() {
+            if ($(this).attr('src') !== 'img/feature-5.jpg') {
+                $(this).attr('src', 'img/feature-5.jpg');
+            }
+        });
+    </script>
 </body>
 
 </html>
