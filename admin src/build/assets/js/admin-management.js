@@ -164,6 +164,88 @@ const sectionDefinitions = {
       { name: "progress_percent", label: "Progress Percent", type: "number", step: "0.1", defaultValue: 0 }
     ]
   },
+  assignments: {
+    label: "Assignments",
+    kicker: "Coursework",
+    description: "Manage teacher tasks, due dates, and published assessment briefs.",
+    endpoint: "/api/admin/assignments",
+    columns: ["course_title", "teacher_name", "title", "due_at", "max_score", "is_published"],
+    searchKeys: ["course_title", "teacher_name", "title", "slug", "instructions"],
+    fields: [
+      { name: "course_id", label: "Course", type: "lookup", lookup: "courses", required: true },
+      { name: "teacher_user_id", label: "Teacher", type: "lookup", lookup: "users" },
+      { name: "title", label: "Title", type: "text", required: true },
+      { name: "slug", label: "Slug", type: "text", required: true },
+      { name: "instructions", label: "Instructions", type: "textarea" },
+      { name: "due_at", label: "Due At", type: "datetime-local" },
+      { name: "max_score", label: "Max Score", type: "number", step: "0.1", defaultValue: 100 },
+      { name: "is_published", label: "Published", type: "checkbox", defaultValue: true }
+    ]
+  },
+  submissions: {
+    label: "Submissions",
+    kicker: "Learner Work",
+    description: "Track learner submissions, review status, artifacts, and scoring.",
+    endpoint: "/api/admin/submissions",
+    columns: ["assignment_title", "student_name", "status", "score", "submitted_at", "reviewed_at"],
+    searchKeys: ["assignment_title", "student_name", "status", "submission_text"],
+    fields: [
+      { name: "assignment_id", label: "Assignment", type: "lookup", lookup: "assignments", required: true },
+      { name: "student_user_id", label: "Student", type: "lookup", lookup: "users", required: true },
+      { name: "status", label: "Status", type: "select", options: ["draft", "submitted", "reviewed", "needs_revision"], required: true },
+      { name: "submission_text", label: "Submission Text", type: "textarea" },
+      { name: "artifact_url", label: "Artifact URL", type: "text" },
+      { name: "score", label: "Score", type: "number", step: "0.1" },
+      { name: "submitted_at", label: "Submitted At", type: "datetime-local" },
+      { name: "reviewed_at", label: "Reviewed At", type: "datetime-local" }
+    ]
+  },
+  reviews: {
+    label: "Reviews",
+    kicker: "Feedback",
+    description: "Return marked work, rubric summaries, and revision decisions to learners.",
+    endpoint: "/api/admin/reviews",
+    columns: ["submission_label", "reviewer_name", "status", "score", "updated_at"],
+    searchKeys: ["submission_label", "reviewer_name", "status", "feedback", "rubric_summary"],
+    fields: [
+      { name: "submission_id", label: "Submission", type: "lookup", lookup: "submissions", required: true },
+      { name: "reviewer_user_id", label: "Reviewer", type: "lookup", lookup: "users" },
+      { name: "status", label: "Status", type: "select", options: ["pending", "returned", "approved", "revision_requested"], required: true },
+      { name: "feedback", label: "Feedback", type: "textarea" },
+      { name: "rubric_summary", label: "Rubric Summary", type: "textarea" },
+      { name: "score", label: "Score", type: "number", step: "0.1" }
+    ]
+  },
+  attendanceSessions: {
+    label: "Attendance Sessions",
+    kicker: "Presence",
+    description: "Create attendance-taking sessions for classes, labs, and hybrid walkthroughs.",
+    endpoint: "/api/admin/attendanceSessions",
+    columns: ["course_title", "title", "session_date", "mode", "created_at"],
+    searchKeys: ["course_title", "title", "mode", "notes"],
+    fields: [
+      { name: "course_id", label: "Course", type: "lookup", lookup: "courses", required: true },
+      { name: "title", label: "Title", type: "text", required: true },
+      { name: "session_date", label: "Session Date", type: "date", required: true },
+      { name: "mode", label: "Mode", type: "text", defaultValue: "in-world" },
+      { name: "notes", label: "Notes", type: "textarea" }
+    ]
+  },
+  attendanceRecords: {
+    label: "Attendance Records",
+    kicker: "Tracking",
+    description: "Mark attendance outcomes for each student inside a scheduled session.",
+    endpoint: "/api/admin/attendanceRecords",
+    columns: ["session_title", "student_name", "attendance_status", "check_in_at", "updated_at"],
+    searchKeys: ["session_title", "student_name", "attendance_status", "notes"],
+    fields: [
+      { name: "session_id", label: "Session", type: "lookup", lookup: "attendanceSessions", required: true },
+      { name: "student_user_id", label: "Student", type: "lookup", lookup: "users", required: true },
+      { name: "attendance_status", label: "Status", type: "select", options: ["present", "late", "absent", "excused"], required: true },
+      { name: "check_in_at", label: "Check In At", type: "datetime-local" },
+      { name: "notes", label: "Notes", type: "textarea" }
+    ]
+  },
   contactMessages: {
     label: "Messages",
     kicker: "Inbox",
@@ -202,7 +284,10 @@ const state = {
   lookups: {
     categories: [],
     courses: [],
-    users: []
+    users: [],
+    assignments: [],
+    submissions: [],
+    attendanceSessions: []
   }
 };
 
@@ -358,7 +443,13 @@ function buildField(field, record = {}) {
 
   if (field.type === "lookup") {
     const options = state.lookups[field.lookup] || [];
-    const labelKey = field.lookup === "users" ? "full_name" : (field.lookup === "courses" ? "title" : "name");
+    const labelKey = field.lookup === "users"
+      ? "full_name"
+      : field.lookup === "courses"
+        ? "title"
+        : field.lookup === "assignments" || field.lookup === "submissions" || field.lookup === "attendanceSessions"
+          ? "label"
+          : "name";
     return `<div class="field"><label>${field.label}</label><select name="${field.name}" ${field.required ? "required" : ""}><option value="">Select ${field.label}</option>${options.map((option) => `<option value="${option.id}" ${String(value ?? "") === String(option.id) ? "selected" : ""}>${option[labelKey]}${option.email ? ` (${option.email})` : ""}</option>`).join("")}</select></div>`;
   }
 
@@ -383,14 +474,20 @@ function renderEditor() {
 }
 
 async function loadLookups() {
-  const [categories, courses, users] = await Promise.all([
+  const [categories, courses, users, assignments, submissions, attendanceSessions] = await Promise.all([
     api("/api/admin/lookups/categories"),
     api("/api/admin/lookups/courses"),
-    api("/api/admin/lookups/users")
+    api("/api/admin/lookups/users"),
+    api("/api/admin/lookups/assignments"),
+    api("/api/admin/lookups/submissions"),
+    api("/api/admin/lookups/attendance-sessions")
   ]);
   state.lookups.categories = categories.items;
   state.lookups.courses = courses.items;
   state.lookups.users = users.items;
+  state.lookups.assignments = assignments.items;
+  state.lookups.submissions = submissions.items;
+  state.lookups.attendanceSessions = attendanceSessions.items;
 }
 
 async function loadSection(sectionKey) {

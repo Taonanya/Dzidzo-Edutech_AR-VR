@@ -341,11 +341,192 @@ const resourceConfig = {
     serializeUpdate(id, body) {
       return [id, ...this.serializeCreate(body)];
     }
+  },
+  assignments: {
+    listSql: `
+      SELECT a.id, a.course_id, c.title AS course_title, a.teacher_user_id, u.full_name AS teacher_name,
+             a.title, a.slug, a.instructions, a.due_at, a.max_score, a.is_published, a.created_at, a.updated_at
+      FROM assignments a
+      JOIN courses c ON c.id = a.course_id
+      LEFT JOIN users u ON u.id = a.teacher_user_id
+      ORDER BY a.due_at ASC NULLS LAST, a.created_at DESC
+    `,
+    insertSql: `
+      INSERT INTO assignments (course_id, teacher_user_id, title, slug, instructions, due_at, max_score, is_published)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+      RETURNING *
+    `,
+    updateSql: `
+      UPDATE assignments
+      SET course_id = $2, teacher_user_id = $3, title = $4, slug = $5, instructions = $6,
+          due_at = $7, max_score = $8, is_published = $9
+      WHERE id = $1
+      RETURNING *
+    `,
+    deleteSql: `DELETE FROM assignments WHERE id = $1 RETURNING id`,
+    serializeCreate(body) {
+      return [
+        nullable(body.course_id),
+        nullable(body.teacher_user_id),
+        body.title,
+        body.slug,
+        nullable(body.instructions),
+        nullable(body.due_at),
+        num(body.max_score, 100),
+        bool(body.is_published, true)
+      ];
+    },
+    serializeUpdate(id, body) {
+      return [id, ...this.serializeCreate(body)];
+    }
+  },
+  submissions: {
+    listSql: `
+      SELECT s.id, s.assignment_id, a.title AS assignment_title, s.student_user_id, u.full_name AS student_name,
+             s.status, s.score, s.submitted_at, s.reviewed_at, s.artifact_url, s.created_at, s.updated_at
+      FROM submissions s
+      JOIN assignments a ON a.id = s.assignment_id
+      JOIN users u ON u.id = s.student_user_id
+      ORDER BY s.submitted_at DESC NULLS LAST, s.created_at DESC
+    `,
+    insertSql: `
+      INSERT INTO submissions (assignment_id, student_user_id, status, submission_text, artifact_url, score, submitted_at, reviewed_at)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+      RETURNING *
+    `,
+    updateSql: `
+      UPDATE submissions
+      SET assignment_id = $2, student_user_id = $3, status = $4, submission_text = $5, artifact_url = $6,
+          score = $7, submitted_at = $8, reviewed_at = $9
+      WHERE id = $1
+      RETURNING *
+    `,
+    deleteSql: `DELETE FROM submissions WHERE id = $1 RETURNING id`,
+    serializeCreate(body) {
+      return [
+        nullable(body.assignment_id),
+        nullable(body.student_user_id),
+        body.status || "draft",
+        nullable(body.submission_text),
+        nullable(body.artifact_url),
+        body.score === "" ? null : nullable(body.score),
+        nullable(body.submitted_at),
+        nullable(body.reviewed_at)
+      ];
+    },
+    serializeUpdate(id, body) {
+      return [id, ...this.serializeCreate(body)];
+    }
+  },
+  reviews: {
+    listSql: `
+      SELECT r.id, r.submission_id,
+             CONCAT(a.title, ' / ', student.full_name) AS submission_label,
+             r.reviewer_user_id, reviewer.full_name AS reviewer_name,
+             r.status, r.score, r.created_at, r.updated_at
+      FROM reviews r
+      JOIN submissions s ON s.id = r.submission_id
+      JOIN assignments a ON a.id = s.assignment_id
+      JOIN users student ON student.id = s.student_user_id
+      LEFT JOIN users reviewer ON reviewer.id = r.reviewer_user_id
+      ORDER BY r.updated_at DESC
+    `,
+    insertSql: `
+      INSERT INTO reviews (submission_id, reviewer_user_id, feedback, rubric_summary, score, status)
+      VALUES ($1,$2,$3,$4,$5,$6)
+      RETURNING *
+    `,
+    updateSql: `
+      UPDATE reviews
+      SET submission_id = $2, reviewer_user_id = $3, feedback = $4, rubric_summary = $5, score = $6, status = $7
+      WHERE id = $1
+      RETURNING *
+    `,
+    deleteSql: `DELETE FROM reviews WHERE id = $1 RETURNING id`,
+    serializeCreate(body) {
+      return [
+        nullable(body.submission_id),
+        nullable(body.reviewer_user_id),
+        nullable(body.feedback),
+        nullable(body.rubric_summary),
+        body.score === "" ? null : nullable(body.score),
+        body.status || "pending"
+      ];
+    },
+    serializeUpdate(id, body) {
+      return [id, ...this.serializeCreate(body)];
+    }
+  },
+  attendanceSessions: {
+    listSql: `
+      SELECT s.id, s.course_id, c.title AS course_title, s.title, s.session_date, s.mode, s.notes, s.created_at, s.updated_at
+      FROM attendance_sessions s
+      JOIN courses c ON c.id = s.course_id
+      ORDER BY s.session_date DESC, s.created_at DESC
+    `,
+    insertSql: `
+      INSERT INTO attendance_sessions (course_id, title, session_date, mode, notes)
+      VALUES ($1,$2,$3,$4,$5)
+      RETURNING *
+    `,
+    updateSql: `
+      UPDATE attendance_sessions
+      SET course_id = $2, title = $3, session_date = $4, mode = $5, notes = $6
+      WHERE id = $1
+      RETURNING *
+    `,
+    deleteSql: `DELETE FROM attendance_sessions WHERE id = $1 RETURNING id`,
+    serializeCreate(body) {
+      return [
+        nullable(body.course_id),
+        body.title,
+        body.session_date,
+        nullable(body.mode),
+        nullable(body.notes)
+      ];
+    },
+    serializeUpdate(id, body) {
+      return [id, ...this.serializeCreate(body)];
+    }
+  },
+  attendanceRecords: {
+    listSql: `
+      SELECT r.id, r.session_id, s.title AS session_title, r.student_user_id, u.full_name AS student_name,
+             r.attendance_status, r.check_in_at, r.notes, r.created_at, r.updated_at
+      FROM attendance_records r
+      JOIN attendance_sessions s ON s.id = r.session_id
+      JOIN users u ON u.id = r.student_user_id
+      ORDER BY s.session_date DESC, u.full_name ASC
+    `,
+    insertSql: `
+      INSERT INTO attendance_records (session_id, student_user_id, attendance_status, check_in_at, notes)
+      VALUES ($1,$2,$3,$4,$5)
+      RETURNING *
+    `,
+    updateSql: `
+      UPDATE attendance_records
+      SET session_id = $2, student_user_id = $3, attendance_status = $4, check_in_at = $5, notes = $6
+      WHERE id = $1
+      RETURNING *
+    `,
+    deleteSql: `DELETE FROM attendance_records WHERE id = $1 RETURNING id`,
+    serializeCreate(body) {
+      return [
+        nullable(body.session_id),
+        nullable(body.student_user_id),
+        body.attendance_status || "present",
+        nullable(body.check_in_at),
+        nullable(body.notes)
+      ];
+    },
+    serializeUpdate(id, body) {
+      return [id, ...this.serializeCreate(body)];
+    }
   }
 };
 
 adminRouter.get("/summary", asyncHandler(async (_req, res) => {
-  const summaryKeys = ["users", "categories", "courses", "lessons", "library_items", "team_members", "testimonials", "contact_messages", "newsletter_subscribers", "enrollments"];
+  const summaryKeys = ["users", "categories", "courses", "lessons", "library_items", "team_members", "testimonials", "contact_messages", "newsletter_subscribers", "enrollments", "assignments", "submissions", "reviews", "attendance_sessions", "attendance_records"];
   const summary = {};
 
   for (const tableName of summaryKeys) {
@@ -369,6 +550,37 @@ adminRouter.get("/lookups/courses", asyncHandler(async (_req, res) => {
 adminRouter.get("/lookups/users", asyncHandler(async (_req, res) => {
   const result = await query(`SELECT id, full_name, email FROM users ORDER BY created_at DESC`);
   res.json({ items: result.rows });
+}));
+
+adminRouter.get("/lookups/assignments", asyncHandler(async (_req, res) => {
+  const result = await query(`
+    SELECT a.id, a.title, c.title AS course_title
+    FROM assignments a
+    JOIN courses c ON c.id = a.course_id
+    ORDER BY a.due_at ASC NULLS LAST, a.title ASC
+  `);
+  res.json({ items: result.rows.map((row) => ({ ...row, label: `${row.title} (${row.course_title})` })) });
+}));
+
+adminRouter.get("/lookups/submissions", asyncHandler(async (_req, res) => {
+  const result = await query(`
+    SELECT s.id, a.title AS assignment_title, u.full_name AS student_name
+    FROM submissions s
+    JOIN assignments a ON a.id = s.assignment_id
+    JOIN users u ON u.id = s.student_user_id
+    ORDER BY s.created_at DESC
+  `);
+  res.json({ items: result.rows.map((row) => ({ ...row, label: `${row.assignment_title} / ${row.student_name}` })) });
+}));
+
+adminRouter.get("/lookups/attendance-sessions", asyncHandler(async (_req, res) => {
+  const result = await query(`
+    SELECT s.id, s.title, c.title AS course_title, s.session_date
+    FROM attendance_sessions s
+    JOIN courses c ON c.id = s.course_id
+    ORDER BY s.session_date DESC, s.title ASC
+  `);
+  res.json({ items: result.rows.map((row) => ({ ...row, label: `${row.title} (${row.course_title})` })) });
 }));
 
 for (const [resourceName, config] of Object.entries(resourceConfig)) {

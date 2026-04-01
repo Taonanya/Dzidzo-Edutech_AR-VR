@@ -24,22 +24,22 @@
         <div>
           <p class="sidebar-section-title">Workspace</p>
           <nav class="sidebar-nav">
-            <button type="button" class="sidebar-link is-active">
+            <a href="/student-dashboard" class="sidebar-link is-active">
               <span class="sidebar-link-icon">D</span>
               Dashboard
-            </button>
-            <button type="button" class="sidebar-link">
+            </a>
+            <a href="/my-courses" class="sidebar-link">
               <span class="sidebar-link-icon">M</span>
               My courses
-            </button>
-            <button type="button" class="sidebar-link">
+            </a>
+            <a href="/progress" class="sidebar-link">
               <span class="sidebar-link-icon">P</span>
               Progress
-            </button>
-            <button type="button" class="sidebar-link">
+            </a>
+            <a href="/library" class="sidebar-link">
               <span class="sidebar-link-icon">L</span>
               Library
-            </button>
+            </a>
             <a href="../../../index.html" class="sidebar-link">
               <span class="sidebar-link-icon">H</span>
               Home
@@ -89,7 +89,7 @@
               <section id="dashboard-stats" class="stats-grid"></section>
 
               <div class="dashboard-row">
-                <article class="panel-card">
+                <article id="progress-overview" class="panel-card">
                   <div class="panel-header">
                     <div>
                       <h3>Learning performance</h3>
@@ -112,7 +112,7 @@
                   </div>
                 </article>
 
-                <article class="panel-card">
+                <article id="my-courses-overview" class="panel-card">
                   <div class="panel-header">
                     <div>
                       <h3>Goal overview</h3>
@@ -214,10 +214,10 @@
                   </div>
                 </div>
                 <div class="quick-actions">
-                  <a class="quick-action" href="../../../course.html">Browse courses</a>
-                  <button class="quick-action" type="button">Open quiz</button>
-                  <a class="quick-action" href="../../../library.html">Visit library</a>
-                  <button class="quick-action" type="button">Start VR lab</button>
+                  <a class="quick-action" href="/my-courses">Browse courses</a>
+                  <a class="quick-action" href="/progress">Open progress</a>
+                  <a class="quick-action" href="/library">Visit library</a>
+                  <a class="quick-action" href="/classroom-1">Start VR lab</a>
                 </div>
               </section>
             </aside>

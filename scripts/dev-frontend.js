@@ -31,7 +31,13 @@ const ROUTE_REDIRECTS = {
   "/admin-dashboard": "/admin%20src/build/pages/admin-dashboard.html",
   "/teacher-dashboard": "/admin%20src/build/pages/teacher-dashboard.html",
   "/student-dashboard": "/admin%20src/build/pages/student-dashboard.html",
-  "/admin-management": "/admin%20src/build/pages/admin-management.html"
+  "/admin-management": "/admin%20src/build/pages/admin-management.html",
+  "/courses": "/course.html",
+  "/my-courses": "/course.html",
+  "/library": "/library.html",
+  "/progress": "/admin%20src/build/pages/student-dashboard.html#progress-overview",
+  "/classroom-1": "/classroom_1.html",
+  "/classroom-2": "/classroom_2.html"
 };
 
 function send(res, statusCode, body, contentType = "text/plain; charset=utf-8") {
