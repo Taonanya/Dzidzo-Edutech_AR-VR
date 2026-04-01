@@ -1,7 +1,17 @@
 (function ($) {
     "use strict";
 
-    const API_BASE_URL = window.DZIDZO_API_BASE_URL || "http://localhost:4000";
+    function getApiBaseUrl() {
+        const rawBaseUrl = window.DZIDZO_API_BASE_URL || "http://localhost:4000";
+
+        try {
+            return new URL(rawBaseUrl).origin;
+        } catch (_error) {
+            return "http://localhost:4000";
+        }
+    }
+
+    const API_BASE_URL = getApiBaseUrl();
     
     // Dropdown on mouse hover
     $(document).ready(function () {
